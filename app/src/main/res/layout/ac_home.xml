@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context="com.rd.dotpagerview.HomeActivity"
-        android:background="#3D86FC">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#3D86FC"
+    android:gravity="center"
+    android:orientation="horizontal"
+    tools:context="com.rd.dotpagerview.HomeActivity">
 
     <com.rd.dotpagerview.DotPagerView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
 </LinearLayout>
