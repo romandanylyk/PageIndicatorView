@@ -10,7 +10,6 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 
 import com.rd.dotpagerview.utils.DensityUtils;
@@ -25,10 +24,9 @@ public class DotPagerView extends View {
     private static final int DOT_SIDES_PADDING_DP = 4;
 
     private static final int ANIMATION_ALPHA_DURATION = 500;
-    private static final int ANIMATION_ALPHA_INCREASE = 10;
-    private static final int ANIMATION_ALPHA_MAX = 255;
-    private static final int ANIMATION_ALPHA_MIN = 0;
-    private int alpha;
+    private static final int ANIMATION_ALPHA_START = 50;
+    private static final int ANIMATION_ALPHA_END = 255;
+    private int alpha = ANIMATION_ALPHA_END;
 
     private int dotCount;
     private int dotRadiusPx;
@@ -127,7 +125,7 @@ public class DotPagerView extends View {
     }
 
     private void alphaAnimation() {
-        ValueAnimator valueAnimator = ValueAnimator.ofInt(ANIMATION_ALPHA_MIN, ANIMATION_ALPHA_MAX);
+        ValueAnimator valueAnimator = ValueAnimator.ofInt(ANIMATION_ALPHA_START, ANIMATION_ALPHA_END);
         valueAnimator.setDuration(ANIMATION_ALPHA_DURATION);
         valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
@@ -162,7 +160,6 @@ public class DotPagerView extends View {
             }
 
         } else {
-            paint.setAlpha(ANIMATION_ALPHA_MAX);
             paint.setColor(dotsUnselectedColor);
         }
 
