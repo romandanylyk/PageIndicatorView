@@ -11,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.animation.AccelerateInterpolator;
 
 import com.rd.dotpagerview.utils.DensityUtils;
 
@@ -23,7 +24,7 @@ public class DotPagerView extends View {
     private static final int DOT_DEFAULT_PADDING_DP = 16;
     private static final int DOT_SIDES_PADDING_DP = 4;
 
-    private static final int ANIMATION_ALPHA_DURATION = 500;
+    private static final int ANIMATION_ALPHA_DURATION = 300;
     private static final int ANIMATION_ALPHA_START = 50;
     private static final int ANIMATION_ALPHA_END = 255;
     private int alpha = ANIMATION_ALPHA_END;
@@ -125,9 +126,11 @@ public class DotPagerView extends View {
     }
 
     private void alphaAnimation() {
-        ValueAnimator valueAnimator = ValueAnimator.ofInt(ANIMATION_ALPHA_START, ANIMATION_ALPHA_END);
-        valueAnimator.setDuration(ANIMATION_ALPHA_DURATION);
-        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+        ValueAnimator animator = ValueAnimator.ofInt(ANIMATION_ALPHA_START, ANIMATION_ALPHA_END);
+
+        animator.setDuration(ANIMATION_ALPHA_DURATION);
+        animator.setInterpolator(new AccelerateInterpolator());
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 alpha = (int) animation.getAnimatedValue();
@@ -135,7 +138,7 @@ public class DotPagerView extends View {
             }
         });
 
-        valueAnimator.start();
+        animator.start();
     }
 
     private void drawDotView(@NonNull Canvas canvas) {
