@@ -1,15 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#3D86FC"
-    android:gravity="center"
+    tools:background="#3D86FC"
     android:orientation="horizontal"
-    tools:context="com.rd.dotpagerview.HomeActivity">
+    tools:context=".home.HomeActivity">
 
-    <com.rd.dotpagerview.DotPagerView
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <com.rd.dotpagerview.views.DotPagerView
+        android:id="@+id/dotPagerView"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="48dp" />
 
-</LinearLayout>
+</RelativeLayout>
