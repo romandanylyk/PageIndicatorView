@@ -1,6 +1,8 @@
 package com.rd.dotpagerview.views;
 
 import android.animation.ArgbEvaluator;
+import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -12,8 +14,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
 
+import com.rd.dotpagerview.utils.DotAnimationUtils;
 import com.rd.dotpagerview.utils.DensityUtils;
 
 public class DotPagerView extends View {
@@ -24,9 +28,6 @@ public class DotPagerView extends View {
     private static final int DEFAULT_RADIUS_DP = 8;
     private static final int DEFAULT_PADDING_DP = 16;
     private static final int SIDES_PADDING_DP = 4;
-
-    private static final int ANIMATION_DURATION = 300;
-    private static final float SCALE_FACTOR = 1.5f;
 
     private int count;
     private int radiusPx;
@@ -42,6 +43,7 @@ public class DotPagerView extends View {
 
     //Scale
     private int currRadiusPx;
+    private int reverseRadiusPx;
 
     private int selectedPosition;
     private int lastSelectedPosition;
@@ -131,50 +133,11 @@ public class DotPagerView extends View {
             case SCALE:
                 startScaleAnimation();
                 break;
+
+            case COLOR_AND_SCALE:
+                startColorAndScaleAnimation();
+                break;
         }
-    }
-
-    private void startColorAnimation() {
-        ValueAnimator animator = ValueAnimator.ofInt(unselectedColor, selectedColor);
-        animator.setDuration(ANIMATION_DURATION);
-        animator.setInterpolator(new DecelerateInterpolator());
-        animator.setEvaluator(new ArgbEvaluator());
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                currColor = (int) animation.getAnimatedValue();
-            }
-        });
-
-        ValueAnimator reverseAnimator = ValueAnimator.ofInt(selectedColor, unselectedColor);
-        reverseAnimator.setDuration(ANIMATION_DURATION);
-        reverseAnimator.setInterpolator(new DecelerateInterpolator());
-        reverseAnimator.setEvaluator(new ArgbEvaluator());
-        reverseAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                reverseColor = (int) animation.getAnimatedValue();
-                invalidate();
-            }
-        });
-
-        animator.start();
-        reverseAnimator.start();
-    }
-
-    private void startScaleAnimation() {
-        ValueAnimator animator = ValueAnimator.ofInt((int) (radiusPx / SCALE_FACTOR), radiusPx);
-        animator.setDuration(ANIMATION_DURATION);
-        animator.setInterpolator(new DecelerateInterpolator());
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                currRadiusPx = (int) animation.getAnimatedValue();
-                invalidate();
-            }
-        });
-
-        animator.start();
     }
 
     private void drawDotView(@NonNull Canvas canvas) {
@@ -203,6 +166,7 @@ public class DotPagerView extends View {
                 break;
 
             case SCALE:
+            case COLOR_AND_SCALE:
                 drawWithScaleAnimation(canvas, position, x, y);
                 break;
 
@@ -230,13 +194,11 @@ public class DotPagerView extends View {
         int radius = radiusPx;
 
         if (position == selectedPosition) {
-            color = selectedColor;
+            color = currColor;
             radius = currRadiusPx;
         } else if (position == lastSelectedPosition) {
-            color = unselectedColor;
-
-            int scale = (int) (radiusPx / SCALE_FACTOR);
-            radius = scale + (radiusPx - currRadiusPx);
+            color = reverseColor;
+            radius = reverseRadiusPx;
         }
 
         paint.setColor(color);
@@ -244,10 +206,11 @@ public class DotPagerView extends View {
     }
 
     private void drawWithNoEffect(@NonNull Canvas canvas, int x, int y) {
+        boolean isScaleAnimation = animationType == AnimationType.SCALE || animationType == AnimationType.COLOR_AND_SCALE;
         int radius = radiusPx;
 
-        if (animationType == AnimationType.SCALE) {
-            radius /= 2;
+        if (isScaleAnimation) {
+            radius /= DotAnimationUtils.SCALE_FACTOR;
         }
 
         paint.setColor(unselectedColor);
@@ -268,12 +231,52 @@ public class DotPagerView extends View {
         paddingSidesPx = DensityUtils.dpToPx(getContext(), SIDES_PADDING_DP);
 
         currColor = selectedColor;
+        reverseColor = unselectedColor;
+
         currRadiusPx = radiusPx;
+        reverseRadiusPx = radiusPx;
     }
 
     private void initPaint() {
         paint = new Paint();
         paint.setStyle(Paint.Style.FILL);
         paint.setAntiAlias(true);
+    }
+
+    @SuppressWarnings("AccessStaticViaInstance")
+    private void startColorAnimation() {
+        DotAnimationUtils.startColorAnimation(selectedColor, unselectedColor, new DotAnimationUtils.Listener() {
+            @Override
+            public void onAnimationUpdate(@NonNull ValueAnimator animation) {
+                currColor = (int) animation.getAnimatedValue(DotAnimationUtils.ANIMATION_COLOR);
+                reverseColor = (int) animation.getAnimatedValue(DotAnimationUtils.ANIMATION_COLOR_REVERSE);
+                invalidate();
+            }
+        });
+    }
+
+    private void startScaleAnimation() {
+        DotAnimationUtils.startScaleAnimation(radiusPx, new DotAnimationUtils.Listener() {
+            @Override
+            public void onAnimationUpdate(@NonNull ValueAnimator animation) {
+                currRadiusPx = (Integer) animation.getAnimatedValue(DotAnimationUtils.ANIMATION_SCALE);
+                reverseRadiusPx = (Integer) animation.getAnimatedValue(DotAnimationUtils.ANIMATION_SCALE_REVERSE);
+                invalidate();
+            }
+        });
+    }
+
+    private void startColorAndScaleAnimation() {
+        DotAnimationUtils.startColorAndScaleAnimation(selectedColor, unselectedColor, radiusPx, new DotAnimationUtils.Listener() {
+            @Override
+            public void onAnimationUpdate(@NonNull ValueAnimator animation) {
+                currColor = (Integer) animation.getAnimatedValue(DotAnimationUtils.ANIMATION_COLOR);
+                reverseColor = (Integer) animation.getAnimatedValue(DotAnimationUtils.ANIMATION_COLOR_REVERSE);
+
+                currRadiusPx = (Integer) animation.getAnimatedValue(DotAnimationUtils.ANIMATION_SCALE);
+                reverseRadiusPx = (Integer) animation.getAnimatedValue(DotAnimationUtils.ANIMATION_SCALE_REVERSE);
+                invalidate();
+            }
+        });
     }
 }
