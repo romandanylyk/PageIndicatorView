@@ -27,8 +27,8 @@ public class HomeActivity extends AppCompatActivity {
 
         HomeAdapter adapter = new HomeAdapter(getSupportFragmentManager());
         pager.setAdapter(adapter);
-        dotPagerView.setDotsCount(adapter.getCount());
-        dotPagerView.setAnimationType(AnimationType.ALPHA);
+        dotPagerView.setCount(adapter.getCount());
+        dotPagerView.setAnimationType(AnimationType.SCALE);
 
         pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override

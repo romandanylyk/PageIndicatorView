@@ -1,3 +1,3 @@
 package com.rd.dotpagerview.views;
 
-public enum AnimationType {NONE, ALPHA}
+public enum AnimationType {NONE, COLOR, SCALE}
