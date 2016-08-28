@@ -3,11 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:background="#3D86FC"
     android:orientation="horizontal"
-    tools:context=".home.HomeActivity">
+    tools:context=".home.HomeActivity"
+    tools:background="#3D86FC">
 
-    <android.support.v4.view.ViewPager
+    w<android.support.v4.view.ViewPager
         android:id="@+id/viewPager"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

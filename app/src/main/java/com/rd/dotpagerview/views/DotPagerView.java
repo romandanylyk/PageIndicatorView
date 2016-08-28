@@ -1,8 +1,5 @@
 package com.rd.dotpagerview.views;
 
-import android.animation.ArgbEvaluator;
-import android.animation.ObjectAnimator;
-import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -14,8 +11,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.animation.AnimationUtils;
-import android.view.animation.DecelerateInterpolator;
 
 import com.rd.dotpagerview.utils.DotAnimationUtils;
 import com.rd.dotpagerview.utils.DensityUtils;
@@ -27,23 +22,25 @@ public class DotPagerView extends View {
 
     private static final int DEFAULT_RADIUS_DP = 8;
     private static final int DEFAULT_PADDING_DP = 16;
-    private static final int SIDES_PADDING_DP = 4;
 
-    private int count;
-    private int radiusPx;
-    private int paddingPx;
-    private int paddingSidesPx;
-
-    private int unselectedColor;
-    private int selectedColor;
+    private int radiusPx = DensityUtils.dpToPx(getContext(), DEFAULT_RADIUS_DP);
+    private int paddingPx = DensityUtils.dpToPx(getContext(), DEFAULT_PADDING_DP);
+    private int count = 4;
 
     //Color
+    private int unselectedColor = Color.parseColor(DEFAULT_UNSELECTED_COLOR);
+    private int selectedColor = Color.parseColor(DEFAULT_SELECTED_COLOR);
+
     private int currColor;
     private int reverseColor;
 
     //Scale
     private int currRadiusPx;
     private int reverseRadiusPx;
+
+    //Slide
+    private int currX;
+    private int reverseX;
 
     private int selectedPosition;
     private int lastSelectedPosition;
@@ -72,15 +69,42 @@ public class DotPagerView extends View {
         init();
     }
 
+    @SuppressWarnings("UnnecessaryLocalVariable")
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        int widthMode = MeasureSpec.getMode(widthMeasureSpec);
+        int widthSize = MeasureSpec.getSize(widthMeasureSpec);
+        int heightMode = MeasureSpec.getMode(heightMeasureSpec);
+        int heightSize = MeasureSpec.getSize(heightMeasureSpec);
 
         int dotDiameterPx = radiusPx * 2;
-        int widthPx = (dotDiameterPx * count) + (paddingPx * (count - 1));
-        int heightPx = paddingSidesPx + dotDiameterPx;
+        int desiredHeight = dotDiameterPx;
+        int desiredWidth = 0;
 
-        setMeasuredDimension(widthPx, heightPx);
+        if (count != 0) {
+            desiredWidth = (dotDiameterPx * count) + (paddingPx * (count - 1));
+        }
+
+        int width;
+        int height;
+
+        if (widthMode == MeasureSpec.EXACTLY) {
+            width = widthSize;
+        } else if (widthMode == MeasureSpec.AT_MOST) {
+            width = Math.min(desiredWidth, widthSize);
+        } else {
+            width = desiredWidth;
+        }
+
+        if (heightMode == MeasureSpec.EXACTLY) {
+            height = heightSize;
+        } else if (heightMode == MeasureSpec.AT_MOST) {
+            height = Math.min(desiredHeight, heightSize);
+        } else {
+            height = desiredHeight;
+        }
+
+        setMeasuredDimension(width, height);
     }
 
     @Override
@@ -137,11 +161,15 @@ public class DotPagerView extends View {
             case COLOR_AND_SCALE:
                 startColorAndScaleAnimation();
                 break;
+
+            case SLIDE:
+                break;
         }
     }
 
     private void drawDotView(@NonNull Canvas canvas) {
-        int x = 0;
+        int actualViewWidth = calculateActualViewWidth();
+        int x = (getWidth() - actualViewWidth) / 2;
         int y = getHeight() / 2;
 
         for (int i = 0; i < count; i++) {
@@ -149,6 +177,21 @@ public class DotPagerView extends View {
             drawDot(canvas, i, x, y);
             x += radiusPx + paddingPx;
         }
+    }
+
+    private int calculateActualViewWidth() {
+        int width = 0;
+        int diameter = radiusPx * 2;
+
+        for (int i = 0; i < count; i++) {
+            width += diameter;
+
+            if (i < count - 1) {
+                width += paddingPx;
+            }
+        }
+
+        return width;
     }
 
     private void drawDot(@NonNull Canvas canvas, int position, int x, int y) {
@@ -223,13 +266,6 @@ public class DotPagerView extends View {
     }
 
     private void initDefaultValues() {
-        unselectedColor = Color.parseColor(DEFAULT_UNSELECTED_COLOR);
-        selectedColor = Color.parseColor(DEFAULT_SELECTED_COLOR);
-
-        radiusPx = DensityUtils.dpToPx(getContext(), DEFAULT_RADIUS_DP);
-        paddingPx = DensityUtils.dpToPx(getContext(), DEFAULT_PADDING_DP);
-        paddingSidesPx = DensityUtils.dpToPx(getContext(), SIDES_PADDING_DP);
-
         currColor = selectedColor;
         reverseColor = unselectedColor;
 
@@ -278,5 +314,17 @@ public class DotPagerView extends View {
                 invalidate();
             }
         });
+    }
+
+    private void startSlideAnimation() {
+//        int fromX = getDotXCoordinate(lastSelectedPosition);
+//        int toX = getDotXCoordinate(currColor);
+
+//        DotAnimationUtils.startSlideAnimation(fromX, toX, new DotAnimationUtils.Listener() {
+//            @Override
+//            public void onAnimationUpdate(@NonNull ValueAnimator animation) {
+//
+//            }
+//        });
     }
 }
