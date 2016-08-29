@@ -1,18 +1,15 @@
-package com.rd.dotpagerview.views;
+package com.rd.dotpagerview.view;
 
-import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
+import android.graphics.*;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.rd.dotpagerview.utils.DotAnimationUtils;
+import com.rd.dotpagerview.view.animation.*;
 import com.rd.dotpagerview.utils.DensityUtils;
 
 public class DotPagerView extends View {
@@ -25,22 +22,25 @@ public class DotPagerView extends View {
 
     private int radiusPx = DensityUtils.dpToPx(getContext(), DEFAULT_RADIUS_DP);
     private int paddingPx = DensityUtils.dpToPx(getContext(), DEFAULT_PADDING_DP);
-    private int count = 4;
+    private int count;
 
     //Color
     private int unselectedColor = Color.parseColor(DEFAULT_UNSELECTED_COLOR);
     private int selectedColor = Color.parseColor(DEFAULT_SELECTED_COLOR);
 
-    private int currColor;
-    private int reverseColor;
+    private int frameColor;
+    private int frameColorReverse;
 
     //Scale
-    private int currRadiusPx;
-    private int reverseRadiusPx;
+    private int frameRadiusPx;
+    private int frameRadiusReversePx;
 
     //Slide
-    private int currX;
-    private int reverseX;
+    private int frameLeftX;
+    private int frameToX;
+
+    private int frameRightX;
+    private int frameReverseToX;
 
     private int selectedPosition;
     private int lastSelectedPosition;
@@ -163,35 +163,18 @@ public class DotPagerView extends View {
                 break;
 
             case SLIDE:
+                startSlideAnimation();
                 break;
         }
     }
 
     private void drawDotView(@NonNull Canvas canvas) {
-        int actualViewWidth = calculateActualViewWidth();
-        int x = (getWidth() - actualViewWidth) / 2;
         int y = getHeight() / 2;
 
         for (int i = 0; i < count; i++) {
-            x += radiusPx;
+            int x = getDotXCoordinate(i);
             drawDot(canvas, i, x, y);
-            x += radiusPx + paddingPx;
         }
-    }
-
-    private int calculateActualViewWidth() {
-        int width = 0;
-        int diameter = radiusPx * 2;
-
-        for (int i = 0; i < count; i++) {
-            width += diameter;
-
-            if (i < count - 1) {
-                width += paddingPx;
-            }
-        }
-
-        return width;
     }
 
     private void drawDot(@NonNull Canvas canvas, int position, int x, int y) {
@@ -213,6 +196,10 @@ public class DotPagerView extends View {
                 drawWithScaleAnimation(canvas, position, x, y);
                 break;
 
+            case SLIDE:
+                drawWithSlideAnimation(canvas, position, x, y);
+                break;
+
             case NONE:
                 drawWithNoEffect(canvas, x, y);
                 break;
@@ -223,9 +210,9 @@ public class DotPagerView extends View {
         int color = selectedColor;
 
         if (position == selectedPosition) {
-            color = currColor;
+            color = frameColor;
         } else if (position == lastSelectedPosition) {
-            color = reverseColor;
+            color = frameColorReverse;
         }
 
         paint.setColor(color);
@@ -237,15 +224,46 @@ public class DotPagerView extends View {
         int radius = radiusPx;
 
         if (position == selectedPosition) {
-            color = currColor;
-            radius = currRadiusPx;
+            color = frameColor;
+            radius = frameRadiusPx;
         } else if (position == lastSelectedPosition) {
-            color = reverseColor;
-            radius = reverseRadiusPx;
+            color = frameColorReverse;
+            radius = frameRadiusReversePx;
         }
 
         paint.setColor(color);
         canvas.drawCircle(x, y, radius, paint);
+    }
+
+    private void drawWithSlideAnimation(@NonNull Canvas canvas, int position, int x, int y) {
+        int radius = radiusPx;
+        RectF rect = null;
+
+        if (position == selectedPosition) {
+            int left ;
+            int right;
+            int top = y - radius;
+            int bot = y + radius;
+
+            if (lastSelectedPosition > selectedPosition) {
+                left = frameRightX;
+                right = frameLeftX;
+            } else {
+                left = frameLeftX;
+                right = frameRightX;
+            }
+
+            rect = new RectF(left, top, right, bot);
+
+        }
+
+        paint.setColor(unselectedColor);
+        canvas.drawCircle(x, y, radius, paint);
+
+        if (rect != null) {
+            paint.setColor(selectedColor);
+            canvas.drawRoundRect(rect, radiusPx, radiusPx, paint);
+        }
     }
 
     private void drawWithNoEffect(@NonNull Canvas canvas, int x, int y) {
@@ -253,7 +271,7 @@ public class DotPagerView extends View {
         int radius = radiusPx;
 
         if (isScaleAnimation) {
-            radius /= DotAnimationUtils.SCALE_FACTOR;
+            radius /= ScaleAnimation.SCALE_FACTOR;
         }
 
         paint.setColor(unselectedColor);
@@ -266,11 +284,14 @@ public class DotPagerView extends View {
     }
 
     private void initDefaultValues() {
-        currColor = selectedColor;
-        reverseColor = unselectedColor;
+        frameColor = selectedColor;
+        frameColorReverse = unselectedColor;
 
-        currRadiusPx = radiusPx;
-        reverseRadiusPx = radiusPx;
+        frameRadiusPx = radiusPx;
+        frameRadiusReversePx = radiusPx;
+
+        frameLeftX = 0;
+        frameRightX = 0;
     }
 
     private void initPaint() {
@@ -279,52 +300,112 @@ public class DotPagerView extends View {
         paint.setAntiAlias(true);
     }
 
-    @SuppressWarnings("AccessStaticViaInstance")
     private void startColorAnimation() {
-        DotAnimationUtils.startColorAnimation(selectedColor, unselectedColor, new DotAnimationUtils.Listener() {
+        ColorAnimation.start(selectedColor, unselectedColor, new ColorAnimation.Listener() {
             @Override
-            public void onAnimationUpdate(@NonNull ValueAnimator animation) {
-                currColor = (int) animation.getAnimatedValue(DotAnimationUtils.ANIMATION_COLOR);
-                reverseColor = (int) animation.getAnimatedValue(DotAnimationUtils.ANIMATION_COLOR_REVERSE);
+            public void onColorAnimationUpdated(int color, int colorReverse) {
+                frameColor = color;
+                frameColorReverse = colorReverse;
                 invalidate();
             }
         });
     }
 
     private void startScaleAnimation() {
-        DotAnimationUtils.startScaleAnimation(radiusPx, new DotAnimationUtils.Listener() {
+        ScaleAnimation.start(radiusPx, new ScaleAnimation.Listener() {
             @Override
-            public void onAnimationUpdate(@NonNull ValueAnimator animation) {
-                currRadiusPx = (Integer) animation.getAnimatedValue(DotAnimationUtils.ANIMATION_SCALE);
-                reverseRadiusPx = (Integer) animation.getAnimatedValue(DotAnimationUtils.ANIMATION_SCALE_REVERSE);
+            public void onScaleAnimationUpdated(int radius, int radiusReverse) {
+                frameRadiusPx = radius;
+                frameRadiusReversePx = radiusReverse;
                 invalidate();
             }
         });
     }
 
     private void startColorAndScaleAnimation() {
-        DotAnimationUtils.startColorAndScaleAnimation(selectedColor, unselectedColor, radiusPx, new DotAnimationUtils.Listener() {
+        ColorAndScaleAnimation.start(selectedColor, unselectedColor, radiusPx, new ColorAndScaleAnimation.Listener() {
             @Override
-            public void onAnimationUpdate(@NonNull ValueAnimator animation) {
-                currColor = (Integer) animation.getAnimatedValue(DotAnimationUtils.ANIMATION_COLOR);
-                reverseColor = (Integer) animation.getAnimatedValue(DotAnimationUtils.ANIMATION_COLOR_REVERSE);
+            public void onScaleAnimationUpdated(int color, int colorReverse, int radius, int radiusReverse) {
+                frameColor = color;
+                frameColorReverse = colorReverse;
 
-                currRadiusPx = (Integer) animation.getAnimatedValue(DotAnimationUtils.ANIMATION_SCALE);
-                reverseRadiusPx = (Integer) animation.getAnimatedValue(DotAnimationUtils.ANIMATION_SCALE_REVERSE);
+                frameRadiusPx = radius;
+                frameRadiusReversePx = radiusReverse;
+
                 invalidate();
             }
         });
     }
 
     private void startSlideAnimation() {
-//        int fromX = getDotXCoordinate(lastSelectedPosition);
-//        int toX = getDotXCoordinate(currColor);
+        int fromX;
+        int toX;
 
-//        DotAnimationUtils.startSlideAnimation(fromX, toX, new DotAnimationUtils.Listener() {
-//            @Override
-//            public void onAnimationUpdate(@NonNull ValueAnimator animation) {
-//
-//            }
-//        });
+        int reverseFromX;
+        int reverseToX;
+
+        int xSelected = getDotXCoordinate(selectedPosition);
+        int xLastSelected = getDotXCoordinate(lastSelectedPosition);
+
+        frameLeftX = 0;
+        frameRightX = 0;
+
+        if (selectedPosition > lastSelectedPosition) {
+            fromX = xLastSelected - radiusPx;
+            toX = xSelected + radiusPx;
+
+            reverseFromX = fromX;
+            reverseToX = xSelected - radiusPx;
+
+        } else if (selectedPosition < lastSelectedPosition) {
+            fromX = xLastSelected + radiusPx;
+            toX = xSelected - radiusPx;
+
+            reverseFromX = fromX;
+            reverseToX = xSelected + radiusPx;
+
+        } else {
+            return;
+        }
+
+        SlideAnimation.startSlideAnimation(fromX, toX, reverseFromX, reverseToX, new SlideAnimation.Listener() {
+            @Override
+            public void onSlideAnimationUpdated(int leftX, int rightX) {
+                frameLeftX = leftX;
+                frameRightX = rightX;
+                invalidate();
+            }
+        });
+    }
+
+    private int getDotXCoordinate(int position) {
+        int actualViewWidth = calculateActualViewWidth();
+        int x = (getWidth() - actualViewWidth) / 2;
+
+        for (int i = 0; i < count; i++) {
+            x += radiusPx;
+            if (position == i) {
+                return x;
+            }
+
+            x += radiusPx + paddingPx;
+        }
+
+        return x;
+    }
+
+    private int calculateActualViewWidth() {
+        int width = 0;
+        int diameter = radiusPx * 2;
+
+        for (int i = 0; i < count; i++) {
+            width += diameter;
+
+            if (i < count - 1) {
+                width += paddingPx;
+            }
+        }
+
+        return width;
     }
 }

@@ -5,8 +5,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.rd.dotpagerview.R;
-import com.rd.dotpagerview.views.AnimationType;
-import com.rd.dotpagerview.views.DotPagerView;
+import com.rd.dotpagerview.view.animation.AnimationType;
+import com.rd.dotpagerview.view.DotPagerView;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -28,7 +28,7 @@ public class HomeActivity extends AppCompatActivity {
         HomeAdapter adapter = new HomeAdapter(getSupportFragmentManager());
         pager.setAdapter(adapter);
         dotPagerView.setCount(adapter.getCount());
-        dotPagerView.setAnimationType(AnimationType.COLOR_AND_SCALE);
+        dotPagerView.setAnimationType(AnimationType.SLIDE);
         dotPagerView.setPadding(8);
 
         pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
