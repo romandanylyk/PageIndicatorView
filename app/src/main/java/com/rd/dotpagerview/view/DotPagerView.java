@@ -172,7 +172,7 @@ public class DotPagerView extends View {
         int y = getHeight() / 2;
 
         for (int i = 0; i < count; i++) {
-            int x = getDotXCoordinate(i);
+            int x = getXCoordinate(i);
             drawDot(canvas, i, x, y);
         }
     }
@@ -240,7 +240,7 @@ public class DotPagerView extends View {
         RectF rect = null;
 
         if (position == selectedPosition) {
-            int left ;
+            int left;
             int right;
             int top = y - radius;
             int bot = y + radius;
@@ -290,8 +290,15 @@ public class DotPagerView extends View {
         frameRadiusPx = radiusPx;
         frameRadiusReversePx = radiusPx;
 
-        frameLeftX = 0;
-        frameRightX = 0;
+        int xCoordinate = getXCoordinate(selectedPosition);
+        if (xCoordinate - radiusPx >= 0) {
+            frameLeftX = xCoordinate - radiusPx;
+            frameRightX = xCoordinate + radiusPx;
+
+        } else {
+            frameLeftX = xCoordinate;
+            frameRightX = xCoordinate + (radiusPx * 2);
+        }
     }
 
     private void initPaint() {
@@ -344,31 +351,29 @@ public class DotPagerView extends View {
         int reverseFromX;
         int reverseToX;
 
-        int xSelected = getDotXCoordinate(selectedPosition);
-        int xLastSelected = getDotXCoordinate(lastSelectedPosition);
-
-        frameLeftX = 0;
-        frameRightX = 0;
+        int xSelected = getXCoordinate(selectedPosition);
+        int xLastSelected = getXCoordinate(lastSelectedPosition);
 
         if (selectedPosition > lastSelectedPosition) {
-            fromX = xLastSelected - radiusPx;
+            fromX = xLastSelected + radiusPx;
             toX = xSelected + radiusPx;
 
-            reverseFromX = fromX;
+            reverseFromX = xLastSelected - radiusPx;
             reverseToX = xSelected - radiusPx;
 
         } else if (selectedPosition < lastSelectedPosition) {
-            fromX = xLastSelected + radiusPx;
+            fromX = xLastSelected - radiusPx;
             toX = xSelected - radiusPx;
 
-            reverseFromX = fromX;
+            reverseFromX = xLastSelected + radiusPx;
             reverseToX = xSelected + radiusPx;
 
         } else {
             return;
         }
 
-        SlideAnimation.startSlideAnimation(fromX, toX, reverseFromX, reverseToX, new SlideAnimation.Listener() {
+        SlideAnimation.end();
+        SlideAnimation.start(fromX, toX, reverseFromX, reverseToX, new SlideAnimation.Listener() {
             @Override
             public void onSlideAnimationUpdated(int leftX, int rightX) {
                 frameLeftX = leftX;
@@ -378,7 +383,7 @@ public class DotPagerView extends View {
         });
     }
 
-    private int getDotXCoordinate(int position) {
+    private int getXCoordinate(int position) {
         int actualViewWidth = calculateActualViewWidth();
         int x = (getWidth() - actualViewWidth) / 2;
 
