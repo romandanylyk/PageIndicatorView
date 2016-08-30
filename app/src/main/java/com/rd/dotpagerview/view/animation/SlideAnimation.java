@@ -20,6 +20,7 @@ public class SlideAnimation {
     public static void start(
             int fromX, int toX,
             final int reverseFromX, int reverseToX,
+            final boolean isRightSide,
             @NonNull final Listener listener) {
 
         leftX = reverseFromX;
@@ -28,7 +29,14 @@ public class SlideAnimation {
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                rightX = (int) animation.getAnimatedValue();
+                int value = (int) animation.getAnimatedValue();
+
+                if (isRightSide) {
+                    rightX = value;
+                } else {
+                    leftX = value;
+                }
+
                 listener.onSlideAnimationUpdated(leftX, rightX);
             }
         });
@@ -37,7 +45,14 @@ public class SlideAnimation {
         reverseAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                leftX = (int) animation.getAnimatedValue();
+                int value = (int) animation.getAnimatedValue();
+
+                if (isRightSide) {
+                    leftX = value;
+                } else {
+                    rightX = value;
+                }
+
                 listener.onSlideAnimationUpdated(leftX, rightX);
             }
         });

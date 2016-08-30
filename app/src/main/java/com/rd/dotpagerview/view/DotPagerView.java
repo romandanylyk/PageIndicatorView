@@ -7,6 +7,7 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 import com.rd.dotpagerview.view.animation.*;
@@ -240,21 +241,12 @@ public class DotPagerView extends View {
         RectF rect = null;
 
         if (position == selectedPosition) {
-            int left;
-            int right;
+            int left = frameLeftX;
+            int right = frameRightX;
             int top = y - radius;
             int bot = y + radius;
 
-            if (lastSelectedPosition > selectedPosition) {
-                left = frameRightX;
-                right = frameLeftX;
-            } else {
-                left = frameLeftX;
-                right = frameRightX;
-            }
-
             rect = new RectF(left, top, right, bot);
-
         }
 
         paint.setColor(unselectedColor);
@@ -353,6 +345,7 @@ public class DotPagerView extends View {
 
         int xSelected = getXCoordinate(selectedPosition);
         int xLastSelected = getXCoordinate(lastSelectedPosition);
+        boolean isRightSide = selectedPosition > lastSelectedPosition;
 
         if (selectedPosition > lastSelectedPosition) {
             fromX = xLastSelected + radiusPx;
@@ -373,7 +366,7 @@ public class DotPagerView extends View {
         }
 
         SlideAnimation.end();
-        SlideAnimation.start(fromX, toX, reverseFromX, reverseToX, new SlideAnimation.Listener() {
+        SlideAnimation.start(fromX, toX, reverseFromX, reverseToX, isRightSide, new SlideAnimation.Listener() {
             @Override
             public void onSlideAnimationUpdated(int leftX, int rightX) {
                 frameLeftX = leftX;
