@@ -7,7 +7,6 @@ public class ValueAnimation {
 
     private ColorAnimation colorAnimation;
     private ScaleAnimation scaleAnimation;
-    private ColorAndScaleAnimation colorAndScaleAnimation;
     private SlideAnimation slideAnimation;
 
     private UpdateListener updateListener;
@@ -16,7 +15,7 @@ public class ValueAnimation {
 
         void onColorAnimationUpdated(int color, int colorReverse);
 
-        void onScaleAnimationUpdated(int radiusPx, int radiusReverse);
+        void onScaleAnimationUpdated(int color, int colorReverse, int radius, int radiusReverse);
     }
 
     public ValueAnimation(@Nullable UpdateListener listener) {
@@ -39,15 +38,6 @@ public class ValueAnimation {
         }
 
         return scaleAnimation;
-    }
-
-    @NonNull
-    public ColorAndScaleAnimation colorAndScale() {
-        if (colorAndScaleAnimation == null) {
-            colorAndScaleAnimation = new ColorAndScaleAnimation();
-        }
-
-        return colorAndScaleAnimation;
     }
 
     @NonNull

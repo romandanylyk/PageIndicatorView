@@ -31,7 +31,7 @@ public class HomeActivity extends AppCompatActivity {
 
         dotPagerView.setPadding(8);
         dotPagerView.setCount(adapter.getCount());
-        dotPagerView.setAnimationType(AnimationType.COLOR);
+        dotPagerView.setAnimationType(AnimationType.SCALE);
         dotPagerView.setInteractiveAnimation(true);
         dotPagerView.setViewPager(pager);
     }

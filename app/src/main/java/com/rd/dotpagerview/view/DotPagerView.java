@@ -166,10 +166,6 @@ public class DotPagerView extends View {
                 startScaleAnimation();
                 break;
 
-            case COLOR_AND_SCALE:
-                startColorAndScaleAnimation();
-                break;
-
             case SLIDE:
                 startSlideAnimation();
                 break;
@@ -208,7 +204,7 @@ public class DotPagerView extends View {
                 break;
 
             case SCALE:
-                animation.scale().with(radiusPx).progress(progress);
+                animation.scale().with(selectedColor, unselectedColor, radiusPx).progress(progress);
                 break;
         }
     }
@@ -246,7 +242,10 @@ public class DotPagerView extends View {
     }
 
     private void drawDot(@NonNull Canvas canvas, int position, int x, int y) {
-        boolean isAnimatedItem = position == selectingPosition || position == selectedPosition || position == lastSelectedPosition;
+        boolean isSelectedItem = !isInteractiveAnimation && (position == selectedPosition || position == lastSelectedPosition);
+        boolean isSelectingItem = isInteractiveAnimation && (position == selectingPosition || position == selectedPosition);
+        boolean isAnimatedItem = isSelectedItem | isSelectingItem;
+
         if (isAnimatedItem) {
             drawWithAnimationEffect(canvas, position, x, y);
         } else {
@@ -261,7 +260,6 @@ public class DotPagerView extends View {
                 break;
 
             case SCALE:
-            case COLOR_AND_SCALE:
                 drawWithScaleAnimation(canvas, position, x, y);
                 break;
 
@@ -298,21 +296,27 @@ public class DotPagerView extends View {
     }
 
     private void drawWithScaleAnimation(@NonNull Canvas canvas, int position, int x, int y) {
-        int color = selectedColor;
+        int color = unselectedColor;
         int radius = radiusPx;
 
         if (isInteractiveAnimation) {
             if (position == selectingPosition) {
                 radius = frameRadiusPx;
+                color = frameColor;
+
             } else if (position == selectedPosition) {
                 radius = frameRadiusReversePx;
+                color = frameColorReverse;
             }
 
         } else {
             if (position == selectedPosition) {
                 radius = frameRadiusPx;
+                color = frameColor;
+
             } else if (position == lastSelectedPosition) {
                 radius = frameRadiusReversePx;
+                color = frameColorReverse;
             }
         }
 
@@ -343,10 +347,8 @@ public class DotPagerView extends View {
     }
 
     private void drawWithNoEffect(@NonNull Canvas canvas, int x, int y) {
-        boolean isScaleAnimation = animationType == AnimationType.SCALE || animationType == AnimationType.COLOR_AND_SCALE;
         int radius = radiusPx;
-
-        if (isScaleAnimation) {
+        if (animationType == AnimationType.SCALE) {
             radius /= ScaleAnimation.SCALE_FACTOR;
         }
 
@@ -388,8 +390,11 @@ public class DotPagerView extends View {
             }
 
             @Override
-            public void onScaleAnimationUpdated(int radiusPx, int radiusReverse) {
-                frameRadiusPx = radiusPx;
+            public void onScaleAnimationUpdated(int color, int colorReverse, int radius, int radiusReverse) {
+                frameColor = color;
+                frameColorReverse = colorReverse;
+
+                frameRadiusPx = radius;
                 frameRadiusReversePx = radiusReverse;
                 invalidate();
             }
@@ -407,22 +412,7 @@ public class DotPagerView extends View {
     }
 
     private void startScaleAnimation() {
-        animation.scale().with(radiusPx).start();
-    }
-
-    private void startColorAndScaleAnimation() {
-        ColorAndScaleAnimation.start(selectedColor, unselectedColor, radiusPx, new ColorAndScaleAnimation.Listener() {
-            @Override
-            public void onScaleAnimationUpdated(int color, int colorReverse, int radius, int radiusReverse) {
-                frameColor = color;
-                frameColorReverse = colorReverse;
-
-                frameRadiusPx = radius;
-                frameRadiusReversePx = radiusReverse;
-
-                invalidate();
-            }
-        });
+        animation.scale().with(selectedColor, unselectedColor, radiusPx).start();
     }
 
     private void startSlideAnimation() {
