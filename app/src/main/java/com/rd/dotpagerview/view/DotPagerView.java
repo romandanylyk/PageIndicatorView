@@ -1,11 +1,13 @@
 package com.rd.dotpagerview.view;
 
+import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.*;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -38,16 +40,17 @@ public class DotPagerView extends View {
 
     //Slide
     private int frameLeftX;
-    private int frameToX;
-
     private int frameRightX;
-    private int frameReverseToX;
 
     private int selectedPosition;
+    private int selectingPosition;
     private int lastSelectedPosition;
+
+    private boolean isInteractiveAnimation;
 
     private Paint paint;
     private AnimationType animationType = AnimationType.NONE;
+    private ValueAnimation animation;
 
     public DotPagerView(Context context) {
         super(context);
@@ -147,6 +150,10 @@ public class DotPagerView extends View {
     }
 
     public void setSelection(int position) {
+        if (isInteractiveAnimation) {
+            return;
+        }
+
         lastSelectedPosition = selectedPosition;
         selectedPosition = position;
 
@@ -169,6 +176,66 @@ public class DotPagerView extends View {
         }
     }
 
+    public void setInteractiveAnimation(boolean isInteractive) {
+        isInteractiveAnimation = isInteractive;
+    }
+
+    public void setProgress(int position, float offset) {
+        if (!isInteractiveAnimation) {
+            return;
+        }
+
+        Log.e("TEST", "POSITION: " + position + " OFFSET: " + offset);
+        if (position == selectingPosition) {
+            lastSelectedPosition = selectedPosition;
+            selectedPosition = position;
+        }
+
+        boolean isRightSlide = selectedPosition == position;
+        float progress;
+
+        if (isRightSlide) {
+            progress = offset;
+            selectingPosition = position + 1;
+        } else {
+            progress = 1 - offset;
+            selectingPosition = position;
+        }
+
+        switch (animationType) {
+            case COLOR:
+                animation.color().with(selectedColor, unselectedColor).progress(progress);
+                break;
+
+            case SCALE:
+                animation.scale().with(radiusPx).progress(progress);
+                break;
+        }
+    }
+
+    public void setViewPager(@Nullable ViewPager viewPager) {
+        if (viewPager == null) {
+            return;
+        }
+
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                setProgress(position, positionOffset);
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                setSelection(position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+    }
+
     private void drawDotView(@NonNull Canvas canvas) {
         int y = getHeight() / 2;
 
@@ -179,7 +246,8 @@ public class DotPagerView extends View {
     }
 
     private void drawDot(@NonNull Canvas canvas, int position, int x, int y) {
-        if (position == selectedPosition || position == lastSelectedPosition) {
+        boolean isAnimatedItem = position == selectingPosition || position == selectedPosition || position == lastSelectedPosition;
+        if (isAnimatedItem) {
             drawWithAnimationEffect(canvas, position, x, y);
         } else {
             drawWithNoEffect(canvas, x, y);
@@ -208,12 +276,21 @@ public class DotPagerView extends View {
     }
 
     private void drawWithColorAnimation(@NonNull Canvas canvas, int position, int x, int y) {
-        int color = selectedColor;
+        int color = unselectedColor;
 
-        if (position == selectedPosition) {
-            color = frameColor;
-        } else if (position == lastSelectedPosition) {
-            color = frameColorReverse;
+        if (isInteractiveAnimation) {
+            if (position == selectingPosition) {
+                color = frameColor;
+            } else if (position == selectedPosition) {
+                color = frameColorReverse;
+            }
+
+        } else {
+            if (position == selectedPosition) {
+                color = frameColor;
+            } else if (position == lastSelectedPosition) {
+                color = frameColorReverse;
+            }
         }
 
         paint.setColor(color);
@@ -224,12 +301,19 @@ public class DotPagerView extends View {
         int color = selectedColor;
         int radius = radiusPx;
 
-        if (position == selectedPosition) {
-            color = frameColor;
-            radius = frameRadiusPx;
-        } else if (position == lastSelectedPosition) {
-            color = frameColorReverse;
-            radius = frameRadiusReversePx;
+        if (isInteractiveAnimation) {
+            if (position == selectingPosition) {
+                radius = frameRadiusPx;
+            } else if (position == selectedPosition) {
+                radius = frameRadiusReversePx;
+            }
+
+        } else {
+            if (position == selectedPosition) {
+                radius = frameRadiusPx;
+            } else if (position == lastSelectedPosition) {
+                radius = frameRadiusReversePx;
+            }
         }
 
         paint.setColor(color);
@@ -272,6 +356,7 @@ public class DotPagerView extends View {
 
     private void init() {
         initDefaultValues();
+        initAnimation();
         initPaint();
     }
 
@@ -293,6 +378,24 @@ public class DotPagerView extends View {
         }
     }
 
+    private void initAnimation() {
+        animation = new ValueAnimation(new ValueAnimation.UpdateListener() {
+            @Override
+            public void onColorAnimationUpdated(int color, int colorReverse) {
+                frameColor = color;
+                frameColorReverse = colorReverse;
+                invalidate();
+            }
+
+            @Override
+            public void onScaleAnimationUpdated(int radiusPx, int radiusReverse) {
+                frameRadiusPx = radiusPx;
+                frameRadiusReversePx = radiusReverse;
+                invalidate();
+            }
+        });
+    }
+
     private void initPaint() {
         paint = new Paint();
         paint.setStyle(Paint.Style.FILL);
@@ -300,25 +403,11 @@ public class DotPagerView extends View {
     }
 
     private void startColorAnimation() {
-        ColorAnimation.start(selectedColor, unselectedColor, new ColorAnimation.Listener() {
-            @Override
-            public void onColorAnimationUpdated(int color, int colorReverse) {
-                frameColor = color;
-                frameColorReverse = colorReverse;
-                invalidate();
-            }
-        });
+        animation.color().with(selectedColor, unselectedColor).start();
     }
 
     private void startScaleAnimation() {
-        ScaleAnimation.start(radiusPx, new ScaleAnimation.Listener() {
-            @Override
-            public void onScaleAnimationUpdated(int radius, int radiusReverse) {
-                frameRadiusPx = radius;
-                frameRadiusReversePx = radiusReverse;
-                invalidate();
-            }
-        });
+        animation.scale().with(radiusPx).start();
     }
 
     private void startColorAndScaleAnimation() {
@@ -406,4 +495,5 @@ public class DotPagerView extends View {
 
         return width;
     }
+
 }

@@ -4,6 +4,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import android.util.Log;
 import com.rd.dotpagerview.R;
 import com.rd.dotpagerview.view.animation.AnimationType;
 import com.rd.dotpagerview.view.DotPagerView;
@@ -27,25 +28,11 @@ public class HomeActivity extends AppCompatActivity {
 
         HomeAdapter adapter = new HomeAdapter(getSupportFragmentManager());
         pager.setAdapter(adapter);
-        dotPagerView.setCount(adapter.getCount());
-        dotPagerView.setAnimationType(AnimationType.SLIDE);
+
         dotPagerView.setPadding(8);
-
-        pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                dotPagerView.setSelection(position);
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
+        dotPagerView.setCount(adapter.getCount());
+        dotPagerView.setAnimationType(AnimationType.COLOR);
+        dotPagerView.setInteractiveAnimation(true);
+        dotPagerView.setViewPager(pager);
     }
 }

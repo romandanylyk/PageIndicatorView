@@ -1,5 +1,6 @@
 package com.rd.dotpagerview.view.animation;
 
+import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.support.annotation.NonNull;
@@ -67,6 +68,22 @@ public class SlideAnimation {
     public static void end() {
         if (animatorSet != null) {
             animatorSet.end();
+        }
+    }
+
+    public static void setProgress(float progress) {
+        if (animatorSet == null) {
+            return;
+        }
+
+        float fullProgress = progress * 2;
+
+        ValueAnimator animator = (ValueAnimator) animatorSet.getChildAnimations().get(0);
+        animator.setCurrentFraction(fullProgress);
+
+        if (fullProgress > 1) {
+            ValueAnimator reverseAnimator = (ValueAnimator) animatorSet.getChildAnimations().get(1);
+            reverseAnimator.setCurrentFraction(progress);
         }
     }
 }
