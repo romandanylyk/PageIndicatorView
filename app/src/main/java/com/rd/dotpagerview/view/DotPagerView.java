@@ -398,6 +398,15 @@ public class DotPagerView extends View {
                 frameRadiusReversePx = radiusReverse;
                 invalidate();
             }
+
+            @Override
+            public void onSlideAnimationUpdated(int leftX, int rightX) {
+                frameLeftX = leftX;
+                frameRightX = rightX;
+
+//                Log.e("TEST", "LEFT X:" + leftX + " RIGHT X:" + rightX);
+                invalidate();
+            }
         });
     }
 
@@ -444,15 +453,8 @@ public class DotPagerView extends View {
             return;
         }
 
-        SlideAnimation.end();
-        SlideAnimation.start(fromX, toX, reverseFromX, reverseToX, isRightSide, new SlideAnimation.Listener() {
-            @Override
-            public void onSlideAnimationUpdated(int leftX, int rightX) {
-                frameLeftX = leftX;
-                frameRightX = rightX;
-                invalidate();
-            }
-        });
+        animation.slide().end();
+        animation.slide().with(fromX, toX, reverseFromX, reverseToX, isRightSide).start();
     }
 
     private int getXCoordinate(int position) {

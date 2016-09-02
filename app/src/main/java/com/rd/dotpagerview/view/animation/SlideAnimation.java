@@ -1,89 +1,85 @@
 package com.rd.dotpagerview.view.animation;
 
-import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
-import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.animation.DecelerateInterpolator;
 
 public class SlideAnimation {
 
     private static final int ANIMATION_DURATION = 250;
+    private int leftX;
+    private int rightX;
+    private boolean isRightSide;
 
-    private static AnimatorSet animatorSet;
-    private static int leftX;
-    private static int rightX;
+    private ValueAnimation.UpdateListener listener;
+    private AnimatorSet animatorSet;
 
-    public interface Listener {
-        void onSlideAnimationUpdated(int leftX, int rightX);
+    public SlideAnimation(@Nullable ValueAnimation.UpdateListener listener) {
+        this.listener = listener;
+        animatorSet = createAnimatorSet();
     }
 
-    public static void start(
-            int fromX, int toX,
-            final int reverseFromX, int reverseToX,
-            final boolean isRightSide,
-            @NonNull final Listener listener) {
+    public SlideAnimation with(int fromX, int toX, final int reverseFromX, int reverseToX, final boolean isRight) {
+        if (animatorSet != null) {
+            leftX = reverseFromX;
+            isRightSide = isRight;
 
-        leftX = reverseFromX;
+            ValueAnimator animator = createValueAnimator(fromX, toX, false);
+            ValueAnimator reverseAnimator = createValueAnimator(reverseFromX, reverseToX, true);
 
+            animatorSet.play(animator).before(reverseAnimator);
+        }
+        return this;
+    }
+
+    public void start() {
+        if (animatorSet != null) {
+            animatorSet.start();
+        }
+    }
+
+    public void end() {
+        if (animatorSet != null) {
+            animatorSet.end();
+        }
+    }
+
+    private AnimatorSet createAnimatorSet() {
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.setDuration(ANIMATION_DURATION);
+        animatorSet.setInterpolator(new DecelerateInterpolator());
+
+        return animatorSet;
+    }
+
+    private ValueAnimator createValueAnimator(int fromX, int toX, final boolean isReverseAnimator) {
         ValueAnimator animator = ValueAnimator.ofInt(fromX, toX);
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 int value = (int) animation.getAnimatedValue();
 
-                if (isRightSide) {
-                    rightX = value;
+                if (!isReverseAnimator) {
+                    if (isRightSide) {
+                        rightX = value;
+                    } else {
+                        leftX = value;
+                    }
+
                 } else {
-                    leftX = value;
+                    if (isRightSide) {
+                        leftX = value;
+                    } else {
+                        rightX = value;
+                    }
                 }
 
                 listener.onSlideAnimationUpdated(leftX, rightX);
             }
         });
 
-        ValueAnimator reverseAnimator = ValueAnimator.ofInt(reverseFromX, reverseToX);
-        reverseAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                int value = (int) animation.getAnimatedValue();
-
-                if (isRightSide) {
-                    leftX = value;
-                } else {
-                    rightX = value;
-                }
-
-                listener.onSlideAnimationUpdated(leftX, rightX);
-            }
-        });
-
-        animatorSet = new AnimatorSet();
-        animatorSet.setDuration(ANIMATION_DURATION);
-        animatorSet.setInterpolator(new DecelerateInterpolator());
-        animatorSet.play(animator).before(reverseAnimator);
-        animatorSet.start();
-    }
-
-    public static void end() {
-        if (animatorSet != null) {
-            animatorSet.end();
-        }
-    }
-
-    public static void setProgress(float progress) {
-        if (animatorSet == null) {
-            return;
-        }
-
-        float fullProgress = progress * 2;
-
-        ValueAnimator animator = (ValueAnimator) animatorSet.getChildAnimations().get(0);
-        animator.setCurrentFraction(fullProgress);
-
-        if (fullProgress > 1) {
-            ValueAnimator reverseAnimator = (ValueAnimator) animatorSet.getChildAnimations().get(1);
-            reverseAnimator.setCurrentFraction(progress);
-        }
+        return animator;
     }
 }

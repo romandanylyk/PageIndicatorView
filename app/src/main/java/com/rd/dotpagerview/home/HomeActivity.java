@@ -11,9 +11,6 @@ import com.rd.dotpagerview.view.DotPagerView;
 
 public class HomeActivity extends AppCompatActivity {
 
-    private ViewPager pager;
-    private DotPagerView dotPagerView;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,16 +20,16 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void initViews() {
-        dotPagerView = (DotPagerView) findViewById(R.id.dotPagerView);
-        pager = (ViewPager) findViewById(R.id.viewPager);
+        DotPagerView dotPagerView = (DotPagerView) findViewById(R.id.dotPagerView);
+        ViewPager pager = (ViewPager) findViewById(R.id.viewPager);
 
         HomeAdapter adapter = new HomeAdapter(getSupportFragmentManager());
         pager.setAdapter(adapter);
 
         dotPagerView.setPadding(8);
         dotPagerView.setCount(adapter.getCount());
-        dotPagerView.setAnimationType(AnimationType.SCALE);
-        dotPagerView.setInteractiveAnimation(true);
+        dotPagerView.setAnimationType(AnimationType.SLIDE);
+        dotPagerView.setInteractiveAnimation(false);
         dotPagerView.setViewPager(pager);
     }
 }
