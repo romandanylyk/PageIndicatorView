@@ -1,6 +1,5 @@
 package com.rd.dotpagerview.view;
 
-import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.*;
@@ -172,6 +171,10 @@ public class DotPagerView extends View {
         }
     }
 
+    public int getSelection() {
+        return selectedPosition;
+    }
+
     public void setInteractiveAnimation(boolean isInteractive) {
         isInteractiveAnimation = isInteractive;
     }
@@ -181,7 +184,6 @@ public class DotPagerView extends View {
             return;
         }
 
-//        Log.e("TEST", "POSITION: " + position + " OFFSET: " + offset);
         if (position == selectingPosition) {
             lastSelectedPosition = selectedPosition;
             selectedPosition = position;
@@ -198,6 +200,11 @@ public class DotPagerView extends View {
             selectingPosition = position;
         }
 
+        if (selectingPosition >= count) {
+            selectingPosition = count - 1;
+            return;
+        }
+
         switch (animationType) {
             case COLOR:
                 animation.color().with(unselectedColor, selectedColor).progress(progress);
@@ -208,6 +215,11 @@ public class DotPagerView extends View {
                 break;
 
             case SLIDE:
+                int fromX = getXCoordinate(selectedPosition);
+                int toX = getXCoordinate(selectingPosition);
+                boolean isRightSide = selectingPosition > selectedPosition;
+
+                animation.slide().with(fromX, toX, radiusPx, isRightSide).progress(progress);
                 break;
         }
     }
@@ -331,12 +343,15 @@ public class DotPagerView extends View {
         int radius = radiusPx;
         RectF rect = null;
 
-        if (position == selectedPosition) {
-            int left = frameLeftX;
-            int right = frameRightX;
-            int top = y - radius;
-            int bot = y + radius;
+        int left = frameLeftX;
+        int right = frameRightX;
+        int top = y - radius;
+        int bot = y + radius;
 
+        if (isInteractiveAnimation && position == selectingPosition) {
+            rect = new RectF(left, top, right, bot);
+
+        } else if (!isInteractiveAnimation && position == selectedPosition) {
             rect = new RectF(left, top, right, bot);
         }
 
@@ -406,8 +421,6 @@ public class DotPagerView extends View {
             public void onSlideAnimationUpdated(int leftX, int rightX) {
                 frameLeftX = leftX;
                 frameRightX = rightX;
-
-//                Log.e("TEST", "LEFT X:" + leftX + " RIGHT X:" + rightX);
                 invalidate();
             }
         });
@@ -439,6 +452,10 @@ public class DotPagerView extends View {
     private int getXCoordinate(int position) {
         int actualViewWidth = calculateActualViewWidth();
         int x = (getWidth() - actualViewWidth) / 2;
+
+        if (x < 0) {
+            x = 0;
+        }
 
         for (int i = 0; i < count; i++) {
             x += radiusPx;

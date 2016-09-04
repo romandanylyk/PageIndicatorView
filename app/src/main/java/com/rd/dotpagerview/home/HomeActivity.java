@@ -29,7 +29,7 @@ public class HomeActivity extends AppCompatActivity {
         dotPagerView.setPadding(8);
         dotPagerView.setCount(adapter.getCount());
         dotPagerView.setAnimationType(AnimationType.SLIDE);
-        dotPagerView.setInteractiveAnimation(false);
+        dotPagerView.setInteractiveAnimation(true);
         dotPagerView.setViewPager(pager);
     }
 }

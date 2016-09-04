@@ -5,6 +5,7 @@ import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.animation.DecelerateInterpolator;
 
 public class SlideAnimation {
@@ -29,6 +30,7 @@ public class SlideAnimation {
 
     public SlideAnimation with(int fromValue, int toValue, int radius, boolean isRightSide) {
         if (animatorSet != null && hasChanges(fromValue, toValue, radius, isRightSide)) {
+            animatorSet = createAnimatorSet();
 
             this.fromValue = fromValue;
             this.toValue = toValue;
@@ -39,8 +41,7 @@ public class SlideAnimation {
             ValueAnimator animator = createValueAnimator(values.fromX, values.toX, false);
             ValueAnimator reverseAnimator = createValueAnimator(values.reverseFromX, values.reverseToX, true);
 
-            animatorSet.getChildAnimations().clear();
-            animatorSet.play(animator).before(reverseAnimator);
+            animatorSet.playSequentially(animator, reverseAnimator);
         }
         return this;
     }
@@ -59,24 +60,29 @@ public class SlideAnimation {
 
     public void progress(float progress) {
         if (animatorSet != null) {
-            long playTime = (long) (progress * (ANIMATION_DURATION * animatorSet.getChildAnimations().size()));
+            long fullDuration = ANIMATION_DURATION * animatorSet.getChildAnimations().size();
+            long playTimeLeft = (long) (progress * fullDuration);
 
             for (Animator animator : animatorSet.getChildAnimations()) {
                 ValueAnimator valueAnimator = (ValueAnimator) animator;
 
-                if (playTime > valueAnimator.getDuration()) {
-                    valueAnimator.setCurrentPlayTime(valueAnimator.getDuration());
-                } else {
-                    valueAnimator.setCurrentPlayTime(playTime);
-                    break;
+                if (playTimeLeft < 0) {
+                    playTimeLeft = 0;
                 }
+
+                long currPlayTime = playTimeLeft;
+                if (currPlayTime >= valueAnimator.getDuration()) {
+                    currPlayTime = valueAnimator.getDuration();
+                }
+
+                valueAnimator.setCurrentPlayTime(currPlayTime);
+                playTimeLeft -= currPlayTime;
             }
         }
     }
 
     private AnimatorSet createAnimatorSet() {
         AnimatorSet animatorSet = new AnimatorSet();
-        animatorSet.setDuration(ANIMATION_DURATION);
         animatorSet.setInterpolator(new DecelerateInterpolator());
 
         return animatorSet;
@@ -84,6 +90,7 @@ public class SlideAnimation {
 
     private ValueAnimator createValueAnimator(int fromX, int toX, final boolean isReverseAnimator) {
         ValueAnimator animator = ValueAnimator.ofInt(fromX, toX);
+        animator.setDuration(ANIMATION_DURATION);
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
