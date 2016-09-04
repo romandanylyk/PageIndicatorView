@@ -1,17 +1,23 @@
 package com.rd.dotpagerview.view.animation;
 
+import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.animation.DecelerateInterpolator;
 
 public class SlideAnimation {
 
     private static final int ANIMATION_DURATION = 250;
-    private int leftX;
-    private int rightX;
+
+    private int fromValue;
+    private int toValue;
+    private int radius;
     private boolean isRightSide;
+
+    private int rectLeftX;
+    private int rectRightX;
 
     private ValueAnimation.UpdateListener listener;
     private AnimatorSet animatorSet;
@@ -21,14 +27,19 @@ public class SlideAnimation {
         animatorSet = createAnimatorSet();
     }
 
-    public SlideAnimation with(int fromX, int toX, final int reverseFromX, int reverseToX, final boolean isRight) {
-        if (animatorSet != null) {
-            leftX = reverseFromX;
-            isRightSide = isRight;
+    public SlideAnimation with(int fromValue, int toValue, int radius, boolean isRightSide) {
+        if (animatorSet != null && hasChanges(fromValue, toValue, radius, isRightSide)) {
 
-            ValueAnimator animator = createValueAnimator(fromX, toX, false);
-            ValueAnimator reverseAnimator = createValueAnimator(reverseFromX, reverseToX, true);
+            this.fromValue = fromValue;
+            this.toValue = toValue;
+            this.radius = radius;
+            this.isRightSide = isRightSide;
 
+            AnimationValues values = createAnimationValues(isRightSide);
+            ValueAnimator animator = createValueAnimator(values.fromX, values.toX, false);
+            ValueAnimator reverseAnimator = createValueAnimator(values.reverseFromX, values.reverseToX, true);
+
+            animatorSet.getChildAnimations().clear();
             animatorSet.play(animator).before(reverseAnimator);
         }
         return this;
@@ -43,6 +54,23 @@ public class SlideAnimation {
     public void end() {
         if (animatorSet != null) {
             animatorSet.end();
+        }
+    }
+
+    public void progress(float progress) {
+        if (animatorSet != null) {
+            long playTime = (long) (progress * (ANIMATION_DURATION * animatorSet.getChildAnimations().size()));
+
+            for (Animator animator : animatorSet.getChildAnimations()) {
+                ValueAnimator valueAnimator = (ValueAnimator) animator;
+
+                if (playTime > valueAnimator.getDuration()) {
+                    valueAnimator.setCurrentPlayTime(valueAnimator.getDuration());
+                } else {
+                    valueAnimator.setCurrentPlayTime(playTime);
+                    break;
+                }
+            }
         }
     }
 
@@ -63,23 +91,87 @@ public class SlideAnimation {
 
                 if (!isReverseAnimator) {
                     if (isRightSide) {
-                        rightX = value;
+                        rectRightX = value;
                     } else {
-                        leftX = value;
+                        rectLeftX = value;
                     }
 
                 } else {
                     if (isRightSide) {
-                        leftX = value;
+                        rectLeftX = value;
                     } else {
-                        rightX = value;
+                        rectRightX = value;
                     }
                 }
 
-                listener.onSlideAnimationUpdated(leftX, rightX);
+                listener.onSlideAnimationUpdated(rectLeftX, rectRightX);
             }
         });
 
         return animator;
+    }
+
+    @SuppressWarnings("RedundantIfStatement")
+    private boolean hasChanges(int fromValue, int toValue, int radius, boolean isRightSide) {
+        if (this.fromValue != fromValue) {
+            return true;
+        }
+
+        if (this.toValue != toValue) {
+            return true;
+        }
+
+        if (this.radius != radius) {
+            return true;
+        }
+
+        if (this.isRightSide != isRightSide) {
+            return true;
+        }
+
+        return false;
+    }
+
+    @NonNull
+    private AnimationValues createAnimationValues(boolean isRightSide) {
+        int fromX;
+        int toX;
+
+        int reverseFromX;
+        int reverseToX;
+
+        if (isRightSide) {
+            fromX = fromValue + radius;
+            toX = toValue + radius;
+
+            reverseFromX = fromValue - radius;
+            reverseToX = toValue - radius;
+
+        } else {
+            fromX = fromValue - radius;
+            toX = toValue - radius;
+
+            reverseFromX = fromValue + radius;
+            reverseToX = toValue + radius;
+        }
+
+        return new AnimationValues(fromX, toX, reverseFromX, reverseToX);
+    }
+
+    private class AnimationValues {
+
+        public final int fromX;
+        private final int toX;
+
+        private final int reverseFromX;
+        private final int reverseToX;
+
+        public AnimationValues(int fromX, int toX, int reverseFromX, int reverseToX) {
+            this.fromX = fromX;
+            this.toX = toX;
+
+            this.reverseFromX = reverseFromX;
+            this.reverseToX = reverseToX;
+        }
     }
 }

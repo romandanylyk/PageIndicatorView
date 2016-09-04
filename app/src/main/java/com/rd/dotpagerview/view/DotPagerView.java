@@ -181,7 +181,7 @@ public class DotPagerView extends View {
             return;
         }
 
-        Log.e("TEST", "POSITION: " + position + " OFFSET: " + offset);
+//        Log.e("TEST", "POSITION: " + position + " OFFSET: " + offset);
         if (position == selectingPosition) {
             lastSelectedPosition = selectedPosition;
             selectedPosition = position;
@@ -205,6 +205,9 @@ public class DotPagerView extends View {
 
             case SCALE:
                 animation.scale().with(selectedColor, unselectedColor, radiusPx).progress(progress);
+                break;
+
+            case SLIDE:
                 break;
         }
     }
@@ -425,36 +428,12 @@ public class DotPagerView extends View {
     }
 
     private void startSlideAnimation() {
-        int fromX;
-        int toX;
-
-        int reverseFromX;
-        int reverseToX;
-
-        int xSelected = getXCoordinate(selectedPosition);
-        int xLastSelected = getXCoordinate(lastSelectedPosition);
+        int fromX = getXCoordinate(lastSelectedPosition);
+        int toX = getXCoordinate(selectedPosition);
         boolean isRightSide = selectedPosition > lastSelectedPosition;
 
-        if (selectedPosition > lastSelectedPosition) {
-            fromX = xLastSelected + radiusPx;
-            toX = xSelected + radiusPx;
-
-            reverseFromX = xLastSelected - radiusPx;
-            reverseToX = xSelected - radiusPx;
-
-        } else if (selectedPosition < lastSelectedPosition) {
-            fromX = xLastSelected - radiusPx;
-            toX = xSelected - radiusPx;
-
-            reverseFromX = xLastSelected + radiusPx;
-            reverseToX = xSelected + radiusPx;
-
-        } else {
-            return;
-        }
-
         animation.slide().end();
-        animation.slide().with(fromX, toX, reverseFromX, reverseToX, isRightSide).start();
+        animation.slide().with(fromX, toX, radiusPx, isRightSide).start();
     }
 
     private int getXCoordinate(int position) {
