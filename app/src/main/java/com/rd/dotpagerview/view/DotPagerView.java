@@ -200,11 +200,11 @@ public class DotPagerView extends View {
 
         switch (animationType) {
             case COLOR:
-                animation.color().with(selectedColor, unselectedColor).progress(progress);
+                animation.color().with(unselectedColor, selectedColor).progress(progress);
                 break;
 
             case SCALE:
-                animation.scale().with(selectedColor, unselectedColor, radiusPx).progress(progress);
+                animation.scale().with(unselectedColor, selectedColor, radiusPx).progress(progress);
                 break;
 
             case SLIDE:
@@ -420,11 +420,11 @@ public class DotPagerView extends View {
     }
 
     private void startColorAnimation() {
-        animation.color().with(selectedColor, unselectedColor).start();
+        animation.color().with(unselectedColor, selectedColor).start();
     }
 
     private void startScaleAnimation() {
-        animation.scale().with(selectedColor, unselectedColor, radiusPx).start();
+        animation.scale().with(unselectedColor, selectedColor, radiusPx).start();
     }
 
     private void startSlideAnimation() {
