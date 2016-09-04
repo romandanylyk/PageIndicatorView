@@ -8,7 +8,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 
 import com.rd.dotpagerview.view.animation.*;
@@ -19,11 +18,11 @@ public class DotPagerView extends View {
     private static final String DEFAULT_UNSELECTED_COLOR = "#33ffffff";
     private static final String DEFAULT_SELECTED_COLOR = "#ffffff";
 
-    private static final int DEFAULT_RADIUS_DP = 8;
-    private static final int DEFAULT_PADDING_DP = 16;
+    private static final int DEFAULT_RADIUS_DP = 6;
+    private static final int DEFAULT_PADDING_DP = 8;
 
-    private int radiusPx = DensityUtils.dpToPx(getContext(), DEFAULT_RADIUS_DP);
-    private int paddingPx = DensityUtils.dpToPx(getContext(), DEFAULT_PADDING_DP);
+    private int radiusPx = DensityUtils.dpToPx(DEFAULT_RADIUS_DP);
+    private int paddingPx = DensityUtils.dpToPx(DEFAULT_PADDING_DP);
     private int count;
 
     //Color
@@ -121,12 +120,12 @@ public class DotPagerView extends View {
     }
 
     public void setRadius(int radiusDp) {
-        radiusPx = DensityUtils.dpToPx(getContext(), radiusDp);
+        radiusPx = DensityUtils.dpToPx(radiusDp);
         invalidate();
     }
 
     public void setPadding(int paddingDp) {
-        paddingPx = DensityUtils.dpToPx(getContext(), paddingDp);
+        paddingPx = DensityUtils.dpToPx(paddingDp);
         invalidate();
     }
 

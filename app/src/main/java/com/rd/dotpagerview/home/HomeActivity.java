@@ -26,10 +26,11 @@ public class HomeActivity extends AppCompatActivity {
         HomeAdapter adapter = new HomeAdapter(getSupportFragmentManager());
         pager.setAdapter(adapter);
 
-        dotPagerView.setPadding(8);
         dotPagerView.setCount(adapter.getCount());
         dotPagerView.setAnimationType(AnimationType.SLIDE);
         dotPagerView.setInteractiveAnimation(true);
+        dotPagerView.setPadding(8);
+        dotPagerView.setRadius(6);
         dotPagerView.setViewPager(pager);
     }
 }
