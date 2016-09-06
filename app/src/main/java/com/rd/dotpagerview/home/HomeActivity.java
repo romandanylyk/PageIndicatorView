@@ -20,17 +20,12 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void initViews() {
-        DotPagerView dotPagerView = (DotPagerView) findViewById(R.id.dotPagerView);
-        ViewPager pager = (ViewPager) findViewById(R.id.viewPager);
-
         HomeAdapter adapter = new HomeAdapter(getSupportFragmentManager());
+
+        ViewPager pager = (ViewPager) findViewById(R.id.viewPager);
         pager.setAdapter(adapter);
 
-        dotPagerView.setCount(adapter.getCount());
-        dotPagerView.setAnimationType(AnimationType.SLIDE);
-        dotPagerView.setInteractiveAnimation(true);
-        dotPagerView.setPadding(8);
-        dotPagerView.setRadius(6);
+        DotPagerView dotPagerView = (DotPagerView) findViewById(R.id.dotPagerView);
         dotPagerView.setViewPager(pager);
     }
 }

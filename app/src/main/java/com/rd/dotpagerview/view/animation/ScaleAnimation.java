@@ -13,9 +13,9 @@ public class ScaleAnimation extends ColorAnimation {
     private static final String ANIMATION_SCALE = "ANIMATION_SCALE";
 
     private static final int ANIMATION_DURATION = 500;
-    public static final float SCALE_FACTOR = 2;
 
     private int radiusPx;
+    private float scaleFactor;
 
     public ScaleAnimation(@NonNull ValueAnimation.UpdateListener listener) {
         super(listener);
@@ -38,12 +38,13 @@ public class ScaleAnimation extends ColorAnimation {
     }
 
     @NonNull
-    public ScaleAnimation with(int colorStartValue, int colorEndValue, int radiusValue) {
-        if (animator != null && hasChanges(colorStartValue, colorEndValue, radiusValue)) {
+    public ScaleAnimation with(int colorStartValue, int colorEndValue, int radiusValue, float scaleFactorValue) {
+        if (animator != null && hasChanges(colorStartValue, colorEndValue, radiusValue, scaleFactorValue)) {
 
             startColor = colorStartValue;
             endColor = colorEndValue;
             radiusPx = radiusValue;
+            scaleFactor = scaleFactorValue;
 
             PropertyValuesHolder colorHolder = createColorPropertyHolder(false);
             PropertyValuesHolder reverseColorHolder = createColorPropertyHolder(true);
@@ -78,10 +79,10 @@ public class ScaleAnimation extends ColorAnimation {
         if (isReverse) {
             propertyName = ANIMATION_SCALE_REVERSE;
             startRadiusValue = radiusPx;
-            endRadiusValue = (int) (radiusPx / SCALE_FACTOR);
+            endRadiusValue = (int) (radiusPx / scaleFactor);
         } else {
             propertyName = ANIMATION_SCALE;
-            startRadiusValue = (int) (radiusPx / SCALE_FACTOR);
+            startRadiusValue = (int) (radiusPx / scaleFactor);
             endRadiusValue = radiusPx;
         }
 
@@ -92,7 +93,7 @@ public class ScaleAnimation extends ColorAnimation {
     }
 
     @SuppressWarnings("RedundantIfStatement")
-    private boolean hasChanges(int colorStartValue, int colorEndValue, int radiusValue) {
+    private boolean hasChanges(int colorStartValue, int colorEndValue, int radiusValue, float scaleFactorValue) {
         if (startColor != colorStartValue) {
             return true;
         }
@@ -102,6 +103,10 @@ public class ScaleAnimation extends ColorAnimation {
         }
 
         if (radiusPx != radiusValue) {
+            return true;
+        }
+
+        if (scaleFactor != scaleFactorValue) {
             return true;
         }
 

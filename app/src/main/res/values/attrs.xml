@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <declare-styleable name="DotPagerView">
+        <attr name="count" format="integer" />
+        <attr name="select" format="integer" />
+
+        <attr name="radius" format="dimension" />
+        <attr name="padding" format="dimension" />
+        <attr name="scaleFactor" format="float" />
+
+        <attr name="unselectedColor" format="color" />
+        <attr name="selectedColor" format="color" />
+
+        <attr name="animationInteractiveEffect" format="boolean" />
+        <attr name="animationType">
+            <enum name="none" value="0" />
+            <enum name="color" value="1" />
+            <enum name="scale" value="2" />
+            <enum name="worm" value="3" />
+        </attr>
+    </declare-styleable>
+
+</resources>
