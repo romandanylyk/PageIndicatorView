@@ -43,9 +43,12 @@ public class DotPagerView extends View {
     private int frameRadiusReversePx;
     private float scaleFactor;
 
-    //Slide
+    //Worm
     private int frameLeftX;
     private int frameRightX;
+
+    //Slide
+    private int frameXCoordinate;
 
     private int selectedPosition;
     private int selectingPosition;
@@ -155,7 +158,7 @@ public class DotPagerView extends View {
     }
 
     public void setSelection(int position) {
-        if (interactiveAnimation) {
+        if (interactiveAnimation && animationType != AnimationType.NONE) {
             return;
         }
 
@@ -176,6 +179,10 @@ public class DotPagerView extends View {
                 break;
 
             case WORM:
+                startWormAnimation();
+                break;
+
+            case SLIDE:
                 startSlideAnimation();
                 break;
         }
@@ -225,12 +232,20 @@ public class DotPagerView extends View {
                 break;
 
             case WORM:
+            case SLIDE:
                 int fromX = getXCoordinate(selectedPosition);
                 int toX = getXCoordinate(selectingPosition);
-                boolean isRightSide = selectingPosition > selectedPosition;
 
-                animation.worm().with(fromX, toX, radiusPx, isRightSide).progress(progress);
+                if (animationType == AnimationType.WORM) {
+                    boolean isRightSide = selectingPosition > selectedPosition;
+                    animation.worm().with(fromX, toX, radiusPx, isRightSide).progress(progress);
+
+                } else if (animationType == AnimationType.SLIDE) {
+                    animation.slide().with(fromX, toX).progress(progress);
+                }
+
                 break;
+
         }
     }
 
@@ -251,9 +266,7 @@ public class DotPagerView extends View {
             }
 
             @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
+            public void onPageScrollStateChanged(int state) {/*empty*/}
         });
     }
 
@@ -289,6 +302,10 @@ public class DotPagerView extends View {
                 break;
 
             case WORM:
+                drawWithWormAnimation(canvas, position, x, y);
+                break;
+
+            case SLIDE:
                 drawWithSlideAnimation(canvas, position, x, y);
                 break;
 
@@ -349,7 +366,7 @@ public class DotPagerView extends View {
         canvas.drawCircle(x, y, radius, paint);
     }
 
-    private void drawWithSlideAnimation(@NonNull Canvas canvas, int position, int x, int y) {
+    private void drawWithWormAnimation(@NonNull Canvas canvas, int position, int x, int y) {
         int radius = radiusPx;
         RectF rect = null;
 
@@ -371,6 +388,20 @@ public class DotPagerView extends View {
         if (rect != null) {
             paint.setColor(selectedColor);
             canvas.drawRoundRect(rect, radiusPx, radiusPx, paint);
+        }
+    }
+
+    private void drawWithSlideAnimation(@NonNull Canvas canvas, int position, int x, int y) {
+        paint.setColor(unselectedColor);
+        canvas.drawCircle(x, y, radiusPx, paint);
+
+        if (interactiveAnimation && position == selectingPosition) {
+            paint.setColor(selectedColor);
+            canvas.drawCircle(frameXCoordinate, y, radiusPx, paint);
+
+        } else if (!interactiveAnimation && position == selectedPosition) {
+            paint.setColor(selectedColor);
+            canvas.drawCircle(frameXCoordinate, y, radiusPx, paint);
         }
     }
 
@@ -399,12 +430,15 @@ public class DotPagerView extends View {
     }
 
     private void initFrameValues() {
+        //color
         frameColor = selectedColor;
         frameColorReverse = unselectedColor;
 
+        //scale
         frameRadiusPx = radiusPx;
         frameRadiusReversePx = radiusPx;
 
+        //worm
         int xCoordinate = getXCoordinate(selectedPosition);
         if (xCoordinate - radiusPx >= 0) {
             frameLeftX = xCoordinate - radiusPx;
@@ -414,6 +448,9 @@ public class DotPagerView extends View {
             frameLeftX = xCoordinate;
             frameRightX = xCoordinate + (radiusPx * 2);
         }
+
+        //slide
+        frameXCoordinate = xCoordinate;
     }
 
     private void initAnimation() {
@@ -436,9 +473,15 @@ public class DotPagerView extends View {
             }
 
             @Override
-            public void onSlideAnimationUpdated(int leftX, int rightX) {
+            public void onWormAnimationUpdated(int leftX, int rightX) {
                 frameLeftX = leftX;
                 frameRightX = rightX;
+                invalidate();
+            }
+
+            @Override
+            public void onSlideAnimationUpdated(int xCoordinate) {
+                frameXCoordinate = xCoordinate;
                 invalidate();
             }
         });
@@ -499,6 +542,8 @@ public class DotPagerView extends View {
                 return AnimationType.SCALE;
             case 3:
                 return AnimationType.WORM;
+            case 4:
+                return AnimationType.SLIDE;
         }
 
         return AnimationType.NONE;
@@ -512,13 +557,20 @@ public class DotPagerView extends View {
         animation.scale().with(unselectedColor, selectedColor, radiusPx, scaleFactor).start();
     }
 
-    private void startSlideAnimation() {
+    private void startWormAnimation() {
         int fromX = getXCoordinate(lastSelectedPosition);
         int toX = getXCoordinate(selectedPosition);
         boolean isRightSide = selectedPosition > lastSelectedPosition;
 
         animation.worm().end();
         animation.worm().with(fromX, toX, radiusPx, isRightSide).start();
+    }
+
+    private void startSlideAnimation() {
+        int fromX = getXCoordinate(lastSelectedPosition);
+        int toX = getXCoordinate(selectedPosition);
+
+        animation.slide().with(fromX, toX).start();
     }
 
     private int getXCoordinate(int position) {

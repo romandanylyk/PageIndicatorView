@@ -4,12 +4,11 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.view.animation.DecelerateInterpolator;
 
 public class WormAnimation extends AbsAnimation<AnimatorSet> {
 
-    private static final int ANIMATION_DURATION = 250;
+    private static final int ANIMATION_DURATION = 175;
 
     private int fromValue;
     private int toValue;
@@ -102,7 +101,7 @@ public class WormAnimation extends AbsAnimation<AnimatorSet> {
                     }
                 }
 
-                listener.onSlideAnimationUpdated(rectLeftX, rectRightX);
+                listener.onWormAnimationUpdated(rectLeftX, rectRightX);
             }
         });
 

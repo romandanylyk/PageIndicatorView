@@ -20,10 +20,8 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="48dp"
-        attrs:selectedColor="@color/white"
-        attrs:unselectedColor="@color/white_transparent"
-        attrs:padding="16dp"
-        attrs:radius="8dp"
+        attrs:padding="12dp"
+        attrs:radius="6dp"
         attrs:count="8"
         attrs:animationType="worm"
         attrs:animationInteractiveEffect="true"/>

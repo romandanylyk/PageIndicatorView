@@ -12,7 +12,7 @@ public class ScaleAnimation extends ColorAnimation {
     private static final String ANIMATION_SCALE_REVERSE = "ANIMATION_SCALE_REVERSE";
     private static final String ANIMATION_SCALE = "ANIMATION_SCALE";
 
-    private static final int ANIMATION_DURATION = 500;
+    private static final int ANIMATION_DURATION = 350;
 
     private int radiusPx;
     private float scaleFactor;
