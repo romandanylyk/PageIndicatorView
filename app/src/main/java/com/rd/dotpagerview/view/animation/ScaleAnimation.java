@@ -23,7 +23,7 @@ public class ScaleAnimation extends ColorAnimation {
 
     @NonNull
     @Override
-    public ValueAnimator createValueAnimator() {
+    public ValueAnimator createAnimator() {
         ValueAnimator animator = new ValueAnimator();
         animator.setDuration(ANIMATION_DURATION);
         animator.setInterpolator(new DecelerateInterpolator());

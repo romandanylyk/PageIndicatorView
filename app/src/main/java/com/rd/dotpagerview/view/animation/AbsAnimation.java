@@ -1,31 +1,24 @@
 package com.rd.dotpagerview.view.animation;
 
-import android.animation.ValueAnimator;
+import android.animation.Animator;
 import android.support.annotation.NonNull;
 
-public abstract class AbsAnimation {
+public abstract class AbsAnimation<T extends Animator> {
 
     protected ValueAnimation.UpdateListener listener;
-    protected ValueAnimator animator;
+    protected T animator;
 
     public AbsAnimation(@NonNull ValueAnimation.UpdateListener listener) {
         this.listener = listener;
-        animator = createValueAnimator();
+        animator = createAnimator();
     }
 
     @NonNull
-    public abstract ValueAnimator createValueAnimator();
+    public abstract T createAnimator();
 
     public abstract long getAnimationDuration();
 
-    public AbsAnimation progress(float progress) {
-        if (animator != null) {
-            long playTime = (long) (progress * getAnimationDuration());
-            animator.setCurrentPlayTime(playTime);
-        }
-
-        return this;
-    }
+    public abstract void progress(float progress);
 
     public void start() {
         if (animator != null) {

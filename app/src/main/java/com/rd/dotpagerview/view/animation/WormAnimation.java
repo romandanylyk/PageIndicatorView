@@ -5,10 +5,9 @@ import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.animation.DecelerateInterpolator;
 
-public class SlideAnimation {
+public class WormAnimation extends AbsAnimation<AnimatorSet> {
 
     private static final int ANIMATION_DURATION = 250;
 
@@ -20,17 +19,27 @@ public class SlideAnimation {
     private int rectLeftX;
     private int rectRightX;
 
-    private ValueAnimation.UpdateListener listener;
-    private AnimatorSet animatorSet;
-
-    public SlideAnimation(@Nullable ValueAnimation.UpdateListener listener) {
-        this.listener = listener;
-        animatorSet = createAnimatorSet();
+    public WormAnimation(@NonNull ValueAnimation.UpdateListener listener) {
+        super(listener);
     }
 
-    public SlideAnimation with(int fromValue, int toValue, int radius, boolean isRightSide) {
-        if (animatorSet != null && hasChanges(fromValue, toValue, radius, isRightSide)) {
-            animatorSet = createAnimatorSet();
+    @NonNull
+    @Override
+    public AnimatorSet createAnimator() {
+        AnimatorSet animator = new AnimatorSet();
+        animator.setInterpolator(new DecelerateInterpolator());
+
+        return animator;
+    }
+
+    @Override
+    public long getAnimationDuration() {
+        return ANIMATION_DURATION;
+    }
+
+    public WormAnimation with(int fromValue, int toValue, int radius, boolean isRightSide) {
+        if (hasChanges(fromValue, toValue, radius, isRightSide)) {
+            animator = createAnimator();
 
             this.fromValue = fromValue;
             this.toValue = toValue;
@@ -38,33 +47,22 @@ public class SlideAnimation {
             this.isRightSide = isRightSide;
 
             AnimationValues values = createAnimationValues(isRightSide);
-            ValueAnimator animator = createValueAnimator(values.fromX, values.toX, false);
+            ValueAnimator straightAnimator = createValueAnimator(values.fromX, values.toX, false);
             ValueAnimator reverseAnimator = createValueAnimator(values.reverseFromX, values.reverseToX, true);
 
-            animatorSet.playSequentially(animator, reverseAnimator);
+            animator.playSequentially(straightAnimator, reverseAnimator);
         }
         return this;
     }
 
-    public void start() {
-        if (animatorSet != null) {
-            animatorSet.start();
-        }
-    }
-
-    public void end() {
-        if (animatorSet != null) {
-            animatorSet.end();
-        }
-    }
-
+    @Override
     public void progress(float progress) {
-        if (animatorSet != null) {
-            long fullDuration = ANIMATION_DURATION * animatorSet.getChildAnimations().size();
+        if (animator != null) {
+            long fullDuration = ANIMATION_DURATION * animator.getChildAnimations().size();
             long playTimeLeft = (long) (progress * fullDuration);
 
-            for (Animator animator : animatorSet.getChildAnimations()) {
-                ValueAnimator valueAnimator = (ValueAnimator) animator;
+            for (Animator anim : animator.getChildAnimations()) {
+                ValueAnimator valueAnimator = (ValueAnimator) anim;
 
                 if (playTimeLeft < 0) {
                     playTimeLeft = 0;
@@ -79,13 +77,6 @@ public class SlideAnimation {
                 playTimeLeft -= currPlayTime;
             }
         }
-    }
-
-    private AnimatorSet createAnimatorSet() {
-        AnimatorSet animatorSet = new AnimatorSet();
-        animatorSet.setInterpolator(new DecelerateInterpolator());
-
-        return animatorSet;
     }
 
     private ValueAnimator createValueAnimator(int fromX, int toX, final boolean isReverseAnimator) {

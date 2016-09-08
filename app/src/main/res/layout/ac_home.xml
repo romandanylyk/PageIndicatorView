@@ -25,7 +25,6 @@
         attrs:padding="16dp"
         attrs:radius="8dp"
         attrs:count="8"
-        attrs:select="4"
         attrs:animationType="worm"
         attrs:animationInteractiveEffect="true"/>
 

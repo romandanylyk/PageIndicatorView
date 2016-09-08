@@ -7,7 +7,7 @@ public class ValueAnimation {
 
     private ColorAnimation colorAnimation;
     private ScaleAnimation scaleAnimation;
-    private SlideAnimation slideAnimation;
+    private WormAnimation wormAnimation;
 
     private UpdateListener updateListener;
 
@@ -43,11 +43,11 @@ public class ValueAnimation {
     }
 
     @NonNull
-    public SlideAnimation slide() {
-        if (slideAnimation == null) {
-            slideAnimation = new SlideAnimation(updateListener);
+    public WormAnimation worm() {
+        if (wormAnimation == null) {
+            wormAnimation = new WormAnimation(updateListener);
         }
 
-        return slideAnimation;
+        return wormAnimation;
     }
 }

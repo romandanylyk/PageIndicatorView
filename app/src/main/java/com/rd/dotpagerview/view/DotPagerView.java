@@ -229,7 +229,7 @@ public class DotPagerView extends View {
                 int toX = getXCoordinate(selectingPosition);
                 boolean isRightSide = selectingPosition > selectedPosition;
 
-                animation.slide().with(fromX, toX, radiusPx, isRightSide).progress(progress);
+                animation.worm().with(fromX, toX, radiusPx, isRightSide).progress(progress);
                 break;
         }
     }
@@ -517,8 +517,8 @@ public class DotPagerView extends View {
         int toX = getXCoordinate(selectedPosition);
         boolean isRightSide = selectedPosition > lastSelectedPosition;
 
-        animation.slide().end();
-        animation.slide().with(fromX, toX, radiusPx, isRightSide).start();
+        animation.worm().end();
+        animation.worm().with(fromX, toX, radiusPx, isRightSide).start();
     }
 
     private int getXCoordinate(int position) {
