@@ -6,6 +6,10 @@ import android.view.animation.DecelerateInterpolator;
 
 public class ScaleAnimation extends ColorAnimation {
 
+    public static final float DEFAULT_SCALE_FACTOR = 1.7f;
+    public static final float MIN_SCALE_FACTOR = 1;
+    public static final float MAX_SCALE_FACTOR = 3;
+
     private static final String ANIMATION_COLOR_REVERSE = "ANIMATION_COLOR_REVERSE";
     private static final String ANIMATION_COLOR = "ANIMATION_COLOR";
 

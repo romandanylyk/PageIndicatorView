@@ -8,8 +8,6 @@ import android.view.animation.DecelerateInterpolator;
 
 public class WormAnimation extends AbsAnimation<AnimatorSet> {
 
-    private static final int ANIMATION_DURATION = 175;
-
     private int fromValue;
     private int toValue;
     private int radius;
@@ -29,11 +27,6 @@ public class WormAnimation extends AbsAnimation<AnimatorSet> {
         animator.setInterpolator(new DecelerateInterpolator());
 
         return animator;
-    }
-
-    @Override
-    public long getAnimationDuration() {
-        return ANIMATION_DURATION;
     }
 
     public WormAnimation with(int fromValue, int toValue, int radius, boolean isRightSide) {
@@ -57,8 +50,7 @@ public class WormAnimation extends AbsAnimation<AnimatorSet> {
     @Override
     public void progress(float progress) {
         if (animator != null) {
-            long fullDuration = ANIMATION_DURATION * animator.getChildAnimations().size();
-            long playTimeLeft = (long) (progress * fullDuration);
+            long playTimeLeft = (long) (progress * animationDuration);
 
             for (Animator anim : animator.getChildAnimations()) {
                 ValueAnimator valueAnimator = (ValueAnimator) anim;
@@ -79,9 +71,8 @@ public class WormAnimation extends AbsAnimation<AnimatorSet> {
     }
 
     private ValueAnimator createValueAnimator(int fromX, int toX, final boolean isReverseAnimator) {
-        ValueAnimator animator = ValueAnimator.ofInt(fromX, toX);
-        animator.setDuration(ANIMATION_DURATION);
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+        ValueAnimator anim = ValueAnimator.ofInt(fromX, toX);
+        anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 int value = (int) animation.getAnimatedValue();
@@ -105,7 +96,7 @@ public class WormAnimation extends AbsAnimation<AnimatorSet> {
             }
         });
 
-        return animator;
+        return anim;
     }
 
     @SuppressWarnings("RedundantIfStatement")

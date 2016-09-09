@@ -35,14 +35,9 @@ public class SlideAnimation extends AbsAnimation<ValueAnimator> {
     }
 
     @Override
-    public long getAnimationDuration() {
-        return ANIMATION_DURATION;
-    }
-
-    @Override
     public void progress(float progress) {
         if (animator != null) {
-            long playTime = (long) (progress * getAnimationDuration());
+            long playTime = (long) (progress * animationDuration);
             animator.setCurrentPlayTime(playTime);
         }
     }

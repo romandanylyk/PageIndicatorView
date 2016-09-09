@@ -23,7 +23,7 @@
         attrs:padding="12dp"
         attrs:radius="6dp"
         attrs:count="8"
-        attrs:animationType="worm"
-        attrs:animationInteractiveEffect="true"/>
+        attrs:animationType="slide"
+        attrs:animationInteractiveEffect="false"/>
 
 </RelativeLayout>

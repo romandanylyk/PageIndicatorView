@@ -12,6 +12,7 @@
         <attr name="unselectedColor" format="color" />
         <attr name="selectedColor" format="color" />
 
+        <attr name="animationDuration" format="integer" />
         <attr name="animationInteractiveEffect" format="boolean" />
         <attr name="animationType">
             <enum name="none" value="0" />

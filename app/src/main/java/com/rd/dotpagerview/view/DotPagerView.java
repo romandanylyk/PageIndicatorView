@@ -23,10 +23,6 @@ public class DotPagerView extends View {
     private static final int DEFAULT_RADIUS_DP = 6;
     private static final int DEFAULT_PADDING_DP = 8;
 
-    private static final float DEFAULT_SCALE_FACTOR = 1.7f;
-    private static final float MIN_SCALE_FACTOR = 1;
-    private static final float MAX_SCALE_FACTOR = 3;
-
     private int radiusPx = DensityUtils.dpToPx(DEFAULT_RADIUS_DP);
     private int paddingPx = DensityUtils.dpToPx(DEFAULT_PADDING_DP);
     private int count;
@@ -55,6 +51,7 @@ public class DotPagerView extends View {
     private int lastSelectedPosition;
 
     private boolean interactiveAnimation;
+    private long animationDuration;
 
     private Paint paint;
     private AnimationType animationType = AnimationType.NONE;
@@ -147,6 +144,10 @@ public class DotPagerView extends View {
     public void setSelectedColor(int color) {
         selectedColor = color;
         invalidate();
+    }
+
+    public void setAnimationDuration(long duration) {
+        animationDuration = duration;
     }
 
     public void setAnimationType(@Nullable AnimationType type) {
@@ -514,18 +515,20 @@ public class DotPagerView extends View {
 
         radiusPx = (int) typedArray.getDimension(R.styleable.DotPagerView_radius, radiusPx);
         paddingPx = (int) typedArray.getDimension(R.styleable.DotPagerView_padding, paddingPx);
-        scaleFactor = typedArray.getFloat(R.styleable.DotPagerView_scaleFactor, DEFAULT_SCALE_FACTOR);
+        scaleFactor = typedArray.getFloat(R.styleable.DotPagerView_scaleFactor, ScaleAnimation.DEFAULT_SCALE_FACTOR);
 
-        if (scaleFactor < MIN_SCALE_FACTOR) {
-            scaleFactor = MIN_SCALE_FACTOR;
-        } else if (scaleFactor > MAX_SCALE_FACTOR) {
-            scaleFactor = MAX_SCALE_FACTOR;
+        if (scaleFactor < ScaleAnimation.MIN_SCALE_FACTOR) {
+            scaleFactor = ScaleAnimation.MIN_SCALE_FACTOR;
+        } else if (scaleFactor > ScaleAnimation.MAX_SCALE_FACTOR) {
+            scaleFactor = ScaleAnimation.MAX_SCALE_FACTOR;
         }
 
         unselectedColor = typedArray.getColor(R.styleable.DotPagerView_unselectedColor, unselectedColor);
         selectedColor = typedArray.getColor(R.styleable.DotPagerView_selectedColor, selectedColor);
 
+        animationDuration = typedArray.getInt(R.styleable.DotPagerView_animationDuration, AbsAnimation.DEFAULT_ANIMATION_TIME);
         interactiveAnimation = typedArray.getBoolean(R.styleable.DotPagerView_animationInteractiveEffect, false);
+
         int index = typedArray.getInt(R.styleable.DotPagerView_animationType, AnimationType.NONE.ordinal());
         animationType = getAnimationType(index);
 
@@ -550,11 +553,11 @@ public class DotPagerView extends View {
     }
 
     private void startColorAnimation() {
-        animation.color().with(unselectedColor, selectedColor).start();
+        animation.color().with(unselectedColor, selectedColor).duration(animationDuration).start();
     }
 
     private void startScaleAnimation() {
-        animation.scale().with(unselectedColor, selectedColor, radiusPx, scaleFactor).start();
+        animation.scale().with(unselectedColor, selectedColor, radiusPx, scaleFactor).duration(animationDuration).start();
     }
 
     private void startWormAnimation() {
@@ -563,14 +566,14 @@ public class DotPagerView extends View {
         boolean isRightSide = selectedPosition > lastSelectedPosition;
 
         animation.worm().end();
-        animation.worm().with(fromX, toX, radiusPx, isRightSide).start();
+        animation.worm().with(fromX, toX, radiusPx, isRightSide).duration(animationDuration).start();
     }
 
     private void startSlideAnimation() {
         int fromX = getXCoordinate(lastSelectedPosition);
         int toX = getXCoordinate(selectedPosition);
 
-        animation.slide().with(fromX, toX).start();
+        animation.slide().with(fromX, toX).duration(animationDuration).start();
     }
 
     private int getXCoordinate(int position) {
