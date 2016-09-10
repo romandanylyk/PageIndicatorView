@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
+import android.util.Pair;
 import android.view.View;
 
 import com.rd.dotpagerview.R;
@@ -121,35 +122,121 @@ public class DotPagerView extends View {
         drawDotView(canvas);
     }
 
+    /**
+     * Set number of circle indicators to be displayed
+     *
+     * @param count total count of indicators
+     */
     public void setCount(int count) {
         this.count = count;
         invalidate();
     }
 
+    /**
+     * Return number of circle indicators
+     */
+    public int getCount() {
+        return count;
+    }
+
+    /**
+     * Set radius in dp of each circle indicator. Default value is {@link DotPagerView#DEFAULT_RADIUS_DP}.
+     * Note: make sure you set circle Radius, not a Diameter.
+     *
+     * @param radiusDp radius of circle in dp.
+     */
     public void setRadius(int radiusDp) {
         radiusPx = DensityUtils.dpToPx(radiusDp);
         invalidate();
     }
 
+    /**
+     * Return radius of each circle indicators in dp. If custom radius is not set, return
+     * default value {@link DotPagerView#DEFAULT_RADIUS_DP}.
+     */
+    public int getRadius() {
+        return DensityUtils.dpToPx(radiusPx);
+    }
+
+    /**
+     * Set padding in dp between each circle indicator. Default value is {@link DotPagerView#DEFAULT_PADDING_DP}.
+     *
+     * @param paddingDp padding between circles
+     */
     public void setPadding(int paddingDp) {
         paddingPx = DensityUtils.dpToPx(paddingDp);
         invalidate();
     }
 
+    /**
+     * Return padding in dp between each circle indicator. If custom padding is not set,
+     * return default value {@link DotPagerView#DEFAULT_PADDING_DP}.
+     */
+    public int getPadding() {
+        return DensityUtils.dpToPx(paddingPx);
+    }
+
+    /**
+     * Set color of unselected state to each circle indicator. Default color {@link DotPagerView#DEFAULT_UNSELECTED_COLOR}.
+     *
+     * @param color color of each unselected circle
+     */
     public void setUnselectedColor(int color) {
         unselectedColor = color;
         invalidate();
     }
 
+    /**
+     * Return color of unselected state of each circle indicator. If custom unselected color
+     * is not set, return default color {@link DotPagerView#DEFAULT_UNSELECTED_COLOR}
+     */
+    public int getUnselectedColor() {
+        return unselectedColor;
+    }
+
+    /**
+     * Set color of selected state to circle indicator. Default color is white {@link DotPagerView#DEFAULT_SELECTED_COLOR}.
+     *
+     * @param color color selected circle
+     */
     public void setSelectedColor(int color) {
         selectedColor = color;
         invalidate();
     }
 
+    /**
+     * Return color of selected circle indicator. If custom unselected color
+     * is not set, return default color {@link DotPagerView#DEFAULT_SELECTED_COLOR}.
+     */
+    public int getSelectedColor() {
+        return selectedColor;
+    }
+
+    /**
+     * Set animation duration time in millisecond. Default animation duration time is {@link AbsAnimation#DEFAULT_ANIMATION_TIME}.
+     * (Won't affect on anything unless {@link #setAnimationType(AnimationType type)} is specified
+     * and {@link #setInteractiveAnimation(boolean isInteractive)} is false)
+     *
+     * @param duration animation duration time
+     */
     public void setAnimationDuration(long duration) {
         animationDuration = duration;
     }
 
+    /**
+     * Return animation duration time in milliseconds. If custom duration is not set,
+     * return default duration time {@link AbsAnimation#DEFAULT_ANIMATION_TIME}.
+     */
+    public long getAnimationDuration() {
+        return animationDuration;
+    }
+
+    /**
+     * Set animation type to perform while selecting new circle indicator.
+     * Default animation type is {@link AnimationType#NONE}.
+     *
+     * @param type type of animation, one of {@link AnimationType}
+     */
     public void setAnimationType(@Nullable AnimationType type) {
         if (type != null) {
             animationType = type;
@@ -158,9 +245,51 @@ public class DotPagerView extends View {
         }
     }
 
+    /**
+     * Set boolean value to perform interactive animation while selecting new indicator.
+     *
+     * @param isInteractive value of animation to be interactive or not
+     */
+    public void setInteractiveAnimation(boolean isInteractive) {
+        interactiveAnimation = isInteractive;
+    }
+
+    /**
+     * Set progress value of animation while selecting new indicator position.
+     * (Won't affect on anything unless {@link #setInteractiveAnimation(boolean isInteractive)} is false)
+     *
+     * @param selectingPosition selecting position with specific progress value
+     * @param progress          float value of progress
+     */
+    public void setProgress(int selectingPosition, float progress) {
+        if (!interactiveAnimation) {
+            return;
+        }
+
+        this.selectingPosition = selectingPosition;
+        AbsAnimation animator = getSelectedAnimation();
+
+        if (animator != null) {
+            animator.progress(progress);
+        }
+    }
+
+    /**
+     * Set specific circle indicator position to be selected. If position < or > total count,
+     * accordingly first or last circle indicator will be selected.
+     *
+     * @param position position of indicator to select
+     */
     public void setSelection(int position) {
         if (interactiveAnimation && animationType != AnimationType.NONE) {
             return;
+        }
+
+        if (position < 0) {
+            position = 0;
+
+        } else if (position > count - 1) {
+            position = count - 1;
         }
 
         lastSelectedPosition = selectedPosition;
@@ -189,67 +318,19 @@ public class DotPagerView extends View {
         }
     }
 
+    /**
+     * Return position of currently selected circle indicator.
+     */
     public int getSelection() {
         return selectedPosition;
     }
 
-    public void setInteractiveAnimation(boolean isInteractive) {
-        interactiveAnimation = isInteractive;
-    }
-
-    public void setProgress(int position, float offset) {
-        if (!interactiveAnimation) {
-            return;
-        }
-
-        if (position == selectingPosition) {
-            lastSelectedPosition = selectedPosition;
-            selectedPosition = position;
-        }
-
-        boolean isRightSlide = selectedPosition == position;
-        float progress;
-
-        if (isRightSlide) {
-            progress = offset;
-            selectingPosition = position + 1;
-        } else {
-            progress = 1 - offset;
-            selectingPosition = position;
-        }
-
-        if (selectingPosition >= count) {
-            selectingPosition = count - 1;
-            return;
-        }
-
-        switch (animationType) {
-            case COLOR:
-                animation.color().with(unselectedColor, selectedColor).progress(progress);
-                break;
-
-            case SCALE:
-                animation.scale().with(unselectedColor, selectedColor, radiusPx, scaleFactor).progress(progress);
-                break;
-
-            case WORM:
-            case SLIDE:
-                int fromX = getXCoordinate(selectedPosition);
-                int toX = getXCoordinate(selectingPosition);
-
-                if (animationType == AnimationType.WORM) {
-                    boolean isRightSide = selectingPosition > selectedPosition;
-                    animation.worm().with(fromX, toX, radiusPx, isRightSide).progress(progress);
-
-                } else if (animationType == AnimationType.SLIDE) {
-                    animation.slide().with(fromX, toX).progress(progress);
-                }
-
-                break;
-
-        }
-    }
-
+    /**
+     * Set {@link ViewPager} to automatically handle selecting new indicators events
+     * (and interactive animation effect in case interactive animation is enabled)
+     *
+     * @param viewPager instance of {@link ViewPager} to work with
+     */
     public void setViewPager(@Nullable ViewPager viewPager) {
         if (viewPager == null) {
             return;
@@ -258,7 +339,7 @@ public class DotPagerView extends View {
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                setProgress(position, positionOffset);
+                onPageScroll(position, positionOffset);
             }
 
             @Override
@@ -269,6 +350,19 @@ public class DotPagerView extends View {
             @Override
             public void onPageScrollStateChanged(int state) {/*empty*/}
         });
+    }
+
+    private void onPageScroll(int position, float positionOffset) {
+        Pair<Integer, Float> progressPair = getProgress(position, positionOffset);
+        int selectingPosition = progressPair.first;
+        float selectingProgress = progressPair.second;
+
+        if (selectingProgress == 1) {
+            lastSelectedPosition = selectedPosition;
+            selectedPosition = selectingPosition;
+        }
+
+        setProgress(selectingPosition, selectingProgress);
     }
 
     private void drawDotView(@NonNull Canvas canvas) {
@@ -576,6 +670,32 @@ public class DotPagerView extends View {
         animation.slide().with(fromX, toX).duration(animationDuration).start();
     }
 
+    @Nullable
+    private AbsAnimation getSelectedAnimation() {
+        switch (animationType) {
+            case COLOR:
+                return animation.color().with(unselectedColor, selectedColor);
+
+            case SCALE:
+                return animation.scale().with(unselectedColor, selectedColor, radiusPx, scaleFactor);
+
+            case WORM:
+            case SLIDE:
+                int fromX = getXCoordinate(selectedPosition);
+                int toX = getXCoordinate(selectingPosition);
+
+                if (animationType == AnimationType.WORM) {
+                    boolean isRightSide = selectingPosition > selectedPosition;
+                    return animation.worm().with(fromX, toX, radiusPx, isRightSide);
+
+                } else if (animationType == AnimationType.SLIDE) {
+                    return animation.slide().with(fromX, toX);
+                }
+        }
+
+        return null;
+    }
+
     private int getXCoordinate(int position) {
         int actualViewWidth = calculateActualViewWidth();
         int x = (getWidth() - actualViewWidth) / 2;
@@ -596,6 +716,37 @@ public class DotPagerView extends View {
         return x;
     }
 
+    private Pair<Integer, Float> getProgress(int position, float positionOffset) {
+        boolean isRightOverScrolled = position > selectedPosition;
+        boolean isLeftOverScrolled = position + 1 < selectedPosition;
+
+        if (isRightOverScrolled || isLeftOverScrolled) {
+            selectedPosition = position;
+        }
+
+        boolean isSlideToRightSide = selectedPosition == position && positionOffset != 0;
+        int selectingPosition;
+        float selectingProgress;
+
+        if (isSlideToRightSide) {
+            selectingPosition = position + 1;
+            selectingProgress = positionOffset;
+
+        } else {
+            selectingPosition = position;
+            selectingProgress = 1 - positionOffset;
+        }
+
+        if (selectingProgress > 1) {
+            selectingProgress = 1;
+
+        } else if (selectingProgress < 0) {
+            selectingProgress = 0;
+        }
+
+        return new Pair<>(selectingPosition, selectingProgress);
+    }
+
     private int calculateActualViewWidth() {
         int width = 0;
         int diameter = radiusPx * 2;
@@ -610,5 +761,4 @@ public class DotPagerView extends View {
 
         return width;
     }
-
 }

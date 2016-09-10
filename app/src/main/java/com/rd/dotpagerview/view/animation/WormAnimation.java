@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.animation.DecelerateInterpolator;
 
 public class WormAnimation extends AbsAnimation<AnimatorSet> {
@@ -48,7 +49,7 @@ public class WormAnimation extends AbsAnimation<AnimatorSet> {
     }
 
     @Override
-    public void progress(float progress) {
+    public WormAnimation progress(float progress) {
         if (animator != null) {
             long playTimeLeft = (long) (progress * animationDuration);
 
@@ -68,10 +69,13 @@ public class WormAnimation extends AbsAnimation<AnimatorSet> {
                 playTimeLeft -= currPlayTime;
             }
         }
+
+        return this;
     }
 
     private ValueAnimator createValueAnimator(int fromX, int toX, final boolean isReverseAnimator) {
         ValueAnimator anim = ValueAnimator.ofInt(fromX, toX);
+        anim.setDuration(animationDuration / 2);
         anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {

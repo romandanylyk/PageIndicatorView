@@ -1,7 +1,6 @@
 package com.rd.dotpagerview.view.animation;
 
 import android.animation.Animator;
-import android.animation.AnimatorSet;
 import android.support.annotation.NonNull;
 
 public abstract class AbsAnimation<T extends Animator> {
@@ -20,19 +19,11 @@ public abstract class AbsAnimation<T extends Animator> {
     @NonNull
     public abstract T createAnimator();
 
-    public abstract void progress(float progress);
+    public abstract AbsAnimation progress(float progress);
 
     public AbsAnimation duration(long duration) {
         animationDuration = duration;
-
-        if (animator instanceof AnimatorSet) {
-            int size = ((AnimatorSet) animator).getChildAnimations().size();
-            long singleDuration = animationDuration / size;
-            animator.setDuration(singleDuration);
-
-        } else {
-            animator.setDuration(animationDuration);
-        }
+        animator.setDuration(animationDuration);
 
         return this;
     }

@@ -37,11 +37,13 @@ public class ColorAnimation extends AbsAnimation<ValueAnimator> {
     }
 
     @Override
-    public void progress(float progress) {
+    public ColorAnimation progress(float progress) {
         if (animator != null) {
             long playTime = (long) (progress * animationDuration);
             animator.setCurrentPlayTime(playTime);
         }
+
+        return this;
     }
 
     @NonNull
