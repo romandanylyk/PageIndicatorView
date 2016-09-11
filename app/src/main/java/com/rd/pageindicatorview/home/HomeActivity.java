@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import com.rd.pageindicatorview.R;
 import com.rd.pageindicatorview.view.PageIndicatorView;
+import com.rd.pageindicatorview.view.animation.AnimationType;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -24,7 +25,6 @@ public class HomeActivity extends AppCompatActivity {
         pager.setAdapter(adapter);
 
         final PageIndicatorView pageIndicatorView = (PageIndicatorView) findViewById(R.id.pageIndicatorView);
-        pageIndicatorView.setCount(8);
         pageIndicatorView.setViewPager(pager);
     }
 }

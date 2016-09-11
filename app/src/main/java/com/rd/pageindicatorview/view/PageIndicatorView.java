@@ -22,6 +22,7 @@ public class PageIndicatorView extends View {
     private static final String DEFAULT_UNSELECTED_COLOR = "#33ffffff";
     private static final String DEFAULT_SELECTED_COLOR = "#ffffff";
 
+    private static final int MIN_RADIUS_DP = 1;
     private static final int DEFAULT_RADIUS_DP = 6;
     private static final int DEFAULT_PADDING_DP = 8;
 
@@ -147,6 +148,10 @@ public class PageIndicatorView extends View {
      * @param radiusDp radius of circle in dp.
      */
     public void setRadius(int radiusDp) {
+        if (radiusDp < 0) {
+            radiusDp = MIN_RADIUS_DP;
+        }
+
         radiusPx = DensityUtils.dpToPx(radiusDp);
         initFrameValues();
 
@@ -264,7 +269,7 @@ public class PageIndicatorView extends View {
     }
 
     /**
-     * Set progress value of animation while selecting new indicator position.
+     * Set progress value in range [0 - 1] to specify state of animation while selecting new circle indicator.
      * (Won't affect on anything unless {@link #setInteractiveAnimation(boolean isInteractive)} is false)
      *
      * @param selectingPosition selecting position with specific progress value
@@ -272,6 +277,20 @@ public class PageIndicatorView extends View {
      */
     public void setProgress(int selectingPosition, float progress) {
         if (interactiveAnimation) {
+
+            if (selectingPosition < 0) {
+                selectingPosition = 0;
+
+            } else if (selectingPosition > count - 1) {
+                selectingPosition = count - 1;
+            }
+
+            if (progress < 0) {
+                progress = 0;
+
+            } else if (progress > 1) {
+                progress = 1;
+            }
 
             this.selectingPosition = selectingPosition;
             AbsAnimation animator = getSelectedAnimation();
@@ -617,10 +636,13 @@ public class PageIndicatorView extends View {
         selectedPosition = position;
         selectingPosition = position;
 
-        radiusPx = (int) typedArray.getDimension(R.styleable.PageIndicatorView_radius, radiusPx);
         paddingPx = (int) typedArray.getDimension(R.styleable.PageIndicatorView_padding, paddingPx);
-        scaleFactor = typedArray.getFloat(R.styleable.PageIndicatorView_scaleFactor, ScaleAnimation.DEFAULT_SCALE_FACTOR);
+        radiusPx = (int) typedArray.getDimension(R.styleable.PageIndicatorView_radius, radiusPx);
+        if (radiusPx < 0) {
+            radiusPx = DensityUtils.dpToPx(MIN_RADIUS_DP);
+        }
 
+        scaleFactor = typedArray.getFloat(R.styleable.PageIndicatorView_scaleFactor, ScaleAnimation.DEFAULT_SCALE_FACTOR);
         if (scaleFactor < ScaleAnimation.MIN_SCALE_FACTOR) {
             scaleFactor = ScaleAnimation.MIN_SCALE_FACTOR;
         } else if (scaleFactor > ScaleAnimation.MAX_SCALE_FACTOR) {
@@ -631,7 +653,7 @@ public class PageIndicatorView extends View {
         selectedColor = typedArray.getColor(R.styleable.PageIndicatorView_selectedColor, selectedColor);
 
         animationDuration = typedArray.getInt(R.styleable.PageIndicatorView_animationDuration, AbsAnimation.DEFAULT_ANIMATION_TIME);
-        interactiveAnimation = typedArray.getBoolean(R.styleable.PageIndicatorView_animationInteractiveEffect, false);
+        interactiveAnimation = typedArray.getBoolean(R.styleable.PageIndicatorView_interactiveAnimation, false);
 
         int index = typedArray.getInt(R.styleable.PageIndicatorView_animationType, AnimationType.NONE.ordinal());
         animationType = getAnimationType(index);
