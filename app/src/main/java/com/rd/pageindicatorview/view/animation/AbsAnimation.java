@@ -1,6 +1,7 @@
 package com.rd.pageindicatorview.view.animation;
 
 import android.animation.Animator;
+import android.animation.AnimatorSet;
 import android.support.annotation.NonNull;
 
 public abstract class AbsAnimation<T extends Animator> {
@@ -23,7 +24,15 @@ public abstract class AbsAnimation<T extends Animator> {
 
     public AbsAnimation duration(long duration) {
         animationDuration = duration;
-        animator.setDuration(animationDuration);
+
+        if (animator instanceof AnimatorSet) {
+            int size = ((AnimatorSet) animator).getChildAnimations().size();
+            long singleDuration = animationDuration / size;
+            animator.setDuration(singleDuration);
+
+        } else {
+            animator.setDuration(animationDuration);
+        }
 
         return this;
     }

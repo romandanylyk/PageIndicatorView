@@ -23,6 +23,8 @@
         attrs:padding="12dp"
         attrs:radius="6dp"
         attrs:count="8"
+        attrs:selectedColor="@color/colorPrimaryDark"
+        attrs:unselectedColor="@color/colorAccent"
         attrs:animationType="worm"
         attrs:animationInteractiveEffect="true"/>
 

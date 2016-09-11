@@ -416,6 +416,7 @@ public class PageIndicatorView extends View {
         if (interactiveAnimation) {
             if (position == selectingPosition) {
                 color = frameColor;
+
             } else if (position == selectedPosition) {
                 color = frameColorReverse;
             }
@@ -423,6 +424,7 @@ public class PageIndicatorView extends View {
         } else {
             if (position == selectedPosition) {
                 color = frameColor;
+
             } else if (position == lastSelectedPosition) {
                 color = frameColorReverse;
             }
@@ -470,10 +472,10 @@ public class PageIndicatorView extends View {
         int top = y - radius;
         int bot = y + radius;
 
-        if (interactiveAnimation && position == selectingPosition) {
+        if (interactiveAnimation && (position == selectingPosition || position == selectedPosition)) {
             rect = new RectF(left, top, right, bot);
 
-        } else if (!interactiveAnimation && position == selectedPosition) {
+        } else if (!interactiveAnimation && (position == selectedPosition || position == lastSelectedPosition)) {
             rect = new RectF(left, top, right, bot);
         }
 
@@ -490,11 +492,11 @@ public class PageIndicatorView extends View {
         paint.setColor(unselectedColor);
         canvas.drawCircle(x, y, radiusPx, paint);
 
-        if (interactiveAnimation && position == selectingPosition) {
+        if (interactiveAnimation && (position == selectingPosition || position == selectedPosition)) {
             paint.setColor(selectedColor);
             canvas.drawCircle(frameXCoordinate, y, radiusPx, paint);
 
-        } else if (!interactiveAnimation && position == selectedPosition) {
+        } else if (!interactiveAnimation && (position == selectedPosition || position == lastSelectedPosition)) {
             paint.setColor(selectedColor);
             canvas.drawCircle(frameXCoordinate, y, radiusPx, paint);
         }
