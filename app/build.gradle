@@ -5,7 +5,7 @@ android {
     buildToolsVersion "24.0.1"
 
     defaultConfig {
-        applicationId "com.rd.dotpagerview"
+        applicationId "com.rd.pageindicatorview"
         minSdkVersion 15
         targetSdkVersion 23
         versionCode 1

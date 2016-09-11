@@ -1,4 +1,4 @@
-package com.rd.dotpagerview.utils;
+package com.rd.pageindicatorview.utils;
 
 import android.content.res.Resources;
 import android.util.TypedValue;

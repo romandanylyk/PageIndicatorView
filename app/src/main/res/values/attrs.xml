@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <resources>
-    <declare-styleable name="DotPagerView">
+    <declare-styleable name="PageIndicatorView">
         <attr name="count" format="integer" />
         <attr name="select" format="integer" />
 

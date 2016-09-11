@@ -1,4 +1,4 @@
-package com.rd.dotpagerview.home;
+package com.rd.pageindicatorview.home;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;

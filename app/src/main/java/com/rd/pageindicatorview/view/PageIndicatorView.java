@@ -1,4 +1,4 @@
-package com.rd.dotpagerview.view;
+package com.rd.pageindicatorview.view;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -12,11 +12,11 @@ import android.util.AttributeSet;
 import android.util.Pair;
 import android.view.View;
 
-import com.rd.dotpagerview.R;
-import com.rd.dotpagerview.view.animation.*;
-import com.rd.dotpagerview.utils.DensityUtils;
+import com.rd.pageindicatorview.R;
+import com.rd.pageindicatorview.view.animation.*;
+import com.rd.pageindicatorview.utils.DensityUtils;
 
-public class DotPagerView extends View {
+public class PageIndicatorView extends View {
 
     private static final String DEFAULT_UNSELECTED_COLOR = "#33ffffff";
     private static final String DEFAULT_SELECTED_COLOR = "#ffffff";
@@ -58,23 +58,23 @@ public class DotPagerView extends View {
     private AnimationType animationType = AnimationType.NONE;
     private ValueAnimation animation;
 
-    public DotPagerView(Context context) {
+    public PageIndicatorView(Context context) {
         super(context);
         init(null);
     }
 
-    public DotPagerView(Context context, AttributeSet attrs) {
+    public PageIndicatorView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(attrs);
     }
 
-    public DotPagerView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public PageIndicatorView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(attrs);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public DotPagerView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public PageIndicatorView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         init(attrs);
     }
@@ -87,12 +87,12 @@ public class DotPagerView extends View {
         int heightMode = MeasureSpec.getMode(heightMeasureSpec);
         int heightSize = MeasureSpec.getSize(heightMeasureSpec);
 
-        int dotDiameterPx = radiusPx * 2;
-        int desiredHeight = dotDiameterPx;
+        int circleDiameterPx = radiusPx * 2;
+        int desiredHeight = circleDiameterPx;
         int desiredWidth = 0;
 
         if (count != 0) {
-            desiredWidth = (dotDiameterPx * count) + (paddingPx * (count - 1));
+            desiredWidth = (circleDiameterPx * count) + (paddingPx * (count - 1));
         }
 
         int width;
@@ -119,7 +119,7 @@ public class DotPagerView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        drawDotView(canvas);
+        drawIndicatorView(canvas);
     }
 
     /**
@@ -140,7 +140,7 @@ public class DotPagerView extends View {
     }
 
     /**
-     * Set radius in dp of each circle indicator. Default value is {@link DotPagerView#DEFAULT_RADIUS_DP}.
+     * Set radius in dp of each circle indicator. Default value is {@link PageIndicatorView#DEFAULT_RADIUS_DP}.
      * Note: make sure you set circle Radius, not a Diameter.
      *
      * @param radiusDp radius of circle in dp.
@@ -152,14 +152,14 @@ public class DotPagerView extends View {
 
     /**
      * Return radius of each circle indicators in dp. If custom radius is not set, return
-     * default value {@link DotPagerView#DEFAULT_RADIUS_DP}.
+     * default value {@link PageIndicatorView#DEFAULT_RADIUS_DP}.
      */
     public int getRadius() {
         return DensityUtils.dpToPx(radiusPx);
     }
 
     /**
-     * Set padding in dp between each circle indicator. Default value is {@link DotPagerView#DEFAULT_PADDING_DP}.
+     * Set padding in dp between each circle indicator. Default value is {@link PageIndicatorView#DEFAULT_PADDING_DP}.
      *
      * @param paddingDp padding between circles
      */
@@ -170,14 +170,14 @@ public class DotPagerView extends View {
 
     /**
      * Return padding in dp between each circle indicator. If custom padding is not set,
-     * return default value {@link DotPagerView#DEFAULT_PADDING_DP}.
+     * return default value {@link PageIndicatorView#DEFAULT_PADDING_DP}.
      */
     public int getPadding() {
         return DensityUtils.dpToPx(paddingPx);
     }
 
     /**
-     * Set color of unselected state to each circle indicator. Default color {@link DotPagerView#DEFAULT_UNSELECTED_COLOR}.
+     * Set color of unselected state to each circle indicator. Default color {@link PageIndicatorView#DEFAULT_UNSELECTED_COLOR}.
      *
      * @param color color of each unselected circle
      */
@@ -188,14 +188,14 @@ public class DotPagerView extends View {
 
     /**
      * Return color of unselected state of each circle indicator. If custom unselected color
-     * is not set, return default color {@link DotPagerView#DEFAULT_UNSELECTED_COLOR}
+     * is not set, return default color {@link PageIndicatorView#DEFAULT_UNSELECTED_COLOR}
      */
     public int getUnselectedColor() {
         return unselectedColor;
     }
 
     /**
-     * Set color of selected state to circle indicator. Default color is white {@link DotPagerView#DEFAULT_SELECTED_COLOR}.
+     * Set color of selected state to circle indicator. Default color is white {@link PageIndicatorView#DEFAULT_SELECTED_COLOR}.
      *
      * @param color color selected circle
      */
@@ -206,7 +206,7 @@ public class DotPagerView extends View {
 
     /**
      * Return color of selected circle indicator. If custom unselected color
-     * is not set, return default color {@link DotPagerView#DEFAULT_SELECTED_COLOR}.
+     * is not set, return default color {@link PageIndicatorView#DEFAULT_SELECTED_COLOR}.
      */
     public int getSelectedColor() {
         return selectedColor;
@@ -365,16 +365,16 @@ public class DotPagerView extends View {
         setProgress(selectingPosition, selectingProgress);
     }
 
-    private void drawDotView(@NonNull Canvas canvas) {
+    private void drawIndicatorView(@NonNull Canvas canvas) {
         int y = getHeight() / 2;
 
         for (int i = 0; i < count; i++) {
             int x = getXCoordinate(i);
-            drawDot(canvas, i, x, y);
+            drawCircle(canvas, i, x, y);
         }
     }
 
-    private void drawDot(@NonNull Canvas canvas, int position, int x, int y) {
+    private void drawCircle(@NonNull Canvas canvas, int position, int x, int y) {
         boolean selectedItem = !interactiveAnimation && (position == selectedPosition || position == lastSelectedPosition);
         boolean selectingItem = interactiveAnimation && (position == selectingPosition || position == selectedPosition);
         boolean isSelectedItem = selectedItem | selectingItem;
@@ -593,10 +593,10 @@ public class DotPagerView extends View {
             return;
         }
 
-        TypedArray typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.DotPagerView, 0, 0);
+        TypedArray typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.PageIndicatorView, 0, 0);
 
-        count = typedArray.getInt(R.styleable.DotPagerView_count, 0);
-        int position = typedArray.getInt(R.styleable.DotPagerView_select, 0);
+        count = typedArray.getInt(R.styleable.PageIndicatorView_count, 0);
+        int position = typedArray.getInt(R.styleable.PageIndicatorView_select, 0);
 
         if (position < 0) {
             position = 0;
@@ -607,9 +607,9 @@ public class DotPagerView extends View {
         selectedPosition = position;
         selectingPosition = position;
 
-        radiusPx = (int) typedArray.getDimension(R.styleable.DotPagerView_radius, radiusPx);
-        paddingPx = (int) typedArray.getDimension(R.styleable.DotPagerView_padding, paddingPx);
-        scaleFactor = typedArray.getFloat(R.styleable.DotPagerView_scaleFactor, ScaleAnimation.DEFAULT_SCALE_FACTOR);
+        radiusPx = (int) typedArray.getDimension(R.styleable.PageIndicatorView_radius, radiusPx);
+        paddingPx = (int) typedArray.getDimension(R.styleable.PageIndicatorView_padding, paddingPx);
+        scaleFactor = typedArray.getFloat(R.styleable.PageIndicatorView_scaleFactor, ScaleAnimation.DEFAULT_SCALE_FACTOR);
 
         if (scaleFactor < ScaleAnimation.MIN_SCALE_FACTOR) {
             scaleFactor = ScaleAnimation.MIN_SCALE_FACTOR;
@@ -617,13 +617,13 @@ public class DotPagerView extends View {
             scaleFactor = ScaleAnimation.MAX_SCALE_FACTOR;
         }
 
-        unselectedColor = typedArray.getColor(R.styleable.DotPagerView_unselectedColor, unselectedColor);
-        selectedColor = typedArray.getColor(R.styleable.DotPagerView_selectedColor, selectedColor);
+        unselectedColor = typedArray.getColor(R.styleable.PageIndicatorView_unselectedColor, unselectedColor);
+        selectedColor = typedArray.getColor(R.styleable.PageIndicatorView_selectedColor, selectedColor);
 
-        animationDuration = typedArray.getInt(R.styleable.DotPagerView_animationDuration, AbsAnimation.DEFAULT_ANIMATION_TIME);
-        interactiveAnimation = typedArray.getBoolean(R.styleable.DotPagerView_animationInteractiveEffect, false);
+        animationDuration = typedArray.getInt(R.styleable.PageIndicatorView_animationDuration, AbsAnimation.DEFAULT_ANIMATION_TIME);
+        interactiveAnimation = typedArray.getBoolean(R.styleable.PageIndicatorView_animationInteractiveEffect, false);
 
-        int index = typedArray.getInt(R.styleable.DotPagerView_animationType, AnimationType.NONE.ordinal());
+        int index = typedArray.getInt(R.styleable.PageIndicatorView_animationType, AnimationType.NONE.ordinal());
         animationType = getAnimationType(index);
 
         typedArray.recycle();

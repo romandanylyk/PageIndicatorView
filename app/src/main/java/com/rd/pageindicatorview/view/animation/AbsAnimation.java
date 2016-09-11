@@ -1,4 +1,4 @@
-package com.rd.dotpagerview.view.animation;
+package com.rd.pageindicatorview.view.animation;
 
 import android.animation.Animator;
 import android.support.annotation.NonNull;

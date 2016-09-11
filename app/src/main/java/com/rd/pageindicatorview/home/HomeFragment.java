@@ -1,4 +1,4 @@
-package com.rd.dotpagerview.home;
+package com.rd.pageindicatorview.home;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -6,7 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.rd.dotpagerview.R;
+import com.rd.pageindicatorview.R;
 
 public class HomeFragment extends Fragment {
 

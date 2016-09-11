@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.rd.dotpagerview">
+          package="com.rd.pageindicatorview">
 
     <application
             android:allowBackup="true"
@@ -9,7 +9,7 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
         <activity
-                android:name=".home.HomeActivity"
+                android:name="com.rd.pageindicatorview.home.HomeActivity"
                 android:screenOrientation="portrait">
 
             <intent-filter>

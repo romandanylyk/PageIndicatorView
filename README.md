@@ -1,1 +1,1 @@
-# DotPagerView
+# PageIndicatorView

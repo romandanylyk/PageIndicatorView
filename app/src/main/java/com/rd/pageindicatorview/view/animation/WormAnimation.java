@@ -1,10 +1,9 @@
-package com.rd.dotpagerview.view.animation;
+package com.rd.pageindicatorview.view.animation;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.animation.DecelerateInterpolator;
 
 public class WormAnimation extends AbsAnimation<AnimatorSet> {
