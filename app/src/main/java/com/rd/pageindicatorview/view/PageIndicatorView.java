@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 
@@ -147,6 +148,8 @@ public class PageIndicatorView extends View {
      */
     public void setRadius(int radiusDp) {
         radiusPx = DensityUtils.dpToPx(radiusDp);
+        initFrameValues();
+
         invalidate();
     }
 
@@ -165,6 +168,8 @@ public class PageIndicatorView extends View {
      */
     public void setPadding(int paddingDp) {
         paddingPx = DensityUtils.dpToPx(paddingDp);
+        initFrameValues();
+
         invalidate();
     }
 
@@ -183,6 +188,8 @@ public class PageIndicatorView extends View {
      */
     public void setUnselectedColor(int color) {
         unselectedColor = color;
+        initFrameValues();
+
         invalidate();
     }
 
@@ -201,6 +208,8 @@ public class PageIndicatorView extends View {
      */
     public void setSelectedColor(int color) {
         selectedColor = color;
+        initFrameValues();
+
         invalidate();
     }
 
@@ -262,15 +271,14 @@ public class PageIndicatorView extends View {
      * @param progress          float value of progress
      */
     public void setProgress(int selectingPosition, float progress) {
-        if (!interactiveAnimation) {
-            return;
-        }
+        if (interactiveAnimation) {
 
-        this.selectingPosition = selectingPosition;
-        AbsAnimation animator = getSelectedAnimation();
+            this.selectingPosition = selectingPosition;
+            AbsAnimation animator = getSelectedAnimation();
 
-        if (animator != null) {
-            animator.progress(progress);
+            if (animator != null) {
+                animator.progress(progress);
+            }
         }
     }
 
@@ -281,10 +289,6 @@ public class PageIndicatorView extends View {
      * @param position position of indicator to select
      */
     public void setSelection(int position) {
-        if (interactiveAnimation && animationType != AnimationType.NONE) {
-            return;
-        }
-
         if (position < 0) {
             position = 0;
 
@@ -339,12 +343,16 @@ public class PageIndicatorView extends View {
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                onPageScroll(position, positionOffset);
+                if (interactiveAnimation) {
+                    onPageScroll(position, positionOffset);
+                }
             }
 
             @Override
             public void onPageSelected(int position) {
-                setSelection(position);
+                if (!interactiveAnimation || animationType == AnimationType.NONE) {
+                    setSelection(position);
+                }
             }
 
             @Override
@@ -602,7 +610,7 @@ public class PageIndicatorView extends View {
 
         if (position < 0) {
             position = 0;
-        } else if (position > count - 1) {
+        } else if (count > 0 && position > count - 1) {
             position = count - 1;
         }
 

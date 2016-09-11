@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:attrs="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
     tools:background="#3D86FC"
     tools:context=".home.HomeActivity">
@@ -19,13 +18,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="48dp"
-        attrs:padding="12dp"
-        attrs:radius="6dp"
-        attrs:count="8"
-        attrs:selectedColor="@color/colorPrimaryDark"
-        attrs:unselectedColor="@color/colorAccent"
-        attrs:animationType="worm"
-        attrs:animationInteractiveEffect="true"/>
+        android:layout_marginBottom="48dp" />
 
 </RelativeLayout>
