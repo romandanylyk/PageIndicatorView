@@ -21,8 +21,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="48dp"
         attrs:count="8"
-        attrs:radius="-10dp"
         attrs:animationType="worm"
-        attrs:interactiveAnimation="true"/>
+        attrs:interactiveAnimation="false"/>
 
 </RelativeLayout>

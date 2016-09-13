@@ -9,7 +9,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 
@@ -17,12 +16,11 @@ import com.rd.pageindicatorview.R;
 import com.rd.pageindicatorview.view.animation.*;
 import com.rd.pageindicatorview.utils.DensityUtils;
 
-public class PageIndicatorView extends View {
+public class PageIndicatorView extends View implements ViewPager.OnPageChangeListener {
 
     private static final String DEFAULT_UNSELECTED_COLOR = "#33ffffff";
     private static final String DEFAULT_SELECTED_COLOR = "#ffffff";
 
-    private static final int MIN_RADIUS_DP = 1;
     private static final int DEFAULT_RADIUS_DP = 6;
     private static final int DEFAULT_PADDING_DP = 8;
 
@@ -56,9 +54,12 @@ public class PageIndicatorView extends View {
     private boolean interactiveAnimation;
     private long animationDuration;
 
-    private Paint paint;
+    private Paint paint = new Paint();
+    private RectF rect = new RectF();
+
     private AnimationType animationType = AnimationType.NONE;
     private ValueAnimation animation;
+    private ViewPager viewPager;
 
     public PageIndicatorView(Context context) {
         super(context);
@@ -116,6 +117,14 @@ public class PageIndicatorView extends View {
             height = desiredHeight;
         }
 
+        if (width < 0) {
+            width = 0;
+        }
+
+        if (height < 0) {
+            height = 0;
+        }
+
         setMeasuredDimension(width, height);
     }
 
@@ -124,10 +133,27 @@ public class PageIndicatorView extends View {
         drawIndicatorView(canvas);
     }
 
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+        if (interactiveAnimation) {
+            onPageScroll(position, positionOffset);
+        }
+    }
+
+    @Override
+    public void onPageSelected(int position) {
+        if (!interactiveAnimation || animationType == AnimationType.NONE) {
+            setSelection(position);
+        }
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {/*empty*/}
+
     /**
-     * Set number of circle indicators to be displayed
+     * Set number of circle indicators to be displayed.
      *
-     * @param count total count of indicators
+     * @param count total count of indicators.
      */
     public void setCount(int count) {
         this.count = count;
@@ -149,7 +175,7 @@ public class PageIndicatorView extends View {
      */
     public void setRadius(int radiusDp) {
         if (radiusDp < 0) {
-            radiusDp = MIN_RADIUS_DP;
+            radiusDp = 0;
         }
 
         radiusPx = DensityUtils.dpToPx(radiusDp);
@@ -169,7 +195,7 @@ public class PageIndicatorView extends View {
     /**
      * Set padding in dp between each circle indicator. Default value is {@link PageIndicatorView#DEFAULT_PADDING_DP}.
      *
-     * @param paddingDp padding between circles
+     * @param paddingDp padding between circles.
      */
     public void setPadding(int paddingDp) {
         paddingPx = DensityUtils.dpToPx(paddingDp);
@@ -189,7 +215,7 @@ public class PageIndicatorView extends View {
     /**
      * Set color of unselected state to each circle indicator. Default color {@link PageIndicatorView#DEFAULT_UNSELECTED_COLOR}.
      *
-     * @param color color of each unselected circle
+     * @param color color of each unselected circle.
      */
     public void setUnselectedColor(int color) {
         unselectedColor = color;
@@ -200,7 +226,7 @@ public class PageIndicatorView extends View {
 
     /**
      * Return color of unselected state of each circle indicator. If custom unselected color
-     * is not set, return default color {@link PageIndicatorView#DEFAULT_UNSELECTED_COLOR}
+     * is not set, return default color {@link PageIndicatorView#DEFAULT_UNSELECTED_COLOR}.
      */
     public int getUnselectedColor() {
         return unselectedColor;
@@ -209,7 +235,7 @@ public class PageIndicatorView extends View {
     /**
      * Set color of selected state to circle indicator. Default color is white {@link PageIndicatorView#DEFAULT_SELECTED_COLOR}.
      *
-     * @param color color selected circle
+     * @param color color selected circle.
      */
     public void setSelectedColor(int color) {
         selectedColor = color;
@@ -219,7 +245,7 @@ public class PageIndicatorView extends View {
     }
 
     /**
-     * Return color of selected circle indicator. If custom unselected color
+     * Return color of selected circle indicator. If custom unselected color.
      * is not set, return default color {@link PageIndicatorView#DEFAULT_SELECTED_COLOR}.
      */
     public int getSelectedColor() {
@@ -229,9 +255,9 @@ public class PageIndicatorView extends View {
     /**
      * Set animation duration time in millisecond. Default animation duration time is {@link AbsAnimation#DEFAULT_ANIMATION_TIME}.
      * (Won't affect on anything unless {@link #setAnimationType(AnimationType type)} is specified
-     * and {@link #setInteractiveAnimation(boolean isInteractive)} is false)
+     * and {@link #setInteractiveAnimation(boolean isInteractive)} is false).
      *
-     * @param duration animation duration time
+     * @param duration animation duration time.
      */
     public void setAnimationDuration(long duration) {
         animationDuration = duration;
@@ -262,7 +288,7 @@ public class PageIndicatorView extends View {
     /**
      * Set boolean value to perform interactive animation while selecting new indicator.
      *
-     * @param isInteractive value of animation to be interactive or not
+     * @param isInteractive value of animation to be interactive or not.
      */
     public void setInteractiveAnimation(boolean isInteractive) {
         interactiveAnimation = isInteractive;
@@ -270,10 +296,10 @@ public class PageIndicatorView extends View {
 
     /**
      * Set progress value in range [0 - 1] to specify state of animation while selecting new circle indicator.
-     * (Won't affect on anything unless {@link #setInteractiveAnimation(boolean isInteractive)} is false)
+     * (Won't affect on anything unless {@link #setInteractiveAnimation(boolean isInteractive)} is false).
      *
-     * @param selectingPosition selecting position with specific progress value
-     * @param progress          float value of progress
+     * @param selectingPosition selecting position with specific progress value.
+     * @param progress          float value of progress.
      */
     public void setProgress(int selectingPosition, float progress) {
         if (interactiveAnimation) {
@@ -305,7 +331,7 @@ public class PageIndicatorView extends View {
      * Set specific circle indicator position to be selected. If position < or > total count,
      * accordingly first or last circle indicator will be selected.
      *
-     * @param position position of indicator to select
+     * @param position position of indicator to select.
      */
     public void setSelection(int position) {
         if (position < 0) {
@@ -349,34 +375,27 @@ public class PageIndicatorView extends View {
     }
 
     /**
-     * Set {@link ViewPager} to automatically handle selecting new indicators events
-     * (and interactive animation effect in case interactive animation is enabled)
+     * Set {@link ViewPager} to add {@link ViewPager.OnPageChangeListener} to automatically
+     * handle selecting new indicators events (and interactive animation effect in case
+     * interactive animation is enabled).
      *
-     * @param viewPager instance of {@link ViewPager} to work with
+     * @param pager instance of {@link ViewPager} to work with
      */
-    public void setViewPager(@Nullable ViewPager viewPager) {
-        if (viewPager == null) {
-            return;
+    public void addViewPager(@Nullable ViewPager pager) {
+        if (pager != null) {
+            viewPager = pager;
+            viewPager.addOnPageChangeListener(this);
         }
+    }
 
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                if (interactiveAnimation) {
-                    onPageScroll(position, positionOffset);
-                }
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                if (!interactiveAnimation || animationType == AnimationType.NONE) {
-                    setSelection(position);
-                }
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {/*empty*/}
-        });
+    /**
+     * Release {@link ViewPager} and stop handling events of {@link ViewPager.OnPageChangeListener}.
+     */
+    public void releaseViewPager() {
+        if (viewPager != null) {
+            viewPager.removeOnPageChangeListener(this);
+            viewPager = null;
+        }
     }
 
     private void onPageScroll(int position, float positionOffset) {
@@ -424,7 +443,7 @@ public class PageIndicatorView extends View {
                 break;
 
             case WORM:
-                drawWithWormAnimation(canvas, position, x, y);
+                drawWithWormAnimation(canvas, x, y);
                 break;
 
             case SLIDE:
@@ -490,29 +509,24 @@ public class PageIndicatorView extends View {
         canvas.drawCircle(x, y, radius, paint);
     }
 
-    private void drawWithWormAnimation(@NonNull Canvas canvas, int position, int x, int y) {
+    private void drawWithWormAnimation(@NonNull Canvas canvas, int x, int y) {
         int radius = radiusPx;
-        RectF rect = null;
 
         int left = frameLeftX;
         int right = frameRightX;
         int top = y - radius;
         int bot = y + radius;
 
-        if (interactiveAnimation && (position == selectingPosition || position == selectedPosition)) {
-            rect = new RectF(left, top, right, bot);
-
-        } else if (!interactiveAnimation && (position == selectedPosition || position == lastSelectedPosition)) {
-            rect = new RectF(left, top, right, bot);
-        }
+        rect.left = left;
+        rect.right = right;
+        rect.top = top;
+        rect.bottom = bot;
 
         paint.setColor(unselectedColor);
         canvas.drawCircle(x, y, radius, paint);
 
-        if (rect != null) {
-            paint.setColor(selectedColor);
-            canvas.drawRoundRect(rect, radiusPx, radiusPx, paint);
-        }
+        paint.setColor(selectedColor);
+        canvas.drawRoundRect(rect, radiusPx, radiusPx, paint);
     }
 
     private void drawWithSlideAnimation(@NonNull Canvas canvas, int position, int x, int y) {
@@ -548,9 +562,10 @@ public class PageIndicatorView extends View {
     private void init(@Nullable AttributeSet attrs) {
         initAttributes(attrs);
         initFrameValues();
-
         initAnimation();
-        initPaint();
+
+        paint.setStyle(Paint.Style.FILL);
+        paint.setAntiAlias(true);
     }
 
     private void initFrameValues() {
@@ -611,12 +626,6 @@ public class PageIndicatorView extends View {
         });
     }
 
-    private void initPaint() {
-        paint = new Paint();
-        paint.setStyle(Paint.Style.FILL);
-        paint.setAntiAlias(true);
-    }
-
     private void initAttributes(@Nullable AttributeSet attrs) {
         if (attrs == null) {
             return;
@@ -638,9 +647,6 @@ public class PageIndicatorView extends View {
 
         paddingPx = (int) typedArray.getDimension(R.styleable.PageIndicatorView_padding, paddingPx);
         radiusPx = (int) typedArray.getDimension(R.styleable.PageIndicatorView_radius, radiusPx);
-        if (radiusPx < 0) {
-            radiusPx = DensityUtils.dpToPx(MIN_RADIUS_DP);
-        }
 
         scaleFactor = typedArray.getFloat(R.styleable.PageIndicatorView_scaleFactor, ScaleAnimation.DEFAULT_SCALE_FACTOR);
         if (scaleFactor < ScaleAnimation.MIN_SCALE_FACTOR) {
