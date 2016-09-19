@@ -1,6 +1,5 @@
 package com.rd.pageindicatorview.home;
 
-import android.os.Handler;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -18,6 +17,7 @@ public class HomeActivity extends AppCompatActivity {
         initViews();
     }
 
+    @SuppressWarnings("ConstantConditions")
     private void initViews() {
         HomeAdapter adapter = new HomeAdapter(getSupportFragmentManager());
 
