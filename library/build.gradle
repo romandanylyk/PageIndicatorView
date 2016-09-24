@@ -1,5 +1,29 @@
 apply plugin: 'com.android.library'
 
+ext {
+    bintrayRepo = 'maven'
+    bintrayName = 'pageindicatorview'
+
+    publishedGroupId = 'com.romandalyky'
+    libraryName = 'PageIndicatorView'
+    artifact = 'pageindicatorview'
+
+    libraryDescription = 'Page indicator for android ViewPager'
+
+    siteUrl = 'https://github.com/romandanylyk/PageIndicatorView'
+    gitUrl = 'https://github.com/romandanylyk/PageIndicatorView.git'
+
+    libraryVersion = '0.0.1'
+
+    developerId = 'romandanylyk'
+    developerName = 'Roman Danylyk'
+    developerEmail = 'romandanylyk96@gmail.com'
+
+    licenseName = 'The Apache Software License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    allLicenses = ["Apache-2.0"]
+}
+
 android {
     compileSdkVersion 24
     buildToolsVersion "24.0.2"
@@ -29,3 +53,6 @@ dependencies {
     compile 'com.android.support:appcompat-v7:24.2.1'
     testCompile 'junit:junit:4.12'
 }
+
+apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'
+apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/bintrayv1.gradle'
