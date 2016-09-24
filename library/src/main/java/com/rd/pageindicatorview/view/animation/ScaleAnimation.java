@@ -1,6 +1,8 @@
 package com.rd.pageindicatorview.view.animation;
 
-import android.animation.*;
+import android.animation.IntEvaluator;
+import android.animation.PropertyValuesHolder;
+import android.animation.ValueAnimator;
 import android.support.annotation.NonNull;
 import android.view.animation.DecelerateInterpolator;
 

@@ -1,11 +1,11 @@
 package com.rd.pageindicatorview.home;
 
+import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-
-import com.rd.pageindicatorview.R;
+import com.rd.pageindicatorview.sample.R;
 import com.rd.pageindicatorview.view.PageIndicatorView;
+
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -24,7 +24,7 @@ public class HomeActivity extends AppCompatActivity {
         ViewPager pager = (ViewPager) findViewById(R.id.viewPager);
         pager.setAdapter(adapter);
 
-        final PageIndicatorView pageIndicatorView = (PageIndicatorView) findViewById(R.id.pageIndicatorView);
+        PageIndicatorView pageIndicatorView = (PageIndicatorView) findViewById(R.id.pageIndicatorView);
         pageIndicatorView.addViewPager(pager);
     }
 }
