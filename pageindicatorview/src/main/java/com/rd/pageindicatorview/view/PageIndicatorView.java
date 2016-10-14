@@ -26,12 +26,13 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     private static final String DEFAULT_UNSELECTED_COLOR = "#33ffffff";
     private static final String DEFAULT_SELECTED_COLOR = "#ffffff";
 
+    private static final int DEFAULT_CIRCLES_COUNT = 3;
     private static final int DEFAULT_RADIUS_DP = 6;
     private static final int DEFAULT_PADDING_DP = 8;
 
     private int radiusPx = DensityUtils.dpToPx(DEFAULT_RADIUS_DP);
     private int paddingPx = DensityUtils.dpToPx(DEFAULT_PADDING_DP);
-    private int count;
+    private int count = DEFAULT_CIRCLES_COUNT;
 
     //Color
     private int unselectedColor = Color.parseColor(DEFAULT_UNSELECTED_COLOR);
@@ -638,7 +639,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
         TypedArray typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.PageIndicatorView, 0, 0);
 
-        count = typedArray.getInt(R.styleable.PageIndicatorView_count, 0);
+        count = typedArray.getInt(R.styleable.PageIndicatorView_count, DEFAULT_CIRCLES_COUNT);
         int position = typedArray.getInt(R.styleable.PageIndicatorView_select, 0);
 
         if (position < 0) {

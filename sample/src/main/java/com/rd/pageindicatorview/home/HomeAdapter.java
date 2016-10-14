@@ -1,22 +1,49 @@
 package com.rd.pageindicatorview.home;
 
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.annotation.Nullable;
+import android.support.v4.view.PagerAdapter;
+import android.view.View;
+import android.view.ViewGroup;
 
-public class HomeAdapter extends FragmentStatePagerAdapter {
+import java.util.ArrayList;
+import java.util.List;
 
-    public HomeAdapter(FragmentManager fm) {
-        super(fm);
+class HomeAdapter extends PagerAdapter {
+
+    private List<View> viewList;
+
+    HomeAdapter() {
+        this.viewList = new ArrayList<>();
     }
 
     @Override
-    public Fragment getItem(int position) {
-        return new HomeFragment();
+    public Object instantiateItem(ViewGroup collection, int position) {
+        View view = viewList.get(position);
+        collection.addView(view);
+        return view;
+    }
+
+    @Override
+    public void destroyItem(ViewGroup collection, int position, Object view) {
+        collection.removeView((View) view);
     }
 
     @Override
     public int getCount() {
-        return 8;
+        return viewList.size();
+    }
+
+    @Override
+    public boolean isViewFromObject(View view, Object object) {
+        return view == object;
+    }
+
+    public void setData(@Nullable List<View> viewList) {
+        if (viewList == null) {
+            this.viewList.clear();
+        } else {
+            this.viewList.addAll(viewList);
+        }
+        notifyDataSetChanged();
     }
 }
