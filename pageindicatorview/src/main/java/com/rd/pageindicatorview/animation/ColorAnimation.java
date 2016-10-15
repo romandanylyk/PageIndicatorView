@@ -1,4 +1,4 @@
-package com.rd.pageindicatorview.view.animation;
+package com.rd.pageindicatorview.animation;
 
 import android.animation.ArgbEvaluator;
 import android.animation.PropertyValuesHolder;
