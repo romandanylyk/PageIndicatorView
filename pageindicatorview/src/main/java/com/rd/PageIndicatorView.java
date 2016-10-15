@@ -387,7 +387,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
      *
      * @param pager instance of {@link ViewPager} to work with
      */
-    public void addViewPager(@Nullable ViewPager pager) {
+    public void setViewPager(@Nullable ViewPager pager) {
         if (pager != null) {
             viewPager = pager;
             viewPager.addOnPageChangeListener(this);
