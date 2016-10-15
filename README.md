@@ -55,7 +55,7 @@ setProgress(int selectingPosition, float progress)
 setSelection(int position)
 ```
 
-![](https://lh3.googleusercontent.com/t7AB5_JRefvcH1iOwf194Wae9H36BYJQ5FJ39J_rYwegnP8MXUMZRzf3FzamXABUi4MIeLEdKWUkL2A=w1920-h950)
+![](https://lh3.googleusercontent.com/5upgIENQsw_rzITwS_s2skcXrklo0TM8KawC6c84rKAv7LxuCz5hulbCnBnkyPB44ydhxS1yEj-bAL4=w1920-h950)
 
 ###**License**
 
