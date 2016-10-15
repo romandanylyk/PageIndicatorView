@@ -3,7 +3,7 @@
 
 PageIndicatorView will simplify your life while you working with Android ViewPager and need to indicate selected page. It's easy to setup and customize as you need with run-time preview rendering.
 
-![](https://lh6.googleusercontent.com/KrC6sU1G6nRSXemSiQn8Us2-L6pcUECmD_b3ydhMFz2-SjEeb8O5njCKdINgjkDJ_mRGhN5D9VTOeVQ=w1920-h950)
+![](https://lh3.googleusercontent.com/t7AB5_JRefvcH1iOwf194Wae9H36BYJQ5FJ39J_rYwegnP8MXUMZRzf3FzamXABUi4MIeLEdKWUkL2A=w1920-h950)
 
 ####**Integration**
 To add `pageindicatorview` to your project, first make sure in root `build.gradle` you have specified the following repository:
@@ -37,11 +37,6 @@ One of the most important feature of every custom view is ability to customize i
 
 ![](https://lh3.googleusercontent.com/t7AB5_JRefvcH1iOwf194Wae9H36BYJQ5FJ39J_rYwegnP8MXUMZRzf3FzamXABUi4MIeLEdKWUkL2A=w1920-h950)
 
-| Method name | Description |
-| :-------  :---: |
-| `setCount(int count)` | Set number of circle indicators to be displayed |
-| `setRadius(int radiusDp)` | Set radius in dp of each circle indicator | 
-| `setPadding(int paddingDp)` | Set padding in dp between each circle indicator |
 
 
 
