@@ -35,8 +35,6 @@ In case you want to control `PageIndicatorView` manually instead of setting `Vie
 ###**Customization**
 One of the most important feature of every custom view is ability to customize its look as user need. By calling the following methods (or attributes) you will be able to customize `PageIndicatorView` as you need.
 
-![](https://lh3.googleusercontent.com/t7AB5_JRefvcH1iOwf194Wae9H36BYJQ5FJ39J_rYwegnP8MXUMZRzf3FzamXABUi4MIeLEdKWUkL2A=w1920-h950)
-
 ```java
 //set size
 setCount(int count)
@@ -57,5 +55,6 @@ setProgress(int selectingPosition, float progress)
 setSelection(int position)
 ```
 
+![](https://lh3.googleusercontent.com/t7AB5_JRefvcH1iOwf194Wae9H36BYJQ5FJ39J_rYwegnP8MXUMZRzf3FzamXABUi4MIeLEdKWUkL2A=w1920-h950)
 
 
