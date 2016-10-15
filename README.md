@@ -37,7 +37,25 @@ One of the most important feature of every custom view is ability to customize i
 
 ![](https://lh3.googleusercontent.com/t7AB5_JRefvcH1iOwf194Wae9H36BYJQ5FJ39J_rYwegnP8MXUMZRzf3FzamXABUi4MIeLEdKWUkL2A=w1920-h950)
 
+```java
+//set size
+setCount(int count)
+setRadius(int radiusDp)
+setPadding(int paddingDp)
 
+//set color
+setUnselectedColor(int color)
+setSelectedColor(int color)
+
+//set animation
+setAnimationDuration(long duration)
+setAnimationType(AnimationType type)
+setInteractiveAnimation(boolean isInteractive)
+
+//set selection
+setProgress(int selectingPosition, float progress)
+setSelection(int position)
+```
 
 
 
