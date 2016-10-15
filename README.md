@@ -3,7 +3,7 @@
 
 PageIndicatorView will simplify your life while you working with Android ViewPager and need to indicate selected page. It's easy to setup and customize as you need with run-time preview rendering.
 
-![](https://lh4.googleusercontent.com/PGKewEvL0N-5HVgNLGpeNIDgXobe0X6Sz40zyRoirLKSJ592ksJrVv43JbwaCZg-7RbH3TgfVSKcPTE=w1920-h950)
+![](https://github.com/romandanylyk/PageIndicatorView/blob/master/assets/animation_worm.gif?raw=true)
 
 ###**Integration**
 To add `pageindicatorview` to your project, first make sure in root `build.gradle` you have specified the following repository:
@@ -12,7 +12,6 @@ To add `pageindicatorview` to your project, first make sure in root `build.gradl
         jcenter()
     }
 ```
-
 *Note: by creating new project in Android Studio it will have `jcenter` repository specified by default, so you will not need to add it manually.* 
 
 Once you make sure you have `jcenter` repository in your project, all you need to do is to add the following line in `dependencies` section of your project `build.gradle`
@@ -55,7 +54,7 @@ setProgress(int selectingPosition, float progress)
 setSelection(int position)
 ```
 
-![](https://lh3.googleusercontent.com/5upgIENQsw_rzITwS_s2skcXrklo0TM8KawC6c84rKAv7LxuCz5hulbCnBnkyPB44ydhxS1yEj-bAL4=w1920-h950)
+![](https://github.com/romandanylyk/PageIndicatorView/blob/master/assets/attributes.gif?raw=true)
 
 ###**License**
 
