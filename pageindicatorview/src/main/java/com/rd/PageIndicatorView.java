@@ -1,4 +1,4 @@
-package com.rd.pageindicatorview;
+package com.rd;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -14,11 +14,12 @@ import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.util.Pair;
 import android.view.View;
-import com.rd.pageindicatorview.utils.DensityUtils;
-import com.rd.pageindicatorview.animation.AbsAnimation;
-import com.rd.pageindicatorview.animation.AnimationType;
-import com.rd.pageindicatorview.animation.ScaleAnimation;
-import com.rd.pageindicatorview.animation.ValueAnimation;
+import com.rd.pageindicatorview.R;
+import com.rd.utils.DensityUtils;
+import com.rd.animation.AbsAnimation;
+import com.rd.animation.AnimationType;
+import com.rd.animation.ScaleAnimation;
+import com.rd.animation.ValueAnimation;
 
 public class PageIndicatorView extends View implements ViewPager.OnPageChangeListener {
 

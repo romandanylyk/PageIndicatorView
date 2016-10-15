@@ -1,4 +1,4 @@
-package com.rd.pageindicatorview.animation;
+package com.rd.animation;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;

@@ -1,4 +1,4 @@
-package com.rd.pageindicatorview.utils;
+package com.rd.utils;
 
 import android.content.res.Resources;
 import android.util.TypedValue;

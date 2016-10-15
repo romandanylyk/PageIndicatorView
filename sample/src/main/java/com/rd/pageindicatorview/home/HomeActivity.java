@@ -6,7 +6,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import com.rd.pageindicatorview.sample.R;
-import com.rd.pageindicatorview.PageIndicatorView;
+import com.rd.PageIndicatorView;
 
 import java.util.ArrayList;
 import java.util.List;
