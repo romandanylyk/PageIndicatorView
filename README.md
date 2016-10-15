@@ -17,9 +17,9 @@ To add `pageindicatorview` to your project, first make sure in root `build.gradl
 
 Once you make sure you have `jcenter` repository in your project, all you need to do is to add the following line in `dependencies` section of your project `build.gradle`
 ```java
-compile 'com.romandanylyk:pageindicatorview:0.0.1'
+compile 'com.romandanylyk:pageindicatorview:X.X.X'
 ```
-Than's it! You are ready to go!
+See latest library version at [Bintray](https://bintray.com/romandanylyk/maven/pageindicatorview).
 
 ###**Usage Sample**
 First of all, you need to set count of circles to be drawn, that will indicates number of pages your `ViewPager` has. Then you can call `addViewPager(viewPager)` method to do the rest of job for you. 
