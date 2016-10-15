@@ -42,13 +42,6 @@ One of the most important feature of every custom view is ability to customize i
 | `setCount(int count)` | Set number of circle indicators to be displayed |
 | `setRadius(int radiusDp)` | Set radius in dp of each circle indicator | 
 | `setPadding(int paddingDp)` | Set padding in dp between each circle indicator |
-| `setUnselectedColor(int color)` | Set color of unselected state to each circle indicator |
-| `setSelectedColor(int color)` | Set color of selected state to circle indicator|
-| `setAnimationDuration(long duration)` | Set animation duration time in millisecond |
-| `setAnimationType(AnimationType type)` | Set animation type to perform while selecting new circle indicator |
-| `setInteractiveAnimation(boolean isInteractive)` | Set boolean value to perform interactive animation while selecting new indicator |
-| `setProgress(int selectingPosition, float progress)` | Set progress value in range [0 - 1] to specify state of animation while selecting new circle indicator |
-| `setSelection(int position)` | Set specific circle indicator position to be selected |
 
 
 
