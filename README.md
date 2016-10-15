@@ -5,7 +5,7 @@ PageIndicatorView will simplify your life while you working with Android ViewPag
 
 ![](https://lh4.googleusercontent.com/PGKewEvL0N-5HVgNLGpeNIDgXobe0X6Sz40zyRoirLKSJ592ksJrVv43JbwaCZg-7RbH3TgfVSKcPTE=w1920-h950)
 
-####**Integration**
+###**Integration**
 To add `pageindicatorview` to your project, first make sure in root `build.gradle` you have specified the following repository:
 ```java
     repositories {
@@ -21,7 +21,7 @@ compile 'com.romandanylyk:pageindicatorview:0.0.1'
 ```
 Than's it! You are ready to go!
 
-####**Usage Sample**
+###**Usage Sample**
 First of all, you need to set count of circles to be drawn, that will indicates number of pages your `ViewPager` has. Then you can call `addViewPager(viewPager)` method to do the rest of job for you. 
 
 ```java
@@ -32,7 +32,7 @@ pageIndicatorView.addViewPager(viewPager);
 ```
 In case you want to control `PageIndicatorView` manually instead of setting `ViewPager`, you can always do it by calling specific methods.
 
-####**Customization**
+###**Customization**
 One of the most important feature of every custom view is ability to customize its look as user need. By calling the following methods (or attributes) you will be able to customize `PageIndicatorView` as you need.
 
 ![](https://lh3.googleusercontent.com/t7AB5_JRefvcH1iOwf194Wae9H36BYJQ5FJ39J_rYwegnP8MXUMZRzf3FzamXABUi4MIeLEdKWUkL2A=w1920-h950)
