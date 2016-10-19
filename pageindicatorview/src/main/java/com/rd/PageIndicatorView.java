@@ -3,6 +3,7 @@ package com.rd;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.database.DataSetObserver;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -10,8 +11,10 @@ import android.graphics.RectF;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import com.rd.pageindicatorview.R;
@@ -60,6 +63,9 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     private boolean interactiveAnimation;
     private long animationDuration;
 
+    private boolean dynamicCount = true;
+    private DataSetObserver setObserver;
+
     private Paint paint = new Paint();
     private RectF rect = new RectF();
 
@@ -88,11 +94,18 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         init(attrs);
     }
 
+    @Override
+    protected void onDetachedFromWindow() {
+        unRegisterSetObserver();
+        super.onDetachedFromWindow();
+    }
+
     @SuppressWarnings("UnnecessaryLocalVariable")
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int widthMode = MeasureSpec.getMode(widthMeasureSpec);
         int widthSize = MeasureSpec.getSize(widthMeasureSpec);
+
         int heightMode = MeasureSpec.getMode(heightMeasureSpec);
         int heightSize = MeasureSpec.getSize(heightMeasureSpec);
 
@@ -135,6 +148,12 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     }
 
     @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+        updateFrameValues();
+    }
+
+    @Override
     protected void onDraw(Canvas canvas) {
         drawIndicatorView(canvas);
     }
@@ -157,13 +176,18 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     public void onPageScrollStateChanged(int state) {/*empty*/}
 
     /**
-     * Set number of circle indicators to be displayed.
+     * Set static number of circle indicators to be displayed.
+     * Will automatically disable updating count dynamically. See {@link #setDynamicCount(boolean)}
      *
      * @param count total count of indicators.
      */
     public void setCount(int count) {
-        this.count = count;
-        invalidate();
+        if (this.count != count) {
+            this.count = count;
+            setDynamicCount(false);
+
+            requestLayout();
+        }
     }
 
     /**
@@ -171,6 +195,22 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
      */
     public int getCount() {
         return count;
+    }
+
+    /**
+     * Default is true. Dynamic count will automatically update count of circle indicators while {@link ViewPager} set.
+     * See {@link #setViewPager(ViewPager)}
+     *
+     * @param dynamicCount boolean value to add/remove indicators dynamically.
+     */
+    public void setDynamicCount(boolean dynamicCount) {
+        this.dynamicCount = dynamicCount;
+        if (dynamicCount) {
+            setCount(getViewPagerCount());
+            registerSetObserver();
+        } else {
+            unRegisterSetObserver();
+        }
     }
 
     /**
@@ -185,8 +225,6 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         }
 
         radiusPx = DensityUtils.dpToPx(radiusDp);
-        initFrameValues();
-
         invalidate();
     }
 
@@ -205,8 +243,6 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
      */
     public void setPadding(int paddingDp) {
         paddingPx = DensityUtils.dpToPx(paddingDp);
-        initFrameValues();
-
         invalidate();
     }
 
@@ -225,8 +261,6 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
      */
     public void setUnselectedColor(int color) {
         unselectedColor = color;
-        initFrameValues();
-
         invalidate();
     }
 
@@ -245,7 +279,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
      */
     public void setSelectedColor(int color) {
         selectedColor = color;
-        initFrameValues();
+        updateFrameValues();
 
         invalidate();
     }
@@ -391,6 +425,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         if (pager != null) {
             viewPager = pager;
             viewPager.addOnPageChangeListener(this);
+            setDynamicCount(dynamicCount);
         }
     }
 
@@ -567,35 +602,22 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
     private void init(@Nullable AttributeSet attrs) {
         initAttributes(attrs);
-        initFrameValues();
         initAnimation();
 
         paint.setStyle(Paint.Style.FILL);
         paint.setAntiAlias(true);
     }
 
-    private void initFrameValues() {
-        //color
-        frameColor = selectedColor;
-        frameColorReverse = unselectedColor;
-
-        //scale
-        frameRadiusPx = radiusPx;
-        frameRadiusReversePx = radiusPx;
-
-        //worm
-        int xCoordinate = getXCoordinate(selectedPosition);
-        if (xCoordinate - radiusPx >= 0) {
-            frameLeftX = xCoordinate - radiusPx;
-            frameRightX = xCoordinate + radiusPx;
-
-        } else {
-            frameLeftX = xCoordinate;
-            frameRightX = xCoordinate + (radiusPx * 2);
+    private void initAttributes(@Nullable AttributeSet attrs) {
+        if (attrs == null) {
+            return;
         }
 
-        //slide
-        frameXCoordinate = xCoordinate;
+        TypedArray typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.PageIndicatorView, 0, 0);
+        initCountAttribute(typedArray);
+        initSizeAttribute(typedArray);
+        initColorAttribute(typedArray);
+        initAnimationAttribute(typedArray);
     }
 
     private void initAnimation() {
@@ -632,13 +654,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         });
     }
 
-    private void initAttributes(@Nullable AttributeSet attrs) {
-        if (attrs == null) {
-            return;
-        }
-
-        TypedArray typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.PageIndicatorView, 0, 0);
-
+    private void initCountAttribute(@NonNull TypedArray typedArray) {
         count = typedArray.getInt(R.styleable.PageIndicatorView_count, DEFAULT_CIRCLES_COUNT);
         int position = typedArray.getInt(R.styleable.PageIndicatorView_select, 0);
 
@@ -650,7 +666,9 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
         selectedPosition = position;
         selectingPosition = position;
+    }
 
+    private void initSizeAttribute(@NonNull TypedArray typedArray) {
         paddingPx = (int) typedArray.getDimension(R.styleable.PageIndicatorView_padding, paddingPx);
         radiusPx = (int) typedArray.getDimension(R.styleable.PageIndicatorView_radius, radiusPx);
 
@@ -660,17 +678,19 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         } else if (scaleFactor > ScaleAnimation.MAX_SCALE_FACTOR) {
             scaleFactor = ScaleAnimation.MAX_SCALE_FACTOR;
         }
+    }
 
+    private void initColorAttribute(@NonNull TypedArray typedArray) {
         unselectedColor = typedArray.getColor(R.styleable.PageIndicatorView_unselectedColor, unselectedColor);
         selectedColor = typedArray.getColor(R.styleable.PageIndicatorView_selectedColor, selectedColor);
+    }
 
+    private void initAnimationAttribute(@NonNull TypedArray typedArray) {
         animationDuration = typedArray.getInt(R.styleable.PageIndicatorView_animationDuration, AbsAnimation.DEFAULT_ANIMATION_TIME);
         interactiveAnimation = typedArray.getBoolean(R.styleable.PageIndicatorView_interactiveAnimation, false);
 
         int index = typedArray.getInt(R.styleable.PageIndicatorView_animationType, AnimationType.NONE.ordinal());
         animationType = getAnimationType(index);
-
-        typedArray.recycle();
     }
 
     private AnimationType getAnimationType(int index) {
@@ -688,6 +708,30 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         }
 
         return AnimationType.NONE;
+    }
+
+    private void updateFrameValues() {
+        //color
+        frameColor = selectedColor;
+        frameColorReverse = unselectedColor;
+
+        //scale
+        frameRadiusPx = radiusPx;
+        frameRadiusReversePx = radiusPx;
+
+        //worm
+        int xCoordinate = getXCoordinate(selectedPosition);
+        if (xCoordinate - radiusPx >= 0) {
+            frameLeftX = xCoordinate - radiusPx;
+            frameRightX = xCoordinate + radiusPx;
+
+        } else {
+            frameLeftX = xCoordinate;
+            frameRightX = xCoordinate + (radiusPx * 2);
+        }
+
+        //slide
+        frameXCoordinate = xCoordinate;
     }
 
     private void startColorAnimation() {
@@ -740,9 +784,11 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         return null;
     }
 
+    @SuppressWarnings("UnnecessaryLocalVariable")
     private int getXCoordinate(int position) {
         int actualViewWidth = calculateActualViewWidth();
-        int x = (getWidth() - actualViewWidth) / 2;
+        int viewCenter = (getWidth() - actualViewWidth) / 2;
+        int x = viewCenter;
 
         if (x < 0) {
             x = 0;
@@ -804,5 +850,37 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         }
 
         return width;
+    }
+
+    private void registerSetObserver() {
+        if (setObserver == null && viewPager != null && viewPager.getAdapter() != null) {
+            setObserver = new DataSetObserver() {
+                @Override
+                public void onChanged() {
+                    super.onChanged();
+                    if (viewPager != null && viewPager.getAdapter() != null) {
+                        int count = viewPager.getAdapter().getCount();
+                        setCount(count);
+                    }
+                }
+            };
+
+            viewPager.getAdapter().registerDataSetObserver(setObserver);
+        }
+    }
+
+    private void unRegisterSetObserver() {
+        if (setObserver != null && viewPager != null && viewPager.getAdapter() != null) {
+            viewPager.getAdapter().unregisterDataSetObserver(setObserver);
+            setObserver = null;
+        }
+    }
+
+    private int getViewPagerCount() {
+        if (viewPager != null && viewPager.getAdapter() != null) {
+            return viewPager.getAdapter().getCount();
+        } else {
+            return count;
+        }
     }
 }
