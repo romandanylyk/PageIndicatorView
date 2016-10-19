@@ -33,7 +33,6 @@ public class HomeActivity extends AppCompatActivity {
         pager.setAdapter(adapter);
 
         PageIndicatorView pageIndicatorView = (PageIndicatorView) findViewById(R.id.pageIndicatorView);
-        pageIndicatorView.setCount(pageList.size());
         pageIndicatorView.setViewPager(pager);
     }
 
