@@ -157,16 +157,6 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     public void onPageScrollStateChanged(int state) {/*empty*/}
 
     /**
-     * Set number of circle indicators to be displayed.
-     *
-     * @param count total count of indicators.
-     */
-    public void setCount(int count) {
-        this.count = count;
-        invalidate();
-    }
-
-    /**
      * Return number of circle indicators
      */
     public int getCount() {
@@ -391,6 +381,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         if (pager != null) {
             viewPager = pager;
             viewPager.addOnPageChangeListener(this);
+            this.count = viewPager.getAdapter().getCount();
         }
     }
 
