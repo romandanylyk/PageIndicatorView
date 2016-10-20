@@ -3,6 +3,7 @@
 <resources>
     <declare-styleable name="PageIndicatorView">
         <attr name="count" format="integer" />
+        <attr name="dynamicCount" format="boolean" />
         <attr name="select" format="integer" />
 
         <attr name="radius" format="dimension" />

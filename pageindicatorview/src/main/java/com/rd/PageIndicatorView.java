@@ -66,6 +66,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     private long animationDuration;
 
     private DataSetObserver setObserver;
+    private boolean dynamicCount;
 
     private Paint paint = new Paint();
     private RectF rect = new RectF();
@@ -183,13 +184,8 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
      * @param count total count of indicators.
      */
     public void setCount(int count) {
-        if (this.count != count) {
-            this.count = count;
-            this.isCountSet = true;
-
-            setDynamicCount(false);
-            requestLayout();
-        }
+        setCountLocally(count);
+        setDynamicCount(false);
     }
 
     /**
@@ -200,14 +196,15 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     }
 
     /**
-     * Default is true. Dynamic count will automatically update count of circle indicators while {@link ViewPager} set.
-     * See {@link #setViewPager(ViewPager)}
+     * Dynamic count will automatically update number of circle indicators
+     * if {@link ViewPager} page count updated on run-time.
+     * Note: works if {@link ViewPager} set. See {@link #setViewPager(ViewPager)}.
      *
      * @param dynamicCount boolean value to add/remove indicators dynamically.
      */
     public void setDynamicCount(boolean dynamicCount) {
+        this.dynamicCount = dynamicCount;
         if (dynamicCount) {
-            setCount(getViewPagerCount());
             registerSetObserver();
         } else {
             unRegisterSetObserver();
@@ -417,8 +414,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
     /**
      * Set {@link ViewPager} to add {@link ViewPager.OnPageChangeListener} to automatically
-     * handle selecting new indicators events (and interactive animation effect in case
-     * interactive animation is enabled).
+     * handle selecting new indicators events (and interactive animation effect if it is enabled).
      *
      * @param pager instance of {@link ViewPager} to work with
      */
@@ -427,8 +423,9 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
             viewPager = pager;
             viewPager.addOnPageChangeListener(this);
 
+            setDynamicCount(dynamicCount);
             if (!isCountSet) {
-                setCount(getViewPagerCount());
+                setCountLocally(getViewPagerCount());
             }
         }
     }
@@ -624,41 +621,10 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         initAnimationAttribute(typedArray);
     }
 
-    private void initAnimation() {
-        animation = new ValueAnimation(new ValueAnimation.UpdateListener() {
-            @Override
-            public void onColorAnimationUpdated(int color, int colorReverse) {
-                frameColor = color;
-                frameColorReverse = colorReverse;
-                invalidate();
-            }
-
-            @Override
-            public void onScaleAnimationUpdated(int color, int colorReverse, int radius, int radiusReverse) {
-                frameColor = color;
-                frameColorReverse = colorReverse;
-
-                frameRadiusPx = radius;
-                frameRadiusReversePx = radiusReverse;
-                invalidate();
-            }
-
-            @Override
-            public void onWormAnimationUpdated(int leftX, int rightX) {
-                frameLeftX = leftX;
-                frameRightX = rightX;
-                invalidate();
-            }
-
-            @Override
-            public void onSlideAnimationUpdated(int xCoordinate) {
-                frameXCoordinate = xCoordinate;
-                invalidate();
-            }
-        });
-    }
-
     private void initCountAttribute(@NonNull TypedArray typedArray) {
+        boolean dynamicCount = typedArray.getBoolean(R.styleable.PageIndicatorView_dynamicCount, false);
+        setDynamicCount(dynamicCount);
+
         count = typedArray.getInt(R.styleable.PageIndicatorView_count, DEFAULT_CIRCLES_COUNT);
         int position = typedArray.getInt(R.styleable.PageIndicatorView_select, 0);
 
@@ -695,6 +661,40 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
         int index = typedArray.getInt(R.styleable.PageIndicatorView_animationType, AnimationType.NONE.ordinal());
         animationType = getAnimationType(index);
+    }
+
+    private void initAnimation() {
+        animation = new ValueAnimation(new ValueAnimation.UpdateListener() {
+            @Override
+            public void onColorAnimationUpdated(int color, int colorReverse) {
+                frameColor = color;
+                frameColorReverse = colorReverse;
+                invalidate();
+            }
+
+            @Override
+            public void onScaleAnimationUpdated(int color, int colorReverse, int radius, int radiusReverse) {
+                frameColor = color;
+                frameColorReverse = colorReverse;
+
+                frameRadiusPx = radius;
+                frameRadiusReversePx = radiusReverse;
+                invalidate();
+            }
+
+            @Override
+            public void onWormAnimationUpdated(int leftX, int rightX) {
+                frameLeftX = leftX;
+                frameRightX = rightX;
+                invalidate();
+            }
+
+            @Override
+            public void onSlideAnimationUpdated(int xCoordinate) {
+                frameXCoordinate = xCoordinate;
+                invalidate();
+            }
+        });
     }
 
     private AnimationType getAnimationType(int index) {
@@ -788,6 +788,47 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         return null;
     }
 
+    private void registerSetObserver() {
+        if (setObserver == null && viewPager != null && viewPager.getAdapter() != null) {
+            setObserver = new DataSetObserver() {
+                @Override
+                public void onChanged() {
+                    super.onChanged();
+                    if (viewPager != null && viewPager.getAdapter() != null) {
+                        int count = viewPager.getAdapter().getCount();
+                        setCountLocally(count);
+                    }
+                }
+            };
+
+            viewPager.getAdapter().registerDataSetObserver(setObserver);
+        }
+    }
+
+    private void unRegisterSetObserver() {
+        if (setObserver != null && viewPager != null && viewPager.getAdapter() != null) {
+            viewPager.getAdapter().unregisterDataSetObserver(setObserver);
+            setObserver = null;
+        }
+    }
+
+    private int getViewPagerCount() {
+        if (viewPager != null && viewPager.getAdapter() != null) {
+            return viewPager.getAdapter().getCount();
+        } else {
+            return count;
+        }
+    }
+
+    private void setCountLocally(int count) {
+        if (this.count != count) {
+            this.count = count;
+            this.isCountSet = true;
+
+            requestLayout();
+        }
+    }
+
     @SuppressWarnings("UnnecessaryLocalVariable")
     private int getXCoordinate(int position) {
         int actualViewWidth = calculateActualViewWidth();
@@ -854,37 +895,5 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         }
 
         return width;
-    }
-
-    private void registerSetObserver() {
-        if (setObserver == null && viewPager != null && viewPager.getAdapter() != null) {
-            setObserver = new DataSetObserver() {
-                @Override
-                public void onChanged() {
-                    super.onChanged();
-                    if (viewPager != null && viewPager.getAdapter() != null) {
-                        int count = viewPager.getAdapter().getCount();
-                        setCount(count);
-                    }
-                }
-            };
-
-            viewPager.getAdapter().registerDataSetObserver(setObserver);
-        }
-    }
-
-    private void unRegisterSetObserver() {
-        if (setObserver != null && viewPager != null && viewPager.getAdapter() != null) {
-            viewPager.getAdapter().unregisterDataSetObserver(setObserver);
-            setObserver = null;
-        }
-    }
-
-    private int getViewPagerCount() {
-        if (viewPager != null && viewPager.getAdapter() != null) {
-            return viewPager.getAdapter().getCount();
-        } else {
-            return count;
-        }
     }
 }

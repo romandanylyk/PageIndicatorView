@@ -20,7 +20,7 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="48dp"
-        attrs:interactiveAnimation="true"
-        attrs:animationType="worm"/>
+        attrs:animationType="worm"
+        attrs:interactiveAnimation="true" />
 
 </RelativeLayout>
