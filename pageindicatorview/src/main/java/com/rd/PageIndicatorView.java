@@ -35,7 +35,9 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
     private int radiusPx = DensityUtils.dpToPx(DEFAULT_RADIUS_DP);
     private int paddingPx = DensityUtils.dpToPx(DEFAULT_PADDING_DP);
+
     private int count = DEFAULT_CIRCLES_COUNT;
+    private boolean isCountSet;
 
     //Color
     private int unselectedColor = Color.parseColor(DEFAULT_UNSELECTED_COLOR);
@@ -184,8 +186,9 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     public void setCount(int count) {
         if (this.count != count) {
             this.count = count;
-            setDynamicCount(false);
+            this.isCountSet = true;
 
+            setDynamicCount(false);
             requestLayout();
         }
     }
@@ -425,7 +428,10 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         if (pager != null) {
             viewPager = pager;
             viewPager.addOnPageChangeListener(this);
-            setDynamicCount(dynamicCount);
+
+            if (!isCountSet) {
+                setCount(getViewPagerCount());
+            }
         }
     }
 
