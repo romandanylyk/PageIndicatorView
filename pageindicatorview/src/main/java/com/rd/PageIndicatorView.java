@@ -65,7 +65,6 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     private boolean interactiveAnimation;
     private long animationDuration;
 
-    private boolean dynamicCount = true;
     private DataSetObserver setObserver;
 
     private Paint paint = new Paint();
@@ -207,7 +206,6 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
      * @param dynamicCount boolean value to add/remove indicators dynamically.
      */
     public void setDynamicCount(boolean dynamicCount) {
-        this.dynamicCount = dynamicCount;
         if (dynamicCount) {
             setCount(getViewPagerCount());
             registerSetObserver();
