@@ -189,13 +189,16 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
     /**
      * Set static number of circle indicators to be displayed.
-     * Will automatically disable updating count dynamically. See {@link #setDynamicCount(boolean)}
      *
      * @param count total count of indicators.
      */
     public void setCount(int count) {
-        setCountLocally(count);
-        setDynamicCount(false);
+        if (this.count != count) {
+            this.count = count;
+            this.isCountSet = true;
+
+            requestLayout();
+        }
     }
 
     /**
@@ -237,7 +240,22 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     }
 
     /**
-     * Return radius of each circle indicators in dp. If custom radius is not set, return
+     * Set radius in px of each circle indicator. Default value is {@link PageIndicatorView#DEFAULT_RADIUS_DP}.
+     * Note: make sure you set circle Radius, not a Diameter.
+     *
+     * @param radiusPx radius of circle in px.
+     */
+    public void setRadius(float radiusPx) {
+        if (radiusPx < 0) {
+            radiusPx = 0;
+        }
+
+        this.radiusPx = (int) radiusPx;
+        invalidate();
+    }
+
+    /**
+     * Return radius of each circle indicators in px. If custom radius is not set, return
      * default value {@link PageIndicatorView#DEFAULT_RADIUS_DP}.
      */
     public int getRadius() {
@@ -247,7 +265,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     /**
      * Set padding in dp between each circle indicator. Default value is {@link PageIndicatorView#DEFAULT_PADDING_DP}.
      *
-     * @param paddingDp padding between circles.
+     * @param paddingDp padding between circles in dp.
      */
     public void setPadding(int paddingDp) {
         paddingPx = DensityUtils.dpToPx(paddingDp);
@@ -255,7 +273,17 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     }
 
     /**
-     * Return padding in dp between each circle indicator. If custom padding is not set,
+     * Set padding in px between each circle indicator. Default value is {@link PageIndicatorView#DEFAULT_PADDING_DP}.
+     *
+     * @param paddingPx padding between circles in px.
+     */
+    public void setPadding(float paddingPx) {
+        this.paddingPx = (int) paddingPx;
+        invalidate();
+    }
+
+    /**
+     * Return padding in px between each circle indicator. If custom padding is not set,
      * return default value {@link PageIndicatorView#DEFAULT_PADDING_DP}.
      */
     public int getPadding() {
@@ -433,7 +461,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
             setDynamicCount(dynamicCount);
             if (!isCountSet) {
-                setCountLocally(getViewPagerCount());
+                setCount(getViewPagerCount());
             }
         }
     }
@@ -817,7 +845,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
                     super.onChanged();
                     if (viewPager != null && viewPager.getAdapter() != null) {
                         int count = viewPager.getAdapter().getCount();
-                        setCountLocally(count);
+                        setCount(count);
                     }
                 }
             };
@@ -838,15 +866,6 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
             return viewPager.getAdapter().getCount();
         } else {
             return count;
-        }
-    }
-
-    private void setCountLocally(int count) {
-        if (this.count != count) {
-            this.count = count;
-            this.isCountSet = true;
-
-            requestLayout();
         }
     }
 
