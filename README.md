@@ -18,7 +18,7 @@ Once you make sure you have `jcenter` repository in your project, all you need t
 ```java
 compile 'com.romandanylyk:pageindicatorview:X.X.X'
 ```
-See latest library version here [ ![Download](https://api.bintray.com/packages/romandanylyk/maven/pageindicatorview/images/download.svg) ](https://bintray.com/romandanylyk/maven/pageindicatorview/_latestVersion)
+[ ![Download](https://api.bintray.com/packages/romandanylyk/maven/pageindicatorview/images/download.svg) ](https://bintray.com/romandanylyk/maven/pageindicatorview/_latestVersion) latest library version
 
 ###**Usage Sample**
 First of all, you need to set count of circles to be drawn, that will indicates number of pages your `ViewPager` has. Then you can call `addViewPager(viewPager)` method to do the rest of job for you. 
