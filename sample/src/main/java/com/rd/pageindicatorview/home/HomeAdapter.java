@@ -1,5 +1,6 @@
 package com.rd.pageindicatorview.home;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.view.PagerAdapter;
 import android.view.View;
@@ -45,5 +46,14 @@ class HomeAdapter extends PagerAdapter {
             this.viewList.addAll(viewList);
         }
         notifyDataSetChanged();
+    }
+
+    @NonNull
+    public List<View> getData() {
+        if (viewList == null) {
+            viewList = new ArrayList<>();
+        }
+
+        return viewList;
     }
 }

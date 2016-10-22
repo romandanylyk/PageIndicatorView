@@ -2,9 +2,12 @@
 
 <resources>
     <declare-styleable name="PageIndicatorView">
+
+        <attr name="viewPager" format="reference" />
+        <attr name="select" format="integer" />
+
         <attr name="count" format="integer" />
         <attr name="dynamicCount" format="boolean" />
-        <attr name="select" format="integer" />
 
         <attr name="radius" format="dimension" />
         <attr name="padding" format="dimension" />

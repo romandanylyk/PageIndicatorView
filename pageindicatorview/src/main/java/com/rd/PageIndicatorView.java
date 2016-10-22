@@ -11,7 +11,6 @@ import android.graphics.RectF;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -30,6 +29,8 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     private static final String DEFAULT_SELECTED_COLOR = "#ffffff";
 
     private static final int DEFAULT_CIRCLES_COUNT = 3;
+    private static final int COUNT_NOT_SET = -1;
+
     private static final int DEFAULT_RADIUS_DP = 6;
     private static final int DEFAULT_PADDING_DP = 8;
 
@@ -57,6 +58,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
     //Slide
     private int frameXCoordinate;
+    private boolean isFrameValuesSet;
 
     private int selectedPosition;
     private int selectingPosition;
@@ -73,7 +75,9 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
     private AnimationType animationType = AnimationType.NONE;
     private ValueAnimation animation;
+
     private ViewPager viewPager;
+    private int viewPagerId;
 
     public PageIndicatorView(Context context) {
         super(context);
@@ -94,6 +98,12 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     public PageIndicatorView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         init(attrs);
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        findViewPager();
     }
 
     @Override
@@ -152,7 +162,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
-        updateFrameValues();
+        setFrameValues();
     }
 
     @Override
@@ -277,8 +287,6 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
      */
     public void setSelectedColor(int color) {
         selectedColor = color;
-        updateFrameValues();
-
         invalidate();
     }
 
@@ -578,10 +586,12 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         if (interactiveAnimation && (position == selectingPosition || position == selectedPosition)) {
             paint.setColor(selectedColor);
             canvas.drawCircle(frameXCoordinate, y, radiusPx, paint);
+            Log.e("TEST", "INVALID " + frameXCoordinate);
 
         } else if (!interactiveAnimation && (position == selectedPosition || position == lastSelectedPosition)) {
             paint.setColor(selectedColor);
             canvas.drawCircle(frameXCoordinate, y, radiusPx, paint);
+            Log.e("TEST", String.valueOf(frameXCoordinate));
         }
     }
 
@@ -625,9 +635,14 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         boolean dynamicCount = typedArray.getBoolean(R.styleable.PageIndicatorView_dynamicCount, false);
         setDynamicCount(dynamicCount);
 
-        count = typedArray.getInt(R.styleable.PageIndicatorView_count, DEFAULT_CIRCLES_COUNT);
-        int position = typedArray.getInt(R.styleable.PageIndicatorView_select, 0);
+        count = typedArray.getInt(R.styleable.PageIndicatorView_count, COUNT_NOT_SET);
+        if (count != COUNT_NOT_SET) {
+            isCountSet = true;
+        } else {
+            count = DEFAULT_CIRCLES_COUNT;
+        }
 
+        int position = typedArray.getInt(R.styleable.PageIndicatorView_select, 0);
         if (position < 0) {
             position = 0;
         } else if (count > 0 && position > count - 1) {
@@ -636,6 +651,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
         selectedPosition = position;
         selectingPosition = position;
+        viewPagerId = typedArray.getResourceId(R.styleable.PageIndicatorView_viewPager, 0);
     }
 
     private void initSizeAttribute(@NonNull TypedArray typedArray) {
@@ -714,7 +730,11 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         return AnimationType.NONE;
     }
 
-    private void updateFrameValues() {
+    private void setFrameValues() {
+        if (isFrameValuesSet) {
+            return;
+        }
+
         //color
         frameColor = selectedColor;
         frameColorReverse = unselectedColor;
@@ -736,6 +756,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
         //slide
         frameXCoordinate = xCoordinate;
+        isFrameValuesSet = true;
     }
 
     private void startColorAnimation() {
@@ -826,6 +847,13 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
             this.isCountSet = true;
 
             requestLayout();
+        }
+    }
+
+    private void findViewPager() {
+        View view = ((View) getParent()).findViewById(viewPagerId);
+        if (view != null && view instanceof ViewPager) {
+            setViewPager((ViewPager) view);
         }
     }
 
