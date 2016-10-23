@@ -14,22 +14,35 @@ To add `pageindicatorview` to your project, first make sure in root `build.gradl
 ```
 *Note: by creating new project in Android Studio it will have `jcenter` repository specified by default, so you will not need to add it manually.* 
 
-Once you make sure you have `jcenter` repository in your project, all you need to do is to add the following line in `dependencies` section of your project `build.gradle`
+Once you make sure you have `jcenter` repository in your project, all you need to do is to add the following line in `dependencies` section of your project `build.gradle`.
+ 
+See latest library version [ ![Download](https://api.bintray.com/packages/romandanylyk/maven/pageindicatorview/images/download.svg) ](https://bintray.com/romandanylyk/maven/pageindicatorview/_latestVersion)
 ```java
 compile 'com.romandanylyk:pageindicatorview:X.X.X'
 ```
-[ ![Download](https://api.bintray.com/packages/romandanylyk/maven/pageindicatorview/images/download.svg) ](https://bintray.com/romandanylyk/maven/pageindicatorview/_latestVersion) latest library version
 
 ###**Usage Sample**
-First of all, you need to set count of circles to be drawn, that will indicates number of pages your `ViewPager` has. Then you can call `addViewPager(viewPager)` method to do the rest of job for you. 
+During implementation of `PageIndicatorView` I tried to make it's setup as easy as possible. 
+After you set adapter to your `ViewPager`, all you need to do is to `setViewPager()` and that's it! `PageIndicatorView` will get count from your adapter and start working with instance of your `ViewPager` automatically.  
 
 ```java
+ViewPager viewPager = (ViewPager) findViewById(R.id.viewPager);
+viewPager.setAdapter(adapter);
+//instance of android.support.v4.view.PagerAdapter adapter
+
 PageIndicatorView pageIndicatorView = ...
-pageIndicatorView.setCount(4);
-pageIndicatorView.addViewPager(viewPager); 
-//viewPager instance android.support.v4.view.ViewPager.
+pageIndicatorView.setViewPager(viewPager);
 ```
-In case you want to control `PageIndicatorView` manually instead of setting `ViewPager`, you can always do it by calling specific methods.
+
+Keep in mind that all public methods are also exist as attributes, so you can even setup and customize page indicator without any java code. 
+
+```xml
+    <com.rd.PageIndicatorView
+        android:id="@+id/pageIndicatorView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        attrs:viewPager="@id/viewPager"/>
+```
 
 ###**Customization**
 One of the most important feature of every custom view is ability to customize its look as user need. By calling the following methods (or attributes) you will be able to customize `PageIndicatorView` as you need.
@@ -37,6 +50,8 @@ One of the most important feature of every custom view is ability to customize i
 ```java
 //set size
 setCount(int count)
+setDynamicCount(boolean dynamicCount)
+
 setRadius(int radiusDp)
 setPadding(int paddingDp)
 
@@ -55,6 +70,18 @@ setSelection(int position)
 ```
 
 ![](https://github.com/romandanylyk/PageIndicatorView/blob/master/assets/attributes.gif?raw=true)
+
+Here you can see all the animations `PageIndicatorView` support.
+
+Name| Preview
+-------- | ---
+`AnimationType.COLOR`| ![preview_anim_color](https://raw.githubusercontent.com/romandanylyk/PageIndicatorView/master/assets/preview_anim_color.gif)
+`AnimationType.SCALE`| ![preview_anim_scale](https://raw.githubusercontent.com/romandanylyk/PageIndicatorView/master/assets/preview_anim_scale.gif)
+`AnimationType.SLIDE`| ![preview_anim_slide](https://raw.githubusercontent.com/romandanylyk/PageIndicatorView/master/assets/preview_anim_slide.gif)
+`AnimationType.WORM`| ![preview_anim_worm](https://raw.githubusercontent.com/romandanylyk/PageIndicatorView/master/assets/preview_anim_worm.gif)
+
+###**Release Note**
+See release notes on [github releases](https://github.com/romandanylyk/PageIndicatorView/releases) or [Bintray release notes](https://bintray.com/romandanylyk/maven/pageindicatorview#release).
 
 ###**License**
 
