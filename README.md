@@ -30,7 +30,7 @@ ViewPager viewPager = (ViewPager) findViewById(R.id.viewPager);
 viewPager.setAdapter(adapter);
 //instance of android.support.v4.view.PagerAdapter adapter
 
-PageIndicatorView pageIndicatorView = ...
+PageIndicatorView pageIndicatorView = (PageIndicatorView) view.findViewById(R.id.pageIndicatorView);
 pageIndicatorView.setViewPager(viewPager);
 ```
 
