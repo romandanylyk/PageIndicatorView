@@ -1,7 +1,7 @@
 
 ###**PageIndicatorView**
 
-PageIndicatorView will simplify your life while you working with Android ViewPager and need to indicate selected page. It's easy to setup and customize as you need with run-time preview rendering.
+`PageIndicatorView` will simplify your life while you working with Android `ViewPager` and need to indicate selected page. It's easy to setup and customize as you need with run-time preview rendering.
 
 ![](https://github.com/romandanylyk/PageIndicatorView/blob/master/assets/animation_worm.gif?raw=true)
 
