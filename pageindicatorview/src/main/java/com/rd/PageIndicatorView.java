@@ -663,14 +663,14 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         boolean dynamicCount = typedArray.getBoolean(R.styleable.PageIndicatorView_dynamicCount, false);
         setDynamicCount(dynamicCount);
 
-        count = typedArray.getInt(R.styleable.PageIndicatorView_count, COUNT_NOT_SET);
+        count = typedArray.getInt(R.styleable.PageIndicatorView_piv_count, COUNT_NOT_SET);
         if (count != COUNT_NOT_SET) {
             isCountSet = true;
         } else {
             count = DEFAULT_CIRCLES_COUNT;
         }
 
-        int position = typedArray.getInt(R.styleable.PageIndicatorView_select, 0);
+        int position = typedArray.getInt(R.styleable.PageIndicatorView_piv_select, 0);
         if (position < 0) {
             position = 0;
         } else if (count > 0 && position > count - 1) {
@@ -679,14 +679,14 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
         selectedPosition = position;
         selectingPosition = position;
-        viewPagerId = typedArray.getResourceId(R.styleable.PageIndicatorView_viewPager, 0);
+        viewPagerId = typedArray.getResourceId(R.styleable.PageIndicatorView_piv_viewPager, 0);
     }
 
     private void initSizeAttribute(@NonNull TypedArray typedArray) {
-        paddingPx = (int) typedArray.getDimension(R.styleable.PageIndicatorView_padding, paddingPx);
-        radiusPx = (int) typedArray.getDimension(R.styleable.PageIndicatorView_radius, radiusPx);
+        paddingPx = (int) typedArray.getDimension(R.styleable.PageIndicatorView_piv_padding, paddingPx);
+        radiusPx = (int) typedArray.getDimension(R.styleable.PageIndicatorView_piv_radius, radiusPx);
 
-        scaleFactor = typedArray.getFloat(R.styleable.PageIndicatorView_scaleFactor, ScaleAnimation.DEFAULT_SCALE_FACTOR);
+        scaleFactor = typedArray.getFloat(R.styleable.PageIndicatorView_piv_scaleFactor, ScaleAnimation.DEFAULT_SCALE_FACTOR);
         if (scaleFactor < ScaleAnimation.MIN_SCALE_FACTOR) {
             scaleFactor = ScaleAnimation.MIN_SCALE_FACTOR;
         } else if (scaleFactor > ScaleAnimation.MAX_SCALE_FACTOR) {
@@ -695,15 +695,15 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     }
 
     private void initColorAttribute(@NonNull TypedArray typedArray) {
-        unselectedColor = typedArray.getColor(R.styleable.PageIndicatorView_unselectedColor, unselectedColor);
-        selectedColor = typedArray.getColor(R.styleable.PageIndicatorView_selectedColor, selectedColor);
+        unselectedColor = typedArray.getColor(R.styleable.PageIndicatorView_piv_unselectedColor, unselectedColor);
+        selectedColor = typedArray.getColor(R.styleable.PageIndicatorView_piv_selectedColor, selectedColor);
     }
 
     private void initAnimationAttribute(@NonNull TypedArray typedArray) {
-        animationDuration = typedArray.getInt(R.styleable.PageIndicatorView_animationDuration, AbsAnimation.DEFAULT_ANIMATION_TIME);
-        interactiveAnimation = typedArray.getBoolean(R.styleable.PageIndicatorView_interactiveAnimation, false);
+        animationDuration = typedArray.getInt(R.styleable.PageIndicatorView_piv_animationDuration, AbsAnimation.DEFAULT_ANIMATION_TIME);
+        interactiveAnimation = typedArray.getBoolean(R.styleable.PageIndicatorView_piv_interactiveAnimation, false);
 
-        int index = typedArray.getInt(R.styleable.PageIndicatorView_animationType, AnimationType.NONE.ordinal());
+        int index = typedArray.getInt(R.styleable.PageIndicatorView_piv_animationType, AnimationType.NONE.ordinal());
         animationType = getAnimationType(index);
     }
 
