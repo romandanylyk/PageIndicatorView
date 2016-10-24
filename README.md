@@ -22,6 +22,7 @@ See latest library version [ ![Download](https://api.bintray.com/packages/romand
 ```java
 compile 'com.romandanylyk:pageindicatorview:X.X.X'
 ```
+Keep in mind, that `PageIndicatorView` has min [API level 14](https://developer.android.com/about/dashboards/index.html)
 
 ###**Usage Sample**
 During implementation of `PageIndicatorView` I tried to make it's setup as easy as possible. 
@@ -75,12 +76,13 @@ setSelection(int position)
 
 Here you can see all the animations `PageIndicatorView` support.
 
-Name| Preview
--------- | ---
-`AnimationType.COLOR`| ![preview_anim_color](https://raw.githubusercontent.com/romandanylyk/PageIndicatorView/master/assets/preview_anim_color.gif)
-`AnimationType.SCALE`| ![preview_anim_scale](https://raw.githubusercontent.com/romandanylyk/PageIndicatorView/master/assets/preview_anim_scale.gif)
-`AnimationType.SLIDE`| ![preview_anim_slide](https://raw.githubusercontent.com/romandanylyk/PageIndicatorView/master/assets/preview_anim_slide.gif)
-`AnimationType.WORM`| ![preview_anim_worm](https://raw.githubusercontent.com/romandanylyk/PageIndicatorView/master/assets/preview_anim_worm.gif)
+Name| Support version| Preview
+-------- | --- | ---
+`AnimationType.NONE`| 0.0.1 | ![prev_anim_none](https://raw.githubusercontent.com/romandanylyk/PageIndicatorView/master/assets/prev_anim_none.gif)
+`AnimationType.COLOR`| 0.0.1 |![prev_anim_color](https://raw.githubusercontent.com/romandanylyk/PageIndicatorView/master/assets/prev_anim_color.gif)
+`AnimationType.SCALE`| 0.0.1 |![prev_anim_scale](https://raw.githubusercontent.com/romandanylyk/PageIndicatorView/master/assets/prev_anim_scale.gif)
+`AnimationType.SLIDE`| 0.0.1 |![prev_anim_slide](https://raw.githubusercontent.com/romandanylyk/PageIndicatorView/master/assets/prev_anim_slide.gif)
+`AnimationType.WORM`| 0.0.1 |![prev_anim_worm](https://raw.githubusercontent.com/romandanylyk/PageIndicatorView/master/assets/prev_anim_worm.gif)
 
 ###**Release Note**
 See release notes on [github releases](https://github.com/romandanylyk/PageIndicatorView/releases) or [Bintray release notes](https://bintray.com/romandanylyk/maven/pageindicatorview#release).
