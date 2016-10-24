@@ -19,7 +19,6 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ac_home);
-
         initViews();
     }
 
@@ -27,7 +26,7 @@ public class HomeActivity extends AppCompatActivity {
     private void initViews() {
         List<View> pageList = createPageList();
 
-        final HomeAdapter adapter = new HomeAdapter();
+        HomeAdapter adapter = new HomeAdapter();
         adapter.setData(pageList);
 
         ViewPager pager = (ViewPager) findViewById(R.id.viewPager);
