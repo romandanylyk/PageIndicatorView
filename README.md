@@ -44,7 +44,7 @@ Keep in mind that all public methods are also exist as attributes, so you can ev
         android:id="@+id/pageIndicatorView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        attrs:viewPager="@id/viewPager"/>
+        attrs:piv_viewPager="@id/viewPager"/>
 ```
 
 ###**Customization**
