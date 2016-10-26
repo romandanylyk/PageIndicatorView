@@ -467,6 +467,20 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     }
 
     /**
+     * Set {@link ViewPager} to add {@link ViewPager.OnPageChangeListener} to automatically
+     * handle selecting new indicators events (and interactive animation effect if it is enabled)
+     * And Set static number of circle indicators to be displayed.
+     *
+     * @param pager instance of {@link ViewPager} to work with
+     */
+    public void setupWithViewPager(@Nullable ViewPager pager) {
+        if (pager != null && pager.getAdapter() != null) {
+            setCount(pager.getAdapter().getCount());
+            setViewPager(pager);
+        }
+    }
+
+    /**
      * Release {@link ViewPager} and stop handling events of {@link ViewPager.OnPageChangeListener}.
      */
     public void releaseViewPager() {

@@ -70,6 +70,9 @@ setInteractiveAnimation(boolean isInteractive)
 //set selection
 setProgress(int selectingPosition, float progress)
 setSelection(int position)
+
+//set lisenter and size
+setupWithViewPager(ViewPager pager)
 ```
 
 ![](https://github.com/romandanylyk/PageIndicatorView/blob/master/assets/attributes.gif?raw=true)
