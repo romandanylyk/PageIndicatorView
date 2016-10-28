@@ -614,12 +614,9 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         if (interactiveAnimation && (position == selectingPosition || position == selectedPosition)) {
             paint.setColor(selectedColor);
             canvas.drawCircle(frameXCoordinate, y, radiusPx, paint);
-            Log.e("TEST", "INVALID " + frameXCoordinate);
-
         } else if (!interactiveAnimation && (position == selectedPosition || position == lastSelectedPosition)) {
             paint.setColor(selectedColor);
             canvas.drawCircle(frameXCoordinate, y, radiusPx, paint);
-            Log.e("TEST", String.valueOf(frameXCoordinate));
         }
     }
 
