@@ -33,9 +33,11 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
     private static final int DEFAULT_RADIUS_DP = 6;
     private static final int DEFAULT_PADDING_DP = 8;
+    private static final int DEFAULT_STROKE_DP = 1;
 
     private int radiusPx = DensityUtils.dpToPx(DEFAULT_RADIUS_DP);
     private int paddingPx = DensityUtils.dpToPx(DEFAULT_PADDING_DP);
+    private int strokePx = DensityUtils.dpToPx(DEFAULT_STROKE_DP);
 
     private int count = DEFAULT_CIRCLES_COUNT;
     private boolean isCountSet;
@@ -52,25 +54,30 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     private int frameRadiusReversePx;
     private float scaleFactor;
 
+    //Fill
+    private int frameStrokePx;
+    private int frameStrokeReversePx;
+
     //Worm
     private int frameLeftX;
     private int frameRightX;
 
     //Slide
     private int frameXCoordinate;
-    private boolean isFrameValuesSet;
 
     private int selectedPosition;
     private int selectingPosition;
     private int lastSelectedPosition;
 
+    private boolean isFrameValuesSet;
     private boolean interactiveAnimation;
     private long animationDuration;
 
     private DataSetObserver setObserver;
     private boolean dynamicCount;
 
-    private Paint paint = new Paint();
+    private Paint fillPaint = new Paint();
+    private Paint strokePaint = new Paint();
     private RectF rect = new RectF();
 
     private AnimationType animationType = AnimationType.NONE;
@@ -121,7 +128,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         int heightMode = MeasureSpec.getMode(heightMeasureSpec);
         int heightSize = MeasureSpec.getSize(heightMeasureSpec);
 
-        int circleDiameterPx = radiusPx * 2;
+        int circleDiameterPx = (radiusPx * 2) + (strokePx * 2);
         int desiredHeight = circleDiameterPx;
         int desiredWidth = 0;
 
@@ -435,6 +442,10 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
                 startWormAnimation();
                 break;
 
+            case FILL:
+                startFillAnimation();
+                break;
+
             case SLIDE:
                 startSlideAnimation();
                 break;
@@ -512,6 +523,10 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
     private void drawWithAnimationEffect(@NonNull Canvas canvas, int position, int x, int y) {
         switch (animationType) {
+            case NONE:
+                drawWithNoEffect(canvas, position, x, y);
+                break;
+
             case COLOR:
                 drawWithColorAnimation(canvas, position, x, y);
                 break;
@@ -520,18 +535,43 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
                 drawWithScaleAnimation(canvas, position, x, y);
                 break;
 
-            case WORM:
-                drawWithWormAnimation(canvas, x, y);
-                break;
-
             case SLIDE:
                 drawWithSlideAnimation(canvas, position, x, y);
                 break;
 
-            case NONE:
-                drawWithNoEffect(canvas, position, x, y);
+            case WORM:
+                drawWithWormAnimation(canvas, x, y);
                 break;
+
+            case FILL:
+                drawWithFillAnimation(canvas, position, x, y);
+                break;
+
         }
+    }
+
+    private void drawWithNoEffect(@NonNull Canvas canvas, int position, int x, int y) {
+        float radius = radiusPx;
+        int color = unselectedColor;
+
+        if (animationType == AnimationType.SCALE) {
+            radius /= scaleFactor;
+        }
+
+        if (position == selectedPosition) {
+            color = selectedColor;
+        }
+
+        Paint paint;
+        if (animationType == AnimationType.FILL) {
+            paint = strokePaint;
+            paint.setStrokeWidth(strokePx);
+        } else {
+            paint = fillPaint;
+        }
+
+        paint.setColor(color);
+        canvas.drawCircle(x, y, radius, paint);
     }
 
     private void drawWithColorAnimation(@NonNull Canvas canvas, int position, int x, int y) {
@@ -554,8 +594,8 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
             }
         }
 
-        paint.setColor(color);
-        canvas.drawCircle(x, y, radiusPx, paint);
+        fillPaint.setColor(color);
+        canvas.drawCircle(x, y, radiusPx, fillPaint);
     }
 
     private void drawWithScaleAnimation(@NonNull Canvas canvas, int position, int x, int y) {
@@ -583,8 +623,22 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
             }
         }
 
-        paint.setColor(color);
-        canvas.drawCircle(x, y, radius, paint);
+        fillPaint.setColor(color);
+        canvas.drawCircle(x, y, radius, fillPaint);
+    }
+
+    private void drawWithSlideAnimation(@NonNull Canvas canvas, int position, int x, int y) {
+        fillPaint.setColor(unselectedColor);
+        canvas.drawCircle(x, y, radiusPx, fillPaint);
+
+        if (interactiveAnimation && (position == selectingPosition || position == selectedPosition)) {
+            fillPaint.setColor(selectedColor);
+            canvas.drawCircle(frameXCoordinate, y, radiusPx, fillPaint);
+
+        } else if (!interactiveAnimation && (position == selectedPosition || position == lastSelectedPosition)) {
+            fillPaint.setColor(selectedColor);
+            canvas.drawCircle(frameXCoordinate, y, radiusPx, fillPaint);
+        }
     }
 
     private void drawWithWormAnimation(@NonNull Canvas canvas, int x, int y) {
@@ -600,51 +654,60 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         rect.top = top;
         rect.bottom = bot;
 
-        paint.setColor(unselectedColor);
-        canvas.drawCircle(x, y, radius, paint);
+        fillPaint.setColor(unselectedColor);
+        canvas.drawCircle(x, y, radius, fillPaint);
 
-        paint.setColor(selectedColor);
-        canvas.drawRoundRect(rect, radiusPx, radiusPx, paint);
+        fillPaint.setColor(selectedColor);
+        canvas.drawRoundRect(rect, radiusPx, radiusPx, fillPaint);
     }
 
-    private void drawWithSlideAnimation(@NonNull Canvas canvas, int position, int x, int y) {
-        paint.setColor(unselectedColor);
-        canvas.drawCircle(x, y, radiusPx, paint);
-
-        if (interactiveAnimation && (position == selectingPosition || position == selectedPosition)) {
-            paint.setColor(selectedColor);
-            canvas.drawCircle(frameXCoordinate, y, radiusPx, paint);
-            Log.e("TEST", "INVALID " + frameXCoordinate);
-
-        } else if (!interactiveAnimation && (position == selectedPosition || position == lastSelectedPosition)) {
-            paint.setColor(selectedColor);
-            canvas.drawCircle(frameXCoordinate, y, radiusPx, paint);
-            Log.e("TEST", String.valueOf(frameXCoordinate));
-        }
-    }
-
-    private void drawWithNoEffect(@NonNull Canvas canvas, int position, int x, int y) {
-        int radius = radiusPx;
+    private void drawWithFillAnimation(@NonNull Canvas canvas, int position, int x, int y) {
         int color = unselectedColor;
+        float radius = 0.1f;
+        int stroke = 0;
 
-        if (animationType == AnimationType.SCALE) {
-            radius /= scaleFactor;
+        if (interactiveAnimation) {
+            if (position == selectingPosition) {
+                color = frameColor;
+                stroke = frameStrokePx;
+
+            } else if (position == selectedPosition) {
+                color = frameColorReverse;
+                stroke = frameStrokeReversePx;
+            }
+
+        } else {
+            if (position == selectedPosition) {
+                color = frameColor;
+                stroke = frameStrokePx;
+
+            } else if (position == lastSelectedPosition) {
+                color = frameColorReverse;
+                stroke = frameStrokeReversePx;
+            }
         }
 
-        if (position == selectedPosition) {
-            color = selectedColor;
+        if (stroke <= 0) {
+            radius = 0;
         }
 
-        paint.setColor(color);
-        canvas.drawCircle(x, y, radius, paint);
+        strokePaint.setColor(color);
+        strokePaint.setStrokeWidth(strokePx);
+        canvas.drawCircle(x, y, radiusPx, strokePaint);
+
+        strokePaint.setStrokeWidth(stroke);
+        canvas.drawCircle(x, y, radius, strokePaint);
     }
 
     private void init(@Nullable AttributeSet attrs) {
         initAttributes(attrs);
         initAnimation();
 
-        paint.setStyle(Paint.Style.FILL);
-        paint.setAntiAlias(true);
+        fillPaint.setStyle(Paint.Style.FILL);
+        fillPaint.setAntiAlias(true);
+
+        strokePaint.setStyle(Paint.Style.STROKE);
+        strokePaint.setAntiAlias(true);
     }
 
     private void initAttributes(@Nullable AttributeSet attrs) {
@@ -727,6 +790,12 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
             }
 
             @Override
+            public void onSlideAnimationUpdated(int xCoordinate) {
+                frameXCoordinate = xCoordinate;
+                invalidate();
+            }
+
+            @Override
             public void onWormAnimationUpdated(int leftX, int rightX) {
                 frameLeftX = leftX;
                 frameRightX = rightX;
@@ -734,8 +803,12 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
             }
 
             @Override
-            public void onSlideAnimationUpdated(int xCoordinate) {
-                frameXCoordinate = xCoordinate;
+            public void onFillAnimationUpdated(int color, int colorReverse, int stroke, int strokeReverse) {
+                frameColor = color;
+                frameColorReverse = colorReverse;
+
+                frameStrokePx = stroke;
+                frameStrokeReversePx = strokeReverse;
                 invalidate();
             }
         });
@@ -753,6 +826,8 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
                 return AnimationType.WORM;
             case 4:
                 return AnimationType.SLIDE;
+            case 5:
+                return AnimationType.FILL;
         }
 
         return AnimationType.NONE;
@@ -784,15 +859,30 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
         //slide
         frameXCoordinate = xCoordinate;
+
+        //fill
+        frameStrokePx = radiusPx * 2;
+        frameStrokeReversePx = radiusPx * 2;
+
         isFrameValuesSet = true;
     }
 
     private void startColorAnimation() {
+        animation.color().end();
         animation.color().with(unselectedColor, selectedColor).duration(animationDuration).start();
     }
 
     private void startScaleAnimation() {
+        animation.scale().end();
         animation.scale().with(unselectedColor, selectedColor, radiusPx, scaleFactor).duration(animationDuration).start();
+    }
+
+    private void startSlideAnimation() {
+        int fromX = getXCoordinate(lastSelectedPosition);
+        int toX = getXCoordinate(selectedPosition);
+
+        animation.slide().end();
+        animation.slide().with(fromX, toX).duration(animationDuration).start();
     }
 
     private void startWormAnimation() {
@@ -804,11 +894,9 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         animation.worm().with(fromX, toX, radiusPx, isRightSide).duration(animationDuration).start();
     }
 
-    private void startSlideAnimation() {
-        int fromX = getXCoordinate(lastSelectedPosition);
-        int toX = getXCoordinate(selectedPosition);
-
-        animation.slide().with(fromX, toX).duration(animationDuration).start();
+    private void startFillAnimation() {
+        animation.fill().end();
+        animation.fill().with(unselectedColor, selectedColor, radiusPx, strokePx).duration(animationDuration).start();
     }
 
     @Nullable
@@ -819,6 +907,9 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
             case SCALE:
                 return animation.scale().with(unselectedColor, selectedColor, radiusPx, scaleFactor);
+
+            case FILL:
+                return animation.fill().with(unselectedColor, selectedColor, radiusPx, strokePx);
 
             case WORM:
             case SLIDE:
@@ -931,7 +1022,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
     private int calculateActualViewWidth() {
         int width = 0;
-        int diameter = radiusPx * 2;
+        int diameter = (radiusPx * 2) + strokePx;
 
         for (int i = 0; i < count; i++) {
             width += diameter;
