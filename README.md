@@ -73,17 +73,18 @@ setProgress(int selectingPosition, float progress)
 setSelection(int position)
 ```
 
-![](https://github.com/romandanylyk/PageIndicatorView/blob/master/assets/attributes.gif?raw=true)
+![](https://github.com/romandanylyk/PageIndicatorView/blob/master/assets/prev_attributes.gif?raw=true)
 
 Here you can see all the animations `PageIndicatorView` support.
 
 Name| Support version| Preview
 -------- | --- | ---
-`AnimationType.NONE`| 0.0.1 | ![prev_anim_none](https://raw.githubusercontent.com/romandanylyk/PageIndicatorView/master/assets/prev_anim_none.gif)
-`AnimationType.COLOR`| 0.0.1 |![prev_anim_color](https://raw.githubusercontent.com/romandanylyk/PageIndicatorView/master/assets/prev_anim_color.gif)
-`AnimationType.SCALE`| 0.0.1 |![prev_anim_scale](https://raw.githubusercontent.com/romandanylyk/PageIndicatorView/master/assets/prev_anim_scale.gif)
-`AnimationType.SLIDE`| 0.0.1 |![prev_anim_slide](https://raw.githubusercontent.com/romandanylyk/PageIndicatorView/master/assets/prev_anim_slide.gif)
-`AnimationType.WORM`| 0.0.1 |![prev_anim_worm](https://raw.githubusercontent.com/romandanylyk/PageIndicatorView/master/assets/prev_anim_worm.gif)
+`AnimationType.NONE`| 0.0.1 | ![anim_prev_none](https://raw.githubusercontent.com/romandanylyk/PageIndicatorView/master/assets/anim_prev_none.gif)
+`AnimationType.COLOR`| 0.0.1 |![anim_prev_color](https://raw.githubusercontent.com/romandanylyk/PageIndicatorView/master/assets/anim_prev_color.gif)
+`AnimationType.SCALE`| 0.0.1 |![anim_prev_scale](https://raw.githubusercontent.com/romandanylyk/PageIndicatorView/master/assets/anim_prev_scale.gif)
+`AnimationType.SLIDE`| 0.0.1 |![anim_prev_slide](https://raw.githubusercontent.com/romandanylyk/PageIndicatorView/master/assets/anim_prev_slide.gif)
+`AnimationType.WORM`| 0.0.1 |![anim_prev_worm](https://raw.githubusercontent.com/romandanylyk/PageIndicatorView/master/assets/anim_prev_worm.gif)
+`AnimationType.FILL`| 0.0.6 |![anim_prev_worm](https://raw.githubusercontent.com/romandanylyk/PageIndicatorView/master/assets/anim_prev_fill.gif)
 
 ###**Release Note**
 See release notes on [github releases](https://github.com/romandanylyk/PageIndicatorView/releases) or [Bintray release notes](https://bintray.com/romandanylyk/maven/pageindicatorview#release).
