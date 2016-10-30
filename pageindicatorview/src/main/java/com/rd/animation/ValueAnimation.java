@@ -23,7 +23,7 @@ public class ValueAnimation {
 
         void onWormAnimationUpdated(int leftX, int rightX);
 
-        void onFillAnimationUpdated(int color, int colorReverse, int strokeWidth, int strokeWidthReverse);
+        void onFillAnimationUpdated(int color, int colorReverse, int radius, int radiusReverse, int strokeWidth, int strokeWidthReverse);
     }
 
     public ValueAnimation(@Nullable UpdateListener listener) {

@@ -663,32 +663,32 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
     private void drawWithFillAnimation(@NonNull Canvas canvas, int position, int x, int y) {
         int color = unselectedColor;
-        float radius = 0.1f;
-        int stroke = 0;
+        float radius = radiusPx;
+        int stroke = strokePx;
 
         if (interactiveAnimation) {
             if (position == selectingPosition) {
                 color = frameColor;
+                radius = frameRadiusPx;
                 stroke = frameStrokePx;
 
             } else if (position == selectedPosition) {
                 color = frameColorReverse;
+                radius = frameRadiusReversePx;
                 stroke = frameStrokeReversePx;
             }
 
         } else {
             if (position == selectedPosition) {
                 color = frameColor;
+                radius = frameRadiusPx;
                 stroke = frameStrokePx;
 
             } else if (position == lastSelectedPosition) {
                 color = frameColorReverse;
+                radius = frameRadiusReversePx;
                 stroke = frameStrokeReversePx;
             }
-        }
-
-        if (stroke <= 0) {
-            radius = 0;
         }
 
         strokePaint.setColor(color);
@@ -803,12 +803,17 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
             }
 
             @Override
-            public void onFillAnimationUpdated(int color, int colorReverse, int stroke, int strokeReverse) {
+            public void onFillAnimationUpdated(int color, int colorReverse, int radius, int radiusReverse, int stroke, int strokeReverse) {
                 frameColor = color;
                 frameColorReverse = colorReverse;
 
+                frameRadiusPx = radius;
+                frameRadiusReversePx = radiusReverse;
+
                 frameStrokePx = stroke;
                 frameStrokeReversePx = strokeReverse;
+
+                Log.e("TEST", "RADIUS: " + radius + " STROKE: " + stroke + " REVERSE RADIUS: " + radiusReverse + " REVERSE STROKE: " + strokeReverse);
                 invalidate();
             }
         });
@@ -861,8 +866,13 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         frameXCoordinate = xCoordinate;
 
         //fill
-        frameStrokePx = radiusPx * 2;
-        frameStrokeReversePx = radiusPx * 2;
+        frameStrokePx = radiusPx;
+        frameStrokeReversePx = radiusPx / 2;
+
+        if (animationType == AnimationType.FILL) {
+            frameRadiusPx = radiusPx / 2;
+            frameRadiusReversePx = radiusPx;
+        }
 
         isFrameValuesSet = true;
     }

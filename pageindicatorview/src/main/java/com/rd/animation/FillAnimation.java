@@ -11,6 +11,9 @@ public class FillAnimation extends ColorAnimation {
     private static final String ANIMATION_COLOR_REVERSE = "ANIMATION_COLOR_REVERSE";
     private static final String ANIMATION_COLOR = "ANIMATION_COLOR";
 
+    private static final String ANIMATION_RADIUS_REVERSE = "ANIMATION_RADIUS_REVERSE";
+    private static final String ANIMATION_RADIUS = "ANIMATION_RADIUS";
+
     private static final String ANIMATION_STROKE_REVERSE = "ANIMATION_STROKE_REVERSE";
     private static final String ANIMATION_STROKE = "ANIMATION_STROKE";
 
@@ -51,13 +54,46 @@ public class FillAnimation extends ColorAnimation {
             PropertyValuesHolder colorHolder = createColorPropertyHolder(false);
             PropertyValuesHolder reverseColorHolder = createColorPropertyHolder(true);
 
+            PropertyValuesHolder radiusHolder = createRadiusPropertyHolder(false);
+            PropertyValuesHolder radiusReverseHolder = createRadiusPropertyHolder(true);
+
             PropertyValuesHolder strokeHolder = createStrokePropertyHolder(false);
             PropertyValuesHolder strokeReverseHolder = createStrokePropertyHolder(true);
 
-            animator.setValues(colorHolder, reverseColorHolder, strokeHolder, strokeReverseHolder);
+            animator.setValues(
+                    colorHolder,
+                    reverseColorHolder,
+
+                    radiusHolder,
+                    radiusReverseHolder,
+
+                    strokeHolder,
+                    strokeReverseHolder);
         }
 
         return this;
+    }
+
+    @NonNull
+    private PropertyValuesHolder createRadiusPropertyHolder(boolean isReverse) {
+        String propertyName;
+        int startRadiusValue;
+        int endRadiusValue;
+
+        if (isReverse) {
+            propertyName = ANIMATION_RADIUS_REVERSE;
+            startRadiusValue = radiusPx / 2;
+            endRadiusValue = radiusPx;
+        } else {
+            propertyName = ANIMATION_RADIUS;
+            startRadiusValue = radiusPx;
+            endRadiusValue = radiusPx / 2;
+        }
+
+        PropertyValuesHolder holder = PropertyValuesHolder.ofInt(propertyName, startRadiusValue, endRadiusValue);
+        holder.setEvaluator(new IntEvaluator());
+
+        return holder;
     }
 
     @NonNull
@@ -68,12 +104,12 @@ public class FillAnimation extends ColorAnimation {
 
         if (isReverse) {
             propertyName = ANIMATION_STROKE_REVERSE;
-            startStrokeValue = radiusPx * 2;
+            startStrokeValue = radiusPx;
             endStrokeValue = 0;
         } else {
             propertyName = ANIMATION_STROKE;
             startStrokeValue = 0;
-            endStrokeValue = radiusPx * 2;
+            endStrokeValue = radiusPx;
         }
 
         PropertyValuesHolder holder = PropertyValuesHolder.ofInt(propertyName, startStrokeValue, endStrokeValue);
@@ -86,11 +122,22 @@ public class FillAnimation extends ColorAnimation {
         int color = (int) animation.getAnimatedValue(ANIMATION_COLOR);
         int colorReverse = (int) animation.getAnimatedValue(ANIMATION_COLOR_REVERSE);
 
+        int radius = (int) animation.getAnimatedValue(ANIMATION_RADIUS);
+        int radiusReverse = (int) animation.getAnimatedValue(ANIMATION_RADIUS_REVERSE);
+
         int stroke = (int) animation.getAnimatedValue(ANIMATION_STROKE);
         int strokeReverse = (int) animation.getAnimatedValue(ANIMATION_STROKE_REVERSE);
 
         if (listener != null) {
-            listener.onFillAnimationUpdated(color, colorReverse, stroke, strokeReverse);
+            listener.onFillAnimationUpdated(
+                    color,
+                    colorReverse,
+
+                    radius,
+                    radiusReverse,
+
+                    stroke,
+                    strokeReverse);
         }
     }
 
