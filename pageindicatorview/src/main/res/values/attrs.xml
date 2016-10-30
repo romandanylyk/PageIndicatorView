@@ -11,6 +11,7 @@
 
         <attr name="piv_radius" format="dimension" />
         <attr name="piv_padding" format="dimension" />
+        <attr name="piv_strokeWidth" format="dimension" />
         <attr name="piv_scaleFactor" format="float" />
 
         <attr name="piv_unselectedColor" format="color" />
@@ -24,6 +25,7 @@
             <enum name="scale" value="2" />
             <enum name="worm" value="3" />
             <enum name="slide" value="4" />
+            <enum name="fill" value="5" />
         </attr>
     </declare-styleable>
 

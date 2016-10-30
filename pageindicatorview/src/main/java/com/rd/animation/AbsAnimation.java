@@ -38,13 +38,13 @@ public abstract class AbsAnimation<T extends Animator> {
     }
 
     public void start() {
-        if (animator != null) {
+        if (animator != null && !animator.isRunning()) {
             animator.start();
         }
     }
 
     public void end() {
-        if (animator != null) {
+        if (animator != null && animator.isStarted()) {
             animator.end();
         }
     }

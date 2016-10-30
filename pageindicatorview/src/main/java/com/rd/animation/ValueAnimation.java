@@ -9,6 +9,7 @@ public class ValueAnimation {
     private ScaleAnimation scaleAnimation;
     private WormAnimation wormAnimation;
     private SlideAnimation slideAnimation;
+    private FillAnimation fillAnimation;
 
     private UpdateListener updateListener;
 
@@ -18,9 +19,11 @@ public class ValueAnimation {
 
         void onScaleAnimationUpdated(int color, int colorReverse, int radius, int radiusReverse);
 
+        void onSlideAnimationUpdated(int xCoordinate);
+
         void onWormAnimationUpdated(int leftX, int rightX);
 
-        void onSlideAnimationUpdated(int xCoordinate);
+        void onFillAnimationUpdated(int color, int colorReverse, int radius, int radiusReverse, int strokeWidth, int strokeWidthReverse);
     }
 
     public ValueAnimation(@Nullable UpdateListener listener) {
@@ -62,4 +65,14 @@ public class ValueAnimation {
 
         return slideAnimation;
     }
+
+    @NonNull
+    public FillAnimation fill() {
+        if (fillAnimation == null) {
+            fillAnimation = new FillAnimation(updateListener);
+        }
+
+        return fillAnimation;
+    }
+
 }
