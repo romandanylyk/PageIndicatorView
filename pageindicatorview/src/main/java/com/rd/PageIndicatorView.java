@@ -128,12 +128,15 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         int heightMode = MeasureSpec.getMode(heightMeasureSpec);
         int heightSize = MeasureSpec.getSize(heightMeasureSpec);
 
-        int circleDiameterPx = (radiusPx * 2) + (strokePx * 2);
-        int desiredHeight = circleDiameterPx;
+        int circleDiameterPx = radiusPx * 2;
+        int desiredHeight = circleDiameterPx + strokePx;
         int desiredWidth = 0;
 
         if (count != 0) {
-            desiredWidth = (circleDiameterPx * count) + (paddingPx * (count - 1));
+            int diameterSum = circleDiameterPx * count;
+            int strokeSum = (strokePx * 2) * count;
+            int paddingSum = paddingPx * (count - 1);
+            desiredWidth = diameterSum + strokeSum + paddingSum;
         }
 
         int width;
@@ -708,6 +711,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
         strokePaint.setStyle(Paint.Style.STROKE);
         strokePaint.setAntiAlias(true);
+        strokePaint.setStrokeWidth(strokePx);
     }
 
     private void initAttributes(@Nullable AttributeSet attrs) {
@@ -717,9 +721,9 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
         TypedArray typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.PageIndicatorView, 0, 0);
         initCountAttribute(typedArray);
-        initSizeAttribute(typedArray);
         initColorAttribute(typedArray);
         initAnimationAttribute(typedArray);
+        initSizeAttribute(typedArray);
     }
 
     private void initCountAttribute(@NonNull TypedArray typedArray) {
@@ -745,18 +749,6 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         viewPagerId = typedArray.getResourceId(R.styleable.PageIndicatorView_piv_viewPager, 0);
     }
 
-    private void initSizeAttribute(@NonNull TypedArray typedArray) {
-        paddingPx = (int) typedArray.getDimension(R.styleable.PageIndicatorView_piv_padding, paddingPx);
-        radiusPx = (int) typedArray.getDimension(R.styleable.PageIndicatorView_piv_radius, radiusPx);
-
-        scaleFactor = typedArray.getFloat(R.styleable.PageIndicatorView_piv_scaleFactor, ScaleAnimation.DEFAULT_SCALE_FACTOR);
-        if (scaleFactor < ScaleAnimation.MIN_SCALE_FACTOR) {
-            scaleFactor = ScaleAnimation.MIN_SCALE_FACTOR;
-        } else if (scaleFactor > ScaleAnimation.MAX_SCALE_FACTOR) {
-            scaleFactor = ScaleAnimation.MAX_SCALE_FACTOR;
-        }
-    }
-
     private void initColorAttribute(@NonNull TypedArray typedArray) {
         unselectedColor = typedArray.getColor(R.styleable.PageIndicatorView_piv_unselectedColor, unselectedColor);
         selectedColor = typedArray.getColor(R.styleable.PageIndicatorView_piv_selectedColor, selectedColor);
@@ -768,6 +760,23 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
         int index = typedArray.getInt(R.styleable.PageIndicatorView_piv_animationType, AnimationType.NONE.ordinal());
         animationType = getAnimationType(index);
+    }
+
+    private void initSizeAttribute(@NonNull TypedArray typedArray) {
+        paddingPx = (int) typedArray.getDimension(R.styleable.PageIndicatorView_piv_padding, paddingPx);
+        radiusPx = (int) typedArray.getDimension(R.styleable.PageIndicatorView_piv_radius, radiusPx);
+
+        scaleFactor = typedArray.getFloat(R.styleable.PageIndicatorView_piv_scaleFactor, ScaleAnimation.DEFAULT_SCALE_FACTOR);
+        if (scaleFactor < ScaleAnimation.MIN_SCALE_FACTOR) {
+            scaleFactor = ScaleAnimation.MIN_SCALE_FACTOR;
+        } else if (scaleFactor > ScaleAnimation.MAX_SCALE_FACTOR) {
+            scaleFactor = ScaleAnimation.MAX_SCALE_FACTOR;
+        }
+
+        strokePx = (int) typedArray.getDimension(R.styleable.PageIndicatorView_piv_strokeWidth, strokePx);
+        if (animationType != AnimationType.FILL) {
+            strokePx = 0;
+        }
     }
 
     private void initAnimation() {
@@ -812,8 +821,6 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
                 frameStrokePx = stroke;
                 frameStrokeReversePx = strokeReverse;
-
-                Log.e("TEST", "RADIUS: " + radius + " STROKE: " + stroke + " REVERSE RADIUS: " + radiusReverse + " REVERSE STROKE: " + strokeReverse);
                 invalidate();
             }
         });
@@ -988,7 +995,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         }
 
         for (int i = 0; i < count; i++) {
-            x += radiusPx;
+            x += radiusPx + strokePx;
             if (position == i) {
                 return x;
             }
