@@ -269,7 +269,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
      * default value {@link PageIndicatorView#DEFAULT_RADIUS_DP}.
      */
     public int getRadius() {
-        return DensityUtils.dpToPx(radiusPx);
+        return radiusPx;
     }
 
     /**
@@ -278,6 +278,10 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
      * @param paddingDp padding between circles in dp.
      */
     public void setPadding(int paddingDp) {
+        if (paddingDp < 0) {
+            paddingDp = 0;
+        }
+
         paddingPx = DensityUtils.dpToPx(paddingDp);
         invalidate();
     }
@@ -288,6 +292,10 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
      * @param paddingPx padding between circles in px.
      */
     public void setPadding(float paddingPx) {
+        if (paddingPx < 0) {
+            paddingPx = 0;
+        }
+
         this.paddingPx = (int) paddingPx;
         invalidate();
     }
@@ -297,7 +305,45 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
      * return default value {@link PageIndicatorView#DEFAULT_PADDING_DP}.
      */
     public int getPadding() {
-        return DensityUtils.dpToPx(paddingPx);
+        return paddingPx;
+    }
+
+    /**
+     * Set stroke width in px to draw while {@link AnimationType#FILL} is selected.
+     * Default value is {@link PageIndicatorView#DEFAULT_STROKE_DP}
+     *
+     * @param strokePx stroke width in px.
+     */
+    public void setStrokeWidth(float strokePx) {
+        if (strokePx < 0) {
+            strokePx = 0;
+        }
+
+        this.strokePx = (int) strokePx;
+        invalidate();
+    }
+
+    /**
+     * Set stroke width in dp to draw while {@link AnimationType#FILL} is selected.
+     * Default value is {@link PageIndicatorView#DEFAULT_STROKE_DP}
+     *
+     * @param strokeDp stroke width in dp.
+     */
+
+    public void setStrokeWidth(int strokeDp) {
+        if (strokePx < 0) {
+            strokePx = 0;
+        }
+
+        this.strokePx = DensityUtils.dpToPx(strokeDp);
+        invalidate();
+    }
+
+    /**
+     * Return stroke width in px. If custom stroke width is not set and {@link AnimationType#FILL} is selected.
+     */
+    public int getStrokeWidth() {
+        return strokePx;
     }
 
     /**
