@@ -38,6 +38,9 @@ public class WormAnimation extends AbsAnimation<AnimatorSet> {
             this.radius = radius;
             this.isRightSide = isRightSide;
 
+            rectLeftX = fromValue - radius;
+            rectRightX = fromValue + radius;
+
             AnimationValues values = createAnimationValues(isRightSide);
             ValueAnimator straightAnimator = createValueAnimator(values.fromX, values.toX, false);
             ValueAnimator reverseAnimator = createValueAnimator(values.reverseFromX, values.reverseToX, true);
@@ -151,7 +154,7 @@ public class WormAnimation extends AbsAnimation<AnimatorSet> {
 
     private class AnimationValues {
 
-        public final int fromX;
+        private final int fromX;
         private final int toX;
 
         private final int reverseFromX;
