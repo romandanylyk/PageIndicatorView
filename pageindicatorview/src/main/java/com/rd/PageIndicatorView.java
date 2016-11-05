@@ -309,6 +309,36 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     }
 
     /**
+     * Set scale factor used in {@link AnimationType#SCALE} animation.
+     * Defines size of unselected indicator circles in comparing to selected one.
+     * Minimum and maximum values are {@link ScaleAnimation#MAX_SCALE_FACTOR} and {@link ScaleAnimation#MIN_SCALE_FACTOR}.
+     * See also {@link ScaleAnimation#DEFAULT_SCALE_FACTOR}.
+     *
+     * @param factor float value in range between 0 and 1.
+     */
+    public void setScaleFactor(float factor) {
+        if (factor > ScaleAnimation.MAX_SCALE_FACTOR) {
+            factor = ScaleAnimation.MAX_SCALE_FACTOR;
+        } else if (factor < ScaleAnimation.MIN_SCALE_FACTOR) {
+            factor = ScaleAnimation.MIN_SCALE_FACTOR;
+        }
+
+        scaleFactor = factor;
+    }
+
+    /**
+     * Returns scale factor values used in {@link AnimationType#SCALE} animation.
+     * Defines size of unselected indicator circles in comparing to selected one.
+     * Minimum and maximum values are {@link ScaleAnimation#MAX_SCALE_FACTOR} and {@link ScaleAnimation#MIN_SCALE_FACTOR}.
+     * See also {@link ScaleAnimation#DEFAULT_SCALE_FACTOR}.
+     *
+     * @return float value that indicate scale factor.
+     */
+    public float getScaleFactor() {
+        return scaleFactor;
+    }
+
+    /**
      * Set stroke width in px to draw while {@link AnimationType#FILL} is selected.
      * Default value is {@link PageIndicatorView#DEFAULT_STROKE_DP}
      *
@@ -604,7 +634,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         int color = unselectedColor;
 
         if (animationType == AnimationType.SCALE) {
-            radius /= scaleFactor;
+            radius *= scaleFactor;
         }
 
         if (position == selectedPosition) {
@@ -815,6 +845,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         scaleFactor = typedArray.getFloat(R.styleable.PageIndicatorView_piv_scaleFactor, ScaleAnimation.DEFAULT_SCALE_FACTOR);
         if (scaleFactor < ScaleAnimation.MIN_SCALE_FACTOR) {
             scaleFactor = ScaleAnimation.MIN_SCALE_FACTOR;
+
         } else if (scaleFactor > ScaleAnimation.MAX_SCALE_FACTOR) {
             scaleFactor = ScaleAnimation.MAX_SCALE_FACTOR;
         }
