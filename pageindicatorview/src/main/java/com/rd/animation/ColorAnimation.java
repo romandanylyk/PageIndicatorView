@@ -8,6 +8,9 @@ import android.view.animation.DecelerateInterpolator;
 
 public class ColorAnimation extends AbsAnimation<ValueAnimator> {
 
+    public static final String DEFAULT_UNSELECTED_COLOR = "#33ffffff";
+    public static final String DEFAULT_SELECTED_COLOR = "#ffffff";
+
     private static final String ANIMATION_COLOR_REVERSE = "ANIMATION_COLOR_REVERSE";
     private static final String ANIMATION_COLOR = "ANIMATION_COLOR";
     private static final int ANIMATION_DURATION = 350;

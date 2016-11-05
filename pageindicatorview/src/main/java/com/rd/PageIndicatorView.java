@@ -16,35 +16,28 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.util.Pair;
 import android.view.View;
+import com.rd.animation.*;
 import com.rd.pageindicatorview.R;
 import com.rd.utils.DensityUtils;
-import com.rd.animation.AbsAnimation;
-import com.rd.animation.AnimationType;
-import com.rd.animation.ScaleAnimation;
-import com.rd.animation.ValueAnimation;
 
 public class PageIndicatorView extends View implements ViewPager.OnPageChangeListener {
-
-    private static final String DEFAULT_UNSELECTED_COLOR = "#33ffffff";
-    private static final String DEFAULT_SELECTED_COLOR = "#ffffff";
 
     private static final int DEFAULT_CIRCLES_COUNT = 3;
     private static final int COUNT_NOT_SET = -1;
 
     private static final int DEFAULT_RADIUS_DP = 6;
     private static final int DEFAULT_PADDING_DP = 8;
-    private static final int DEFAULT_STROKE_DP = 1;
 
-    private int radiusPx = DensityUtils.dpToPx(DEFAULT_RADIUS_DP);
-    private int paddingPx = DensityUtils.dpToPx(DEFAULT_PADDING_DP);
-    private int strokePx = DensityUtils.dpToPx(DEFAULT_STROKE_DP);
+    private int radiusPx;
+    private int paddingPx;
+    private int strokePx ;
 
-    private int count = DEFAULT_CIRCLES_COUNT;
+    private int count;
     private boolean isCountSet;
 
     //Color
-    private int unselectedColor = Color.parseColor(DEFAULT_UNSELECTED_COLOR);
-    private int selectedColor = Color.parseColor(DEFAULT_SELECTED_COLOR);
+    private int unselectedColor;
+    private int selectedColor;
 
     private int frameColor;
     private int frameColorReverse;
@@ -340,7 +333,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
     /**
      * Set stroke width in px to draw while {@link AnimationType#FILL} is selected.
-     * Default value is {@link PageIndicatorView#DEFAULT_STROKE_DP}
+     * Default value is {@link FillAnimation#DEFAULT_STROKE_DP}
      *
      * @param strokePx stroke width in px.
      */
@@ -355,7 +348,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
     /**
      * Set stroke width in dp to draw while {@link AnimationType#FILL} is selected.
-     * Default value is {@link PageIndicatorView#DEFAULT_STROKE_DP}
+     * Default value is {@link FillAnimation#DEFAULT_STROKE_DP}
      *
      * @param strokeDp stroke width in dp.
      */
@@ -377,7 +370,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     }
 
     /**
-     * Set color of unselected state to each circle indicator. Default color {@link PageIndicatorView#DEFAULT_UNSELECTED_COLOR}.
+     * Set color of unselected state to each circle indicator. Default color {@link ColorAnimation#DEFAULT_UNSELECTED_COLOR}.
      *
      * @param color color of each unselected circle.
      */
@@ -388,14 +381,14 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
     /**
      * Return color of unselected state of each circle indicator. If custom unselected color
-     * is not set, return default color {@link PageIndicatorView#DEFAULT_UNSELECTED_COLOR}.
+     * is not set, return default color {@link ColorAnimation#DEFAULT_UNSELECTED_COLOR}.
      */
     public int getUnselectedColor() {
         return unselectedColor;
     }
 
     /**
-     * Set color of selected state to circle indicator. Default color is white {@link PageIndicatorView#DEFAULT_SELECTED_COLOR}.
+     * Set color of selected state to circle indicator. Default color is white {@link ColorAnimation#DEFAULT_SELECTED_COLOR}.
      *
      * @param color color selected circle.
      */
@@ -406,7 +399,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
     /**
      * Return color of selected circle indicator. If custom unselected color.
-     * is not set, return default color {@link PageIndicatorView#DEFAULT_SELECTED_COLOR}.
+     * is not set, return default color {@link ColorAnimation#DEFAULT_SELECTED_COLOR}.
      */
     public int getSelectedColor() {
         return selectedColor;
@@ -826,8 +819,8 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     }
 
     private void initColorAttribute(@NonNull TypedArray typedArray) {
-        unselectedColor = typedArray.getColor(R.styleable.PageIndicatorView_piv_unselectedColor, unselectedColor);
-        selectedColor = typedArray.getColor(R.styleable.PageIndicatorView_piv_selectedColor, selectedColor);
+        unselectedColor = typedArray.getColor(R.styleable.PageIndicatorView_piv_unselectedColor, Color.parseColor(ColorAnimation.DEFAULT_UNSELECTED_COLOR));
+        selectedColor = typedArray.getColor(R.styleable.PageIndicatorView_piv_selectedColor, Color.parseColor(ColorAnimation.DEFAULT_SELECTED_COLOR));
     }
 
     private void initAnimationAttribute(@NonNull TypedArray typedArray) {
@@ -839,8 +832,8 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     }
 
     private void initSizeAttribute(@NonNull TypedArray typedArray) {
-        paddingPx = (int) typedArray.getDimension(R.styleable.PageIndicatorView_piv_padding, paddingPx);
-        radiusPx = (int) typedArray.getDimension(R.styleable.PageIndicatorView_piv_radius, radiusPx);
+        radiusPx = (int) typedArray.getDimension(R.styleable.PageIndicatorView_piv_radius, DensityUtils.dpToPx(DEFAULT_RADIUS_DP));
+        paddingPx = (int) typedArray.getDimension(R.styleable.PageIndicatorView_piv_padding, DensityUtils.dpToPx(DEFAULT_PADDING_DP));
 
         scaleFactor = typedArray.getFloat(R.styleable.PageIndicatorView_piv_scaleFactor, ScaleAnimation.DEFAULT_SCALE_FACTOR);
         if (scaleFactor < ScaleAnimation.MIN_SCALE_FACTOR) {
@@ -850,7 +843,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
             scaleFactor = ScaleAnimation.MAX_SCALE_FACTOR;
         }
 
-        strokePx = (int) typedArray.getDimension(R.styleable.PageIndicatorView_piv_strokeWidth, strokePx);
+        strokePx = (int) typedArray.getDimension(R.styleable.PageIndicatorView_piv_strokeWidth, DensityUtils.dpToPx(FillAnimation.DEFAULT_STROKE_DP));
         if (animationType != AnimationType.FILL) {
             strokePx = 0;
         }

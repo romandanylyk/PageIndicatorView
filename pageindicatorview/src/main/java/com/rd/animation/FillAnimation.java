@@ -17,6 +17,7 @@ public class FillAnimation extends ColorAnimation {
     private static final String ANIMATION_STROKE_REVERSE = "ANIMATION_STROKE_REVERSE";
     private static final String ANIMATION_STROKE = "ANIMATION_STROKE";
 
+    public static final int DEFAULT_STROKE_DP = 1;
     private static final int ANIMATION_DURATION = 350;
 
     private int radiusPx;
