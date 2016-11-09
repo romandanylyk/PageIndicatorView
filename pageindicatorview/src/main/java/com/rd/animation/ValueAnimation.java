@@ -10,6 +10,7 @@ public class ValueAnimation {
     private WormAnimation wormAnimation;
     private SlideAnimation slideAnimation;
     private FillAnimation fillAnimation;
+    private ThinWormAnimation thinWormAnimation;
 
     private UpdateListener updateListener;
 
@@ -24,6 +25,8 @@ public class ValueAnimation {
         void onWormAnimationUpdated(int leftX, int rightX);
 
         void onFillAnimationUpdated(int color, int colorReverse, int radius, int radiusReverse, int strokeWidth, int strokeWidthReverse);
+
+        void onThinWormAnimationUpdated(int leftX, int rightX, int height);
     }
 
     public ValueAnimation(@Nullable UpdateListener listener) {
@@ -75,4 +78,12 @@ public class ValueAnimation {
         return fillAnimation;
     }
 
+    @NonNull
+    public ThinWormAnimation thinWorm() {
+        if (thinWormAnimation == null) {
+            thinWormAnimation = new ThinWormAnimation(updateListener);
+        }
+
+        return thinWormAnimation;
+    }
 }

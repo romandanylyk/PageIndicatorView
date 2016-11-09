@@ -30,7 +30,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
     private int radiusPx;
     private int paddingPx;
-    private int strokePx ;
+    private int strokePx;
 
     private int count;
     private boolean isCountSet;
@@ -57,6 +57,9 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
     //Slide
     private int frameXCoordinate;
+
+    //Thin Worm
+    private int frameHeight;
 
     private int selectedPosition;
     private int selectingPosition;
@@ -521,6 +524,10 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
             case SLIDE:
                 startSlideAnimation();
                 break;
+
+            case THIN_WORM:
+                startThinWormAnimation();
+                break;
         }
     }
 
@@ -617,6 +624,10 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
             case FILL:
                 drawWithFillAnimation(canvas, position, x, y);
+                break;
+
+            case THIN_WORM:
+                drawWithThinWormAnimation(canvas, x, y);
                 break;
 
         }
@@ -771,6 +782,26 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         canvas.drawCircle(x, y, radius, strokePaint);
     }
 
+    private void drawWithThinWormAnimation(@NonNull Canvas canvas, int x, int y) {
+        int radius = radiusPx;
+
+        int left = frameLeftX;
+        int right = frameRightX;
+        int top = y - (frameHeight / 2);
+        int bot = y + (frameHeight / 2);
+
+        rect.left = left;
+        rect.right = right;
+        rect.top = top;
+        rect.bottom = bot;
+
+        fillPaint.setColor(unselectedColor);
+        canvas.drawCircle(x, y, radius, fillPaint);
+
+        fillPaint.setColor(selectedColor);
+        canvas.drawRoundRect(rect, radiusPx, radiusPx, fillPaint);
+    }
+
     private void init(@Nullable AttributeSet attrs) {
         initAttributes(attrs);
         initAnimation();
@@ -882,6 +913,15 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
             }
 
             @Override
+            public void onThinWormAnimationUpdated(int leftX, int rightX, int height) {
+                frameLeftX = leftX;
+                frameRightX = rightX;
+                frameHeight = height;
+
+                invalidate();
+            }
+
+            @Override
             public void onFillAnimationUpdated(int color, int colorReverse, int radius, int radiusReverse, int stroke, int strokeReverse) {
                 frameColor = color;
                 frameColorReverse = colorReverse;
@@ -910,6 +950,8 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
                 return AnimationType.SLIDE;
             case 5:
                 return AnimationType.FILL;
+            case 6:
+                return AnimationType.THIN_WORM;
         }
 
         return AnimationType.NONE;
@@ -951,6 +993,8 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
             frameRadiusReversePx = radiusPx;
         }
 
+        //thin worm
+        frameHeight = radiusPx * 2;
         isFrameValuesSet = true;
     }
 
@@ -986,6 +1030,15 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         animation.fill().with(unselectedColor, selectedColor, radiusPx, strokePx).duration(animationDuration).start();
     }
 
+    private void startThinWormAnimation() {
+        int fromX = getXCoordinate(lastSelectedPosition);
+        int toX = getXCoordinate(selectedPosition);
+        boolean isRightSide = selectedPosition > lastSelectedPosition;
+
+        animation.thinWorm().end();
+        animation.thinWorm().with(fromX, toX, radiusPx, isRightSide).duration(animationDuration).start();
+    }
+
     @Nullable
     private AbsAnimation getSelectedAnimation() {
         switch (animationType) {
@@ -998,17 +1051,23 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
             case FILL:
                 return animation.fill().with(unselectedColor, selectedColor, radiusPx, strokePx);
 
+            case THIN_WORM:
             case WORM:
             case SLIDE:
                 int fromX = getXCoordinate(selectedPosition);
                 int toX = getXCoordinate(selectingPosition);
 
-                if (animationType == AnimationType.WORM) {
-                    boolean isRightSide = selectingPosition > selectedPosition;
-                    return animation.worm().with(fromX, toX, radiusPx, isRightSide);
-
-                } else if (animationType == AnimationType.SLIDE) {
+                if (animationType == AnimationType.SLIDE) {
                     return animation.slide().with(fromX, toX);
+
+                } else {
+                    boolean isRightSide = selectingPosition > selectedPosition;
+                    if (animationType == AnimationType.WORM) {
+                        return animation.worm().with(fromX, toX, radiusPx, isRightSide);
+
+                    } else if (animationType == AnimationType.THIN_WORM) {
+                        return animation.thinWorm().with(fromX, toX, radiusPx, isRightSide);
+                    }
                 }
         }
 

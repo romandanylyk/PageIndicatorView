@@ -20,8 +20,11 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="48dp"
-        attrs:piv_animationType="fill"
+        attrs:piv_animationDuration="3000"
+        attrs:piv_animationType="thinWorm"
         attrs:piv_interactiveAnimation="true"
+        attrs:piv_padding="32dp"
+        attrs:piv_radius="16dp"
         attrs:piv_viewPager="@id/viewPager" />
 
 </RelativeLayout>

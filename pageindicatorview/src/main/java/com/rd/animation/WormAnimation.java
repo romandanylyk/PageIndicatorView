@@ -4,17 +4,18 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.animation.DecelerateInterpolator;
 
 public class WormAnimation extends AbsAnimation<AnimatorSet> {
 
-    private int fromValue;
-    private int toValue;
-    private int radius;
-    private boolean isRightSide;
+    int fromValue;
+    int toValue;
+    int radius;
+    boolean isRightSide;
 
-    private int rectLeftX;
-    private int rectRightX;
+    int rectLeftX;
+    int rectRightX;
 
     public WormAnimation(@NonNull ValueAnimation.UpdateListener listener) {
         super(listener);
@@ -42,8 +43,8 @@ public class WormAnimation extends AbsAnimation<AnimatorSet> {
             rectRightX = fromValue + radius;
 
             AnimationValues values = createAnimationValues(isRightSide);
-            ValueAnimator straightAnimator = createValueAnimator(values.fromX, values.toX, false);
-            ValueAnimator reverseAnimator = createValueAnimator(values.reverseFromX, values.reverseToX, true);
+            ValueAnimator straightAnimator = createWormAnimator(values.fromX, values.toX, false);
+            ValueAnimator reverseAnimator = createWormAnimator(values.reverseFromX, values.reverseToX, true);
 
             animator.playSequentially(straightAnimator, reverseAnimator);
         }
@@ -57,14 +58,15 @@ public class WormAnimation extends AbsAnimation<AnimatorSet> {
 
             for (Animator anim : animator.getChildAnimations()) {
                 ValueAnimator animator = (ValueAnimator) anim;
+                long animDuration = animator.getDuration();
 
                 if (playTimeLeft < 0) {
                     playTimeLeft = 0;
                 }
 
                 long currPlayTime = playTimeLeft;
-                if (currPlayTime >= animator.getDuration()) {
-                    currPlayTime = animator.getDuration();
+                if (currPlayTime >= animDuration) {
+                    currPlayTime = animDuration;
                 }
 
                 animator.setCurrentPlayTime(currPlayTime);
@@ -75,7 +77,7 @@ public class WormAnimation extends AbsAnimation<AnimatorSet> {
         return this;
     }
 
-    private ValueAnimator createValueAnimator(int fromX, int toX, final boolean isReverseAnimator) {
+    ValueAnimator createWormAnimator(int fromX, int toX, final boolean isReverse) {
         ValueAnimator anim = ValueAnimator.ofInt(fromX, toX);
         anim.setDuration(animationDuration / 2);
         anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -83,7 +85,7 @@ public class WormAnimation extends AbsAnimation<AnimatorSet> {
             public void onAnimationUpdate(ValueAnimator animation) {
                 int value = (int) animation.getAnimatedValue();
 
-                if (!isReverseAnimator) {
+                if (!isReverse) {
                     if (isRightSide) {
                         rectRightX = value;
                     } else {
@@ -98,6 +100,7 @@ public class WormAnimation extends AbsAnimation<AnimatorSet> {
                     }
                 }
 
+//                Log.e("TEST", "IS REVERSE: " + isReverse);
                 listener.onWormAnimationUpdated(rectLeftX, rectRightX);
             }
         });
@@ -106,7 +109,7 @@ public class WormAnimation extends AbsAnimation<AnimatorSet> {
     }
 
     @SuppressWarnings("RedundantIfStatement")
-    private boolean hasChanges(int fromValue, int toValue, int radius, boolean isRightSide) {
+    boolean hasChanges(int fromValue, int toValue, int radius, boolean isRightSide) {
         if (this.fromValue != fromValue) {
             return true;
         }
@@ -127,7 +130,7 @@ public class WormAnimation extends AbsAnimation<AnimatorSet> {
     }
 
     @NonNull
-    private AnimationValues createAnimationValues(boolean isRightSide) {
+    AnimationValues createAnimationValues(boolean isRightSide) {
         int fromX;
         int toX;
 
@@ -152,15 +155,15 @@ public class WormAnimation extends AbsAnimation<AnimatorSet> {
         return new AnimationValues(fromX, toX, reverseFromX, reverseToX);
     }
 
-    private class AnimationValues {
+    class AnimationValues {
 
-        private final int fromX;
-        private final int toX;
+        final int fromX;
+        final int toX;
 
-        private final int reverseFromX;
-        private final int reverseToX;
+        final int reverseFromX;
+        final int reverseToX;
 
-        public AnimationValues(int fromX, int toX, int reverseFromX, int reverseToX) {
+        AnimationValues(int fromX, int toX, int reverseFromX, int reverseToX) {
             this.fromX = fromX;
             this.toX = toX;
 
