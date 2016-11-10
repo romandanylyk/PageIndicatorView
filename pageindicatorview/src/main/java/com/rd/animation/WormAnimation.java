@@ -100,7 +100,6 @@ public class WormAnimation extends AbsAnimation<AnimatorSet> {
                     }
                 }
 
-//                Log.e("TEST", "IS REVERSE: " + isReverse);
                 listener.onWormAnimationUpdated(rectLeftX, rectRightX);
             }
         });
