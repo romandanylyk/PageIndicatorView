@@ -343,6 +343,9 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     public void setStrokeWidth(float strokePx) {
         if (strokePx < 0) {
             strokePx = 0;
+
+        } else if (strokePx > radiusPx) {
+            strokePx = radiusPx;
         }
 
         this.strokePx = (int) strokePx;
@@ -357,11 +360,16 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
      */
 
     public void setStrokeWidth(int strokeDp) {
+        int strokePx = DensityUtils.dpToPx(strokeDp);
+
         if (strokePx < 0) {
             strokePx = 0;
+
+        } else if (strokePx > radiusPx) {
+            strokePx = radiusPx;
         }
 
-        this.strokePx = DensityUtils.dpToPx(strokeDp);
+        this.strokePx = strokePx;
         invalidate();
     }
 
@@ -874,7 +882,11 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
             scaleFactor = ScaleAnimation.MAX_SCALE_FACTOR;
         }
 
-        strokePx = (int) typedArray.getDimension(R.styleable.PageIndicatorView_piv_strokeWidth, DensityUtils.dpToPx(FillAnimation.DEFAULT_STROKE_DP));
+        strokePx = (int) typedArray.getDimension(R.styleable.PageIndicatorView_piv_strokeWidth, strokePx);
+        if (strokePx > radiusPx) {
+            strokePx = radiusPx;
+        }
+
         if (animationType != AnimationType.FILL) {
             strokePx = 0;
         }
