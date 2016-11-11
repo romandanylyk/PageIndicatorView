@@ -31,11 +31,6 @@ public class WormAnimation extends AbsAnimation<AnimatorSet> {
         return animator;
     }
 
-    @Override
-    public AbsAnimation duration(long duration) {
-        return super.duration(duration);
-    }
-
     public WormAnimation with(int fromValue, int toValue, int radius, boolean isRightSide) {
         if (hasChanges(fromValue, toValue, radius, isRightSide)) {
             animator = createAnimator();
