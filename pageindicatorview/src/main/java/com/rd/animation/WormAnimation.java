@@ -5,6 +5,7 @@ import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 
 public class WormAnimation extends AbsAnimation<AnimatorSet> {
@@ -25,9 +26,14 @@ public class WormAnimation extends AbsAnimation<AnimatorSet> {
     @Override
     public AnimatorSet createAnimator() {
         AnimatorSet animator = new AnimatorSet();
-        animator.setInterpolator(new DecelerateInterpolator());
+        animator.setInterpolator(new AccelerateDecelerateInterpolator());
 
         return animator;
+    }
+
+    @Override
+    public AbsAnimation duration(long duration) {
+        return super.duration(duration);
     }
 
     public WormAnimation with(int fromValue, int toValue, int radius, boolean isRightSide) {
@@ -43,8 +49,10 @@ public class WormAnimation extends AbsAnimation<AnimatorSet> {
             rectRightX = fromValue + radius;
 
             AnimationValues values = createAnimationValues(isRightSide);
-            ValueAnimator straightAnimator = createWormAnimator(values.fromX, values.toX, false);
-            ValueAnimator reverseAnimator = createWormAnimator(values.reverseFromX, values.reverseToX, true);
+            long duration = animationDuration / 2;
+
+            ValueAnimator straightAnimator = createWormAnimator(values.fromX, values.toX, duration, false);
+            ValueAnimator reverseAnimator = createWormAnimator(values.reverseFromX, values.reverseToX, duration, true);
 
             animator.playSequentially(straightAnimator, reverseAnimator);
         }
@@ -77,9 +85,10 @@ public class WormAnimation extends AbsAnimation<AnimatorSet> {
         return this;
     }
 
-    ValueAnimator createWormAnimator(int fromX, int toX, final boolean isReverse) {
+    ValueAnimator createWormAnimator(int fromX, int toX, final long duration, final boolean isReverse) {
         ValueAnimator anim = ValueAnimator.ofInt(fromX, toX);
-        anim.setDuration(animationDuration / 2);
+        anim.setInterpolator(new AccelerateDecelerateInterpolator());
+        anim.setDuration(duration);
         anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {

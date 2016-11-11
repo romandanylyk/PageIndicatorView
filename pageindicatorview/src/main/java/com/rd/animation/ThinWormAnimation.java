@@ -2,13 +2,23 @@ package com.rd.animation;
 
 import android.animation.ValueAnimator;
 import android.support.annotation.NonNull;
+import android.view.animation.AccelerateDecelerateInterpolator;
 
 public class ThinWormAnimation extends WormAnimation {
 
+    private static final float PERCENTAGE_SIZE_DURATION_DELAY = 0.7f;
+    private static final float PERCENTAGE_REVERSE_HEIGHT_DELAY = 0.65f;
+    private static final float PERCENTAGE_HEIGHT_DURATION = 0.25f;
     private int height;
 
     public ThinWormAnimation(@NonNull ValueAnimation.UpdateListener listener) {
         super(listener);
+    }
+
+    @Override
+    public ThinWormAnimation duration(long duration) {
+        super.duration(duration);
+        return this;
     }
 
     @Override
@@ -25,54 +35,29 @@ public class ThinWormAnimation extends WormAnimation {
             rectLeftX = fromValue - radius;
             rectRightX = fromValue + radius;
 
-            long straightSizeDuration = animationDuration - (animationDuration / 3);
+            long straightSizeDuration = (long) (animationDuration * PERCENTAGE_SIZE_DURATION_DELAY);
             long reverseSizeDuration = animationDuration;
+
+            long straightHeightDelay = 0;
+            long reverseHeightDelay = (long) (animationDuration * PERCENTAGE_REVERSE_HEIGHT_DELAY);
 
             AnimationValues values = createAnimationValues(isRightSide);
             ValueAnimator straightAnimator = createWormAnimator(values.fromX, values.toX, straightSizeDuration, false);
-            ValueAnimator straightHeightAnimator = createHeightAnimator(height, height / 2);
+            ValueAnimator straightHeightAnimator = createHeightAnimator(height, height / 2, straightHeightDelay);
 
             ValueAnimator reverseAnimator = createWormAnimator(values.reverseFromX, values.reverseToX, reverseSizeDuration, true);
-            ValueAnimator reverseHeightAnimator = createHeightAnimator(height / 2, height);
+            ValueAnimator reverseHeightAnimator = createHeightAnimator(height / 2, height, reverseHeightDelay);
 
-            animator.playTogether(straightAnimator, straightHeightAnimator, reverseAnimator, reverseHeightAnimator);
+            animator.playTogether(straightAnimator, reverseAnimator, straightHeightAnimator, reverseHeightAnimator);
         }
         return this;
     }
 
-    private ValueAnimator createWormAnimator(int fromX, int toX, long duration, final boolean isReverse) {
-        ValueAnimator anim = ValueAnimator.ofInt(fromX, toX);
-        anim.setDuration(duration);
-        anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                int value = (int) animation.getAnimatedValue();
-
-                if (!isReverse) {
-                    if (isRightSide) {
-                        rectRightX = value;
-                    } else {
-                        rectLeftX = value;
-                    }
-
-                } else {
-                    if (isRightSide) {
-                        rectLeftX = value;
-                    } else {
-                        rectRightX = value;
-                    }
-                }
-
-                listener.onWormAnimationUpdated(rectLeftX, rectRightX);
-            }
-        });
-
-        return anim;
-    }
-
-    private ValueAnimator createHeightAnimator(int fromHeight, int toHeight) {
+    private ValueAnimator createHeightAnimator(int fromHeight, int toHeight, long startDelay) {
         ValueAnimator anim = ValueAnimator.ofInt(fromHeight, toHeight);
-        anim.setDuration(animationDuration / 3);
+        anim.setInterpolator(new AccelerateDecelerateInterpolator());
+        anim.setDuration((long) (animationDuration * PERCENTAGE_HEIGHT_DURATION));
+        anim.setStartDelay(startDelay);
         anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
@@ -89,7 +74,7 @@ public class ThinWormAnimation extends WormAnimation {
         if (animator != null) {
             long duration = (long) (progress * animationDuration);
             int size = animator.getChildAnimations().size();
-            long minus = animationDuration / 2;
+            long minus = (long) (animationDuration * PERCENTAGE_REVERSE_HEIGHT_DELAY);
 
             for (int i = 0; i < size; i++) {
                 ValueAnimator anim = (ValueAnimator) animator.getChildAnimations().get(i);

@@ -1036,7 +1036,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         boolean isRightSide = selectedPosition > lastSelectedPosition;
 
         animation.thinWorm().end();
-        animation.thinWorm().with(fromX, toX, radiusPx, isRightSide).duration(animationDuration).start();
+        animation.thinWorm().duration(animationDuration).with(fromX, toX, radiusPx, isRightSide).start();
     }
 
     @Nullable
