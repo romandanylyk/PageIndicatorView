@@ -1,6 +1,7 @@
 package com.rd;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.database.DataSetObserver;
@@ -16,6 +17,8 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.util.Pair;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewParent;
 import com.rd.animation.*;
 import com.rd.pageindicatorview.R;
 import com.rd.utils.DensityUtils;
@@ -81,6 +84,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
     private ViewPager viewPager;
     private int viewPagerId;
+    private boolean isListenerSet;
 
     public PageIndicatorView(Context context) {
         super(context);
@@ -186,6 +190,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     @Override
     public void onPageSelected(int position) {
         if (!interactiveAnimation || animationType == AnimationType.NONE) {
+            Log.e("TEST", "onPageSelected");
             setSelection(position);
         }
     }
@@ -547,12 +552,14 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     }
 
     /**
-     * Set {@link ViewPager} to add {@link ViewPager.OnPageChangeListener} to automatically
-     * handle selecting new indicators events (and interactive animation effect if it is enabled).
+     * Set {@link ViewPager} to add {@link ViewPager.OnPageChangeListener} and automatically
+     * handle selecting new indicators (and interactive animation effect if it is enabled).
      *
      * @param pager instance of {@link ViewPager} to work with
      */
     public void setViewPager(@Nullable ViewPager pager) {
+        releaseViewPager();
+
         if (pager != null) {
             viewPager = pager;
             viewPager.addOnPageChangeListener(this);
@@ -882,7 +889,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
             scaleFactor = ScaleAnimation.MAX_SCALE_FACTOR;
         }
 
-        strokePx = (int) typedArray.getDimension(R.styleable.PageIndicatorView_piv_strokeWidth, strokePx);
+        strokePx = (int) typedArray.getDimension(R.styleable.PageIndicatorView_piv_strokeWidth, DensityUtils.dpToPx(FillAnimation.DEFAULT_STROKE_DP));
         if (strokePx > radiusPx) {
             strokePx = radiusPx;
         }
@@ -1119,9 +1126,18 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     }
 
     private void findViewPager() {
-        View view = ((View) getParent()).findViewById(viewPagerId);
-        if (view != null && view instanceof ViewPager) {
-            setViewPager((ViewPager) view);
+        if (viewPagerId == 0) {
+            return;
+        }
+
+        Context context = getContext();
+        if (context instanceof Activity) {
+            Activity activity = (Activity) getContext();
+            View view = activity.findViewById(viewPagerId);
+
+            if (view != null && view instanceof ViewPager) {
+                setViewPager((ViewPager) view);
+            }
         }
     }
 
