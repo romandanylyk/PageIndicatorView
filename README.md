@@ -58,6 +58,7 @@ setDynamicCount(boolean dynamicCount)
 
 setRadius(int radiusDp)
 setPadding(int paddingDp)
+setStrokeWidth(int strokeDp)
 
 //set color
 setUnselectedColor(int color)
