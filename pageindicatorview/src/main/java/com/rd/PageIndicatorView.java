@@ -84,7 +84,6 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
     private ViewPager viewPager;
     private int viewPagerId;
-    private boolean isListenerSet;
 
     public PageIndicatorView(Context context) {
         super(context);
@@ -834,11 +833,12 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
             return;
         }
 
-        TypedArray typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.PageIndicatorView, 0, 0);
+        TypedArray typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.PageIndicatorView);
         initCountAttribute(typedArray);
         initColorAttribute(typedArray);
         initAnimationAttribute(typedArray);
         initSizeAttribute(typedArray);
+        typedArray.recycle();
     }
 
     private void initCountAttribute(@NonNull TypedArray typedArray) {
