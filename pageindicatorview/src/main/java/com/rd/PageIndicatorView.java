@@ -189,7 +189,6 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     @Override
     public void onPageSelected(int position) {
         if (!interactiveAnimation || animationType == AnimationType.NONE) {
-            Log.e("TEST", "onPageSelected");
             setSelection(position);
         }
     }
