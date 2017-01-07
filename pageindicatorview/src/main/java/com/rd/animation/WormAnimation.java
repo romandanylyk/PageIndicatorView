@@ -72,7 +72,9 @@ public class WormAnimation extends AbsAnimation<AnimatorSet> {
                     currPlayTime = animDuration;
                 }
 
-                animator.setCurrentPlayTime(currPlayTime);
+                if (animator.getValues() != null && animator.getValues().length > 0) {
+                    animator.setCurrentPlayTime(currPlayTime);
+                }
                 playTimeLeft -= currPlayTime;
             }
         }

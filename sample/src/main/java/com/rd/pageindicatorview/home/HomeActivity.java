@@ -1,6 +1,7 @@
 package com.rd.pageindicatorview.home;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -26,10 +27,8 @@ public class HomeActivity extends AppCompatActivity {
 
     @SuppressWarnings("ConstantConditions")
     private void initViews() {
-        List<View> pageList = createPageList();
-
-        HomeAdapter adapter = new HomeAdapter();
-        adapter.setData(pageList);
+        final HomeAdapter adapter = new HomeAdapter();
+        adapter.setData(createPageList());
 
         ViewPager pager = (ViewPager) findViewById(R.id.viewPager);
         pager.setAdapter(adapter);

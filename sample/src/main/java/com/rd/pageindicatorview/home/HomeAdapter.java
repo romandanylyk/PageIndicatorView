@@ -39,17 +39,22 @@ class HomeAdapter extends PagerAdapter {
         return view == object;
     }
 
-    public void setData(@Nullable List<View> viewList) {
-        if (viewList == null) {
-            this.viewList.clear();
-        } else {
-            this.viewList.addAll(viewList);
+    @Override
+    public int getItemPosition(Object object) {
+        return POSITION_NONE;
+    }
+
+    void setData(@Nullable List<View> list) {
+        this.viewList.clear();
+        if (list != null && !list.isEmpty()) {
+            this.viewList.addAll(list);
         }
+
         notifyDataSetChanged();
     }
 
     @NonNull
-    public List<View> getData() {
+    List<View> getData() {
         if (viewList == null) {
             viewList = new ArrayList<>();
         }

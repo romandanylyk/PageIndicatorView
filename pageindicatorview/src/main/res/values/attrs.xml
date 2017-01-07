@@ -7,7 +7,7 @@
         <attr name="piv_select" format="integer" />
 
         <attr name="piv_count" format="integer" />
-        <attr name="dynamicCount" format="boolean" />
+        <attr name="piv_dynamicCount" format="boolean" />
 
         <attr name="piv_radius" format="dimension" />
         <attr name="piv_padding" format="dimension" />

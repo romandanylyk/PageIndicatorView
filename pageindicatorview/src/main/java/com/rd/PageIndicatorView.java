@@ -14,11 +14,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.Pair;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewParent;
 import com.rd.animation.*;
 import com.rd.pageindicatorview.R;
 import com.rd.utils.DensityUtils;
@@ -171,7 +168,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
-        setFrameValues();
+        setupFrameValues();
     }
 
     @Override
@@ -219,7 +216,8 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
     /**
      * Dynamic count will automatically update number of circle indicators
-     * if {@link ViewPager} page count updated on run-time.
+     * if {@link ViewPager} page count updated on run-time. If new count will be bigger than current count,
+     * selected circle will stay as it is, otherwise it will be set to last one.
      * Note: works if {@link ViewPager} set. See {@link #setViewPager(ViewPager)}.
      *
      * @param dynamicCount boolean value to add/remove indicators dynamically.
@@ -471,7 +469,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     public void setProgress(int selectingPosition, float progress) {
         if (interactiveAnimation) {
 
-            if (selectingPosition < 0) {
+            if (count <= 0 || selectingPosition < 0) {
                 selectingPosition = 0;
 
             } else if (selectingPosition > count - 1) {
@@ -841,10 +839,9 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     }
 
     private void initCountAttribute(@NonNull TypedArray typedArray) {
-        boolean dynamicCount = typedArray.getBoolean(R.styleable.PageIndicatorView_dynamicCount, false);
-        setDynamicCount(dynamicCount);
-
+        dynamicCount = typedArray.getBoolean(R.styleable.PageIndicatorView_piv_dynamicCount, false);
         count = typedArray.getInt(R.styleable.PageIndicatorView_piv_count, COUNT_NOT_SET);
+
         if (count != COUNT_NOT_SET) {
             isCountSet = true;
         } else {
@@ -975,7 +972,12 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         return AnimationType.NONE;
     }
 
-    private void setFrameValues() {
+    private void resetFrameValues() {
+        isFrameValuesSet = false;
+        setupFrameValues();
+    }
+
+    private void setupFrameValues() {
         if (isFrameValuesSet) {
             return;
         }
@@ -1097,22 +1099,41 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
             setObserver = new DataSetObserver() {
                 @Override
                 public void onChanged() {
-                    super.onChanged();
                     if (viewPager != null && viewPager.getAdapter() != null) {
-                        int count = viewPager.getAdapter().getCount();
-                        setCount(count);
+
+                        int newCount = viewPager.getAdapter().getCount();
+                        int currCount = getCount();
+                        int currItem = viewPager.getCurrentItem();
+
+                        selectedPosition = currItem;
+                        selectingPosition = currItem;
+                        lastSelectedPosition = currItem;
+
+                        setCount(newCount);
+
+                        if (currCount <= 0) {
+                            resetFrameValues();
+                        }
                     }
                 }
             };
 
-            viewPager.getAdapter().registerDataSetObserver(setObserver);
+            try {
+                viewPager.getAdapter().registerDataSetObserver(setObserver);
+            } catch (IllegalStateException e) {
+                e.printStackTrace();
+            }
         }
     }
 
     private void unRegisterSetObserver() {
         if (setObserver != null && viewPager != null && viewPager.getAdapter() != null) {
-            viewPager.getAdapter().unregisterDataSetObserver(setObserver);
-            setObserver = null;
+            try {
+                viewPager.getAdapter().unregisterDataSetObserver(setObserver);
+                setObserver = null;
+            } catch (IllegalStateException e) {
+                e.printStackTrace();
+            }
         }
     }
 

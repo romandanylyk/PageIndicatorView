@@ -42,7 +42,10 @@ public class ColorAnimation extends AbsAnimation<ValueAnimator> {
     public ColorAnimation progress(float progress) {
         if (animator != null) {
             long playTime = (long) (progress * animationDuration);
-            animator.setCurrentPlayTime(playTime);
+
+            if (animator.getValues() != null && animator.getValues().length > 0) {
+                animator.setCurrentPlayTime(playTime);
+            }
         }
 
         return this;

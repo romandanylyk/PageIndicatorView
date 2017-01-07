@@ -92,7 +92,9 @@ public class ThinWormAnimation extends WormAnimation {
                     currPlayTime = anim.getDuration();
                 }
 
-                anim.setCurrentPlayTime(currPlayTime);
+                if (anim.getValues() != null && anim.getValues().length > 0) {
+                    anim.setCurrentPlayTime(currPlayTime);
+                }
             }
         }
 
