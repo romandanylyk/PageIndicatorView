@@ -14,11 +14,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.Pair;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewParent;
 import com.rd.animation.*;
 import com.rd.pageindicatorview.R;
 import com.rd.utils.DensityUtils;
@@ -171,7 +168,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
-        setFrameValues();
+        setupFrameValues();
     }
 
     @Override
@@ -472,7 +469,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     public void setProgress(int selectingPosition, float progress) {
         if (interactiveAnimation) {
 
-            if (selectingPosition < 0) {
+            if (count <= 0 || selectingPosition < 0) {
                 selectingPosition = 0;
 
             } else if (selectingPosition > count - 1) {
@@ -841,7 +838,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     }
 
     private void initCountAttribute(@NonNull TypedArray typedArray) {
-        dynamicCount = typedArray.getBoolean(R.styleable.PageIndicatorView_dynamicCount, false);
+        dynamicCount = typedArray.getBoolean(R.styleable.PageIndicatorView_piv_dynamicCount, false);
         count = typedArray.getInt(R.styleable.PageIndicatorView_piv_count, COUNT_NOT_SET);
 
         if (count != COUNT_NOT_SET) {
@@ -974,7 +971,12 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         return AnimationType.NONE;
     }
 
-    private void setFrameValues() {
+    private void resetFrameValues() {
+        isFrameValuesSet = false;
+        setupFrameValues();
+    }
+
+    private void setupFrameValues() {
         if (isFrameValuesSet) {
             return;
         }
@@ -1097,15 +1099,20 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
                 @Override
                 public void onChanged() {
                     if (viewPager != null && viewPager.getAdapter() != null) {
-                        int newCount = viewPager.getAdapter().getCount();
-                        boolean selectLastItem = newCount < count;
 
-                        if (selectLastItem) {
-                            lastSelectedPosition = newCount - 1;
-                            selectedPosition = newCount - 1;
-                        }
+                        int newCount = viewPager.getAdapter().getCount();
+                        int currCount = getCount();
+                        int currItem = viewPager.getCurrentItem();
+
+                        selectedPosition = currItem;
+                        selectingPosition = currItem;
+                        lastSelectedPosition = currItem;
 
                         setCount(newCount);
+
+                        if (currCount <= 0) {
+                            resetFrameValues();
+                        }
                     }
                 }
             };

@@ -28,16 +28,10 @@ public class HomeActivity extends AppCompatActivity {
     @SuppressWarnings("ConstantConditions")
     private void initViews() {
         final HomeAdapter adapter = new HomeAdapter();
+        adapter.setData(createPageList());
+
         ViewPager pager = (ViewPager) findViewById(R.id.viewPager);
         pager.setAdapter(adapter);
-
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                adapter.setData(createPageList());
-            }
-        }, 5000);
     }
 
     @NonNull

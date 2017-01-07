@@ -10,9 +10,10 @@ public class SlideAnimation extends AbsAnimation<ValueAnimator> {
 
     private static final String ANIMATION_X_COORDINATE = "ANIMATION_X_COORDINATE";
     private static final int ANIMATION_DURATION = 350;
+    private static final int COORDINATE_NONE = -1;
 
-    private int xStartCoordinate;
-    private int xEndCoordinate;
+    private int xStartCoordinate = COORDINATE_NONE;
+    private int xEndCoordinate = COORDINATE_NONE;
 
     public SlideAnimation(@NonNull ValueAnimation.UpdateListener listener) {
         super(listener);
@@ -38,7 +39,10 @@ public class SlideAnimation extends AbsAnimation<ValueAnimator> {
     public SlideAnimation progress(float progress) {
         if (animator != null) {
             long playTime = (long) (progress * animationDuration);
-            animator.setCurrentPlayTime(playTime);
+
+            if (animator.getValues() != null && animator.getValues().length > 0) {
+                animator.setCurrentPlayTime(playTime);
+            }
         }
 
         return this;
