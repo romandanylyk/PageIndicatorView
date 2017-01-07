@@ -84,7 +84,6 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
     private ViewPager viewPager;
     private int viewPagerId;
-    private boolean isListenerSet;
 
     public PageIndicatorView(Context context) {
         super(context);
@@ -220,7 +219,8 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
     /**
      * Dynamic count will automatically update number of circle indicators
-     * if {@link ViewPager} page count updated on run-time.
+     * if {@link ViewPager} page count updated on run-time. If new count will be bigger than current count,
+     * selected circle will stay as it is, otherwise it will be set to last one.
      * Note: works if {@link ViewPager} set. See {@link #setViewPager(ViewPager)}.
      *
      * @param dynamicCount boolean value to add/remove indicators dynamically.
@@ -841,10 +841,9 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     }
 
     private void initCountAttribute(@NonNull TypedArray typedArray) {
-        boolean dynamicCount = typedArray.getBoolean(R.styleable.PageIndicatorView_dynamicCount, false);
-        setDynamicCount(dynamicCount);
-
+        dynamicCount = typedArray.getBoolean(R.styleable.PageIndicatorView_dynamicCount, false);
         count = typedArray.getInt(R.styleable.PageIndicatorView_piv_count, COUNT_NOT_SET);
+
         if (count != COUNT_NOT_SET) {
             isCountSet = true;
         } else {
@@ -1097,22 +1096,36 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
             setObserver = new DataSetObserver() {
                 @Override
                 public void onChanged() {
-                    super.onChanged();
                     if (viewPager != null && viewPager.getAdapter() != null) {
-                        int count = viewPager.getAdapter().getCount();
-                        setCount(count);
+                        int newCount = viewPager.getAdapter().getCount();
+                        boolean selectLastItem = newCount < count;
+
+                        if (selectLastItem) {
+                            lastSelectedPosition = newCount - 1;
+                            selectedPosition = newCount - 1;
+                        }
+
+                        setCount(newCount);
                     }
                 }
             };
 
-            viewPager.getAdapter().registerDataSetObserver(setObserver);
+            try {
+                viewPager.getAdapter().registerDataSetObserver(setObserver);
+            } catch (IllegalStateException e) {
+                e.printStackTrace();
+            }
         }
     }
 
     private void unRegisterSetObserver() {
         if (setObserver != null && viewPager != null && viewPager.getAdapter() != null) {
-            viewPager.getAdapter().unregisterDataSetObserver(setObserver);
-            setObserver = null;
+            try {
+                viewPager.getAdapter().unregisterDataSetObserver(setObserver);
+                setObserver = null;
+            } catch (IllegalStateException e) {
+                e.printStackTrace();
+            }
         }
     }
 

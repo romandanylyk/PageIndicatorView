@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:attrs="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:attrs="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
-    tools:background="#3D86FC"
+    android:background="#3D86FC"
     tools:context="com.rd.pageindicatorview.home.HomeActivity">
 
     <android.support.v4.view.ViewPager
@@ -20,8 +20,11 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="48dp"
-        attrs:piv_animationType="thinWorm"
+        attrs:piv_animationType="color"
         attrs:piv_interactiveAnimation="true"
-        attrs:piv_viewPager="@id/viewPager" />
+        attrs:piv_viewPager="@id/viewPager"
+        attrs:dynamicCount="true"
+        attrs:piv_padding="16dp"
+        attrs:piv_radius="8dp" />
 
 </RelativeLayout>
