@@ -19,8 +19,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        attrs:piv_radius="12dp"
-        attrs:piv_padding="24dp"
         android:layout_marginBottom="48dp"
         attrs:piv_animationType="worm"
         attrs:piv_interactiveAnimation="true"
