@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.os.Build;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
@@ -113,6 +114,31 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     protected void onDetachedFromWindow() {
         unRegisterSetObserver();
         super.onDetachedFromWindow();
+    }
+
+    @Override
+    protected Parcelable onSaveInstanceState() {
+        SavedState savedState = new SavedState(super.onSaveInstanceState());
+        savedState.setSelectedPosition(selectedPosition);
+        savedState.setSelectingPosition(selectingPosition);
+        savedState.setLastSelectedPosition(lastSelectedPosition);
+
+        return savedState;
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Parcelable state) {
+        if (!(state instanceof SavedState)) {
+            super.onRestoreInstanceState(state);
+            return;
+        }
+
+        SavedState savedState = (SavedState) state;
+        this.selectedPosition = savedState.getSelectedPosition();
+        this.selectingPosition = savedState.getSelectingPosition();
+        this.lastSelectedPosition = savedState.getLastSelectedPosition();
+
+        super.onRestoreInstanceState(state);
     }
 
     @SuppressWarnings("UnnecessaryLocalVariable")

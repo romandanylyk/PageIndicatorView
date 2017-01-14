@@ -1,16 +1,11 @@
 package com.rd.pageindicatorview.home;
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import com.rd.animation.AnimationType;
 import com.rd.pageindicatorview.sample.R;
-import com.rd.PageIndicatorView;
 
 import java.util.ArrayList;
 import java.util.List;
