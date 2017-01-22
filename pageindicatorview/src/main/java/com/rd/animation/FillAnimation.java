@@ -18,8 +18,6 @@ public class FillAnimation extends ColorAnimation {
     private static final String ANIMATION_STROKE = "ANIMATION_STROKE";
 
     public static final int DEFAULT_STROKE_DP = 1;
-    private static final int ANIMATION_DURATION = 350;
-
     private int radiusPx;
     private int strokePx;
 
@@ -31,7 +29,7 @@ public class FillAnimation extends ColorAnimation {
     @Override
     public ValueAnimator createAnimator() {
         ValueAnimator animator = new ValueAnimator();
-        animator.setDuration(ANIMATION_DURATION);
+        animator.setDuration(AbsAnimation.DEFAULT_ANIMATION_TIME);
         animator.setInterpolator(new DecelerateInterpolator());
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override

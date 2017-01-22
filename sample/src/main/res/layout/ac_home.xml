@@ -20,7 +20,7 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="48dp"
-        attrs:piv_animationType="worm"
+        attrs:piv_animationType="drop"
         attrs:piv_interactiveAnimation="true"
         attrs:piv_viewPager="@id/viewPager"
         attrs:piv_dynamicCount="true"

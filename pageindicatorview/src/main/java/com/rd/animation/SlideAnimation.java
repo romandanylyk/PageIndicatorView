@@ -9,7 +9,6 @@ import android.view.animation.DecelerateInterpolator;
 public class SlideAnimation extends AbsAnimation<ValueAnimator> {
 
     private static final String ANIMATION_X_COORDINATE = "ANIMATION_X_COORDINATE";
-    private static final int ANIMATION_DURATION = 350;
     private static final int COORDINATE_NONE = -1;
 
     private int xStartCoordinate = COORDINATE_NONE;
@@ -23,7 +22,7 @@ public class SlideAnimation extends AbsAnimation<ValueAnimator> {
     @Override
     public ValueAnimator createAnimator() {
         ValueAnimator animator = new ValueAnimator();
-        animator.setDuration(ANIMATION_DURATION);
+        animator.setDuration(AbsAnimation.DEFAULT_ANIMATION_TIME);
         animator.setInterpolator(new DecelerateInterpolator());
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
