@@ -1,6 +1,7 @@
 package com.rd.pageindicatorview.home;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -23,10 +24,83 @@ public class HomeActivity extends AppCompatActivity {
     @SuppressWarnings("ConstantConditions")
     private void initViews() {
         final HomeAdapter adapter = new HomeAdapter();
-        adapter.setData(createPageList());
 
         ViewPager pager = (ViewPager) findViewById(R.id.viewPager);
         pager.setAdapter(adapter);
+
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                List<View> pageList = new ArrayList<>();
+                pageList.add(createPageView(R.color.google_red));
+                pageList.add(createPageView(R.color.google_blue));
+                pageList.add(createPageView(R.color.google_yellow));
+                pageList.add(createPageView(R.color.google_green));
+
+                adapter.setData(pageList);
+            }
+        }, 5000);
+
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                List<View> pageList = new ArrayList<>();
+                pageList.add(createPageView(R.color.google_red));
+                pageList.add(createPageView(R.color.google_blue));
+
+                adapter.setData(pageList);
+            }
+        }, 10000);
+
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                List<View> pageList = new ArrayList<>();
+                pageList.add(createPageView(R.color.google_red));
+                pageList.add(createPageView(R.color.google_blue));
+                pageList.add(createPageView(R.color.google_yellow));
+                pageList.add(createPageView(R.color.google_green));
+
+                adapter.setData(pageList);
+            }
+        }, 15000);
+
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                List<View> pageList = new ArrayList<>();
+                pageList.add(createPageView(R.color.google_red));
+                pageList.add(createPageView(R.color.google_blue));
+                pageList.add(createPageView(R.color.google_yellow));
+                pageList.add(createPageView(R.color.google_green));
+
+                pageList.add(createPageView(R.color.google_red));
+                pageList.add(createPageView(R.color.google_blue));
+                pageList.add(createPageView(R.color.google_yellow));
+                pageList.add(createPageView(R.color.google_green));
+
+                adapter.setData(pageList);
+            }
+        }, 20000);
+
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                List<View> pageList = new ArrayList<>();
+                pageList.add(createPageView(R.color.google_red));
+                pageList.add(createPageView(R.color.google_blue));
+
+                adapter.setData(pageList);
+            }
+        }, 25000);
+
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                adapter.setData(createPageList());
+            }
+        }, 30000);
     }
 
     @NonNull
