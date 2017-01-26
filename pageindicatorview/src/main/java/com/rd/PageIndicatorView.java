@@ -56,8 +56,9 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     private int frameLeftX;
     private int frameRightX;
 
-    //Slide
-    private int frameXCoordinate;
+    //Slide & Drop
+    private int frameX;
+    private int frameY;
 
     //Thin Worm
     private int frameHeight;
@@ -180,6 +181,10 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
             height = desiredHeight;
         }
 
+        if (animationType == AnimationType.DROP) {
+            height *= 2;
+        }
+
         if (width < 0) {
             width = 0;
         }
@@ -211,6 +216,14 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
     @Override
     public void onPageSelected(int position) {
+        if (viewPager != null && viewPager.getAdapter() != null) {
+            int pageCount = viewPager.getAdapter().getCount();
+
+            if (pageCount < count) {
+                return;
+            }
+        }
+
         if (!interactiveAnimation || animationType == AnimationType.NONE) {
             setSelection(position);
         }
@@ -510,11 +523,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
             }
 
             this.selectingPosition = selectingPosition;
-            AbsAnimation animator = getSelectedAnimation();
-
-            if (animator != null) {
-                animator.progress(progress);
-            }
+            setAnimationProgress(progress);
         }
     }
 
@@ -562,6 +571,10 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
             case THIN_WORM:
                 startThinWormAnimation();
+                break;
+
+            case DROP:
+                startDropAnimation();
                 break;
         }
     }
@@ -617,7 +630,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     }
 
     private void drawIndicatorView(@NonNull Canvas canvas) {
-        int y = getHeight() / 2;
+        int y = getYCoordinate();
 
         for (int i = 0; i < count; i++) {
             int x = getXCoordinate(i);
@@ -667,17 +680,19 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
                 drawWithThinWormAnimation(canvas, x, y);
                 break;
 
+            case DROP:
+                drawWithDropAnimation(canvas, x, y);
+                break;
         }
     }
 
     private void drawWithNoEffect(@NonNull Canvas canvas, int position, int x, int y) {
         float radius = radiusPx;
-        int color = unselectedColor;
-
         if (animationType == AnimationType.SCALE) {
             radius *= scaleFactor;
         }
 
+        int color = unselectedColor;
         if (position == selectedPosition) {
             color = selectedColor;
         }
@@ -753,11 +768,11 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
         if (interactiveAnimation && (position == selectingPosition || position == selectedPosition)) {
             fillPaint.setColor(selectedColor);
-            canvas.drawCircle(frameXCoordinate, y, radiusPx, fillPaint);
+            canvas.drawCircle(frameX, y, radiusPx, fillPaint);
 
         } else if (!interactiveAnimation && (position == selectedPosition || position == lastSelectedPosition)) {
             fillPaint.setColor(selectedColor);
-            canvas.drawCircle(frameXCoordinate, y, radiusPx, fillPaint);
+            canvas.drawCircle(frameX, y, radiusPx, fillPaint);
         }
     }
 
@@ -839,6 +854,14 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         canvas.drawRoundRect(rect, radiusPx, radiusPx, fillPaint);
     }
 
+    private void drawWithDropAnimation(@NonNull Canvas canvas, int x, int y) {
+        fillPaint.setColor(unselectedColor);
+        canvas.drawCircle(x, y, radiusPx, fillPaint);
+
+        fillPaint.setColor(selectedColor);
+        canvas.drawCircle(frameX, frameY, frameRadiusPx, fillPaint);
+    }
+
     private void init(@Nullable AttributeSet attrs) {
         initAttributes(attrs);
         initAnimation();
@@ -852,16 +875,11 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     }
 
     private void initAttributes(@Nullable AttributeSet attrs) {
-        if (attrs == null) {
-            return;
-        }
-
-        TypedArray typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.PageIndicatorView);
+        TypedArray typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.PageIndicatorView, 0, 0);
         initCountAttribute(typedArray);
         initColorAttribute(typedArray);
         initAnimationAttribute(typedArray);
         initSizeAttribute(typedArray);
-        typedArray.recycle();
     }
 
     private void initCountAttribute(@NonNull TypedArray typedArray) {
@@ -942,7 +960,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
             @Override
             public void onSlideAnimationUpdated(int xCoordinate) {
-                frameXCoordinate = xCoordinate;
+                frameX = xCoordinate;
                 invalidate();
             }
 
@@ -958,7 +976,6 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
                 frameLeftX = leftX;
                 frameRightX = rightX;
                 frameHeight = height;
-
                 invalidate();
             }
 
@@ -972,6 +989,14 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
                 frameStrokePx = stroke;
                 frameStrokeReversePx = strokeReverse;
+                invalidate();
+            }
+
+            @Override
+            public void onDropAnimationUpdated(int x, int y, int selectedRadius) {
+                frameX = x;
+                frameY = y;
+                frameRadiusPx = selectedRadius;
                 invalidate();
             }
         });
@@ -993,6 +1018,8 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
                 return AnimationType.FILL;
             case 6:
                 return AnimationType.THIN_WORM;
+            case 7:
+                return AnimationType.DROP;
         }
 
         return AnimationType.NONE;
@@ -1027,8 +1054,9 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
             frameRightX = xCoordinate + (radiusPx * 2);
         }
 
-        //slide
-        frameXCoordinate = xCoordinate;
+        //slide & drop
+        frameX = xCoordinate;
+        frameY = getYCoordinate();
 
         //fill
         frameStrokePx = radiusPx;
@@ -1068,7 +1096,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         boolean isRightSide = selectedPosition > lastSelectedPosition;
 
         animation.worm().end();
-        animation.worm().with(fromX, toX, radiusPx, isRightSide).duration(animationDuration).start();
+        animation.worm().duration(animationDuration).with(fromX, toX, radiusPx, isRightSide).start();
     }
 
     private void startFillAnimation() {
@@ -1085,35 +1113,49 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         animation.thinWorm().duration(animationDuration).with(fromX, toX, radiusPx, isRightSide).start();
     }
 
+    private void startDropAnimation() {
+        int fromX = getXCoordinate(lastSelectedPosition);
+        int toX = getXCoordinate(selectedPosition);
+        int fromY = getYCoordinate();
+
+        animation.drop().end();
+        animation.drop().duration(animationDuration).with(fromX, toX, fromY, radiusPx).start();
+    }
+
     @Nullable
-    private AbsAnimation getSelectedAnimation() {
+    private AbsAnimation setAnimationProgress(float progress) {
         switch (animationType) {
             case COLOR:
-                return animation.color().with(unselectedColor, selectedColor);
+                return animation.color().with(unselectedColor, selectedColor).progress(progress);
 
             case SCALE:
-                return animation.scale().with(unselectedColor, selectedColor, radiusPx, scaleFactor);
+                return animation.scale().with(unselectedColor, selectedColor, radiusPx, scaleFactor).progress(progress);
 
             case FILL:
-                return animation.fill().with(unselectedColor, selectedColor, radiusPx, strokePx);
+                return animation.fill().with(unselectedColor, selectedColor, radiusPx, strokePx).progress(progress);
 
             case THIN_WORM:
             case WORM:
             case SLIDE:
+            case DROP:
                 int fromX = getXCoordinate(selectedPosition);
                 int toX = getXCoordinate(selectingPosition);
 
                 if (animationType == AnimationType.SLIDE) {
-                    return animation.slide().with(fromX, toX);
+                    return animation.slide().with(fromX, toX).progress(progress);
 
-                } else {
+                } else if (animationType == AnimationType.WORM || animationType == AnimationType.THIN_WORM) {
                     boolean isRightSide = selectingPosition > selectedPosition;
                     if (animationType == AnimationType.WORM) {
-                        return animation.worm().with(fromX, toX, radiusPx, isRightSide);
+                        return animation.worm().with(fromX, toX, radiusPx, isRightSide).progress(progress);
 
                     } else if (animationType == AnimationType.THIN_WORM) {
-                        return animation.thinWorm().with(fromX, toX, radiusPx, isRightSide);
+                        return animation.thinWorm().with(fromX, toX, radiusPx, isRightSide).progress(progress);
                     }
+
+                } else{
+                    int fromY = getYCoordinate();
+                    return animation.drop().with(fromX, toX, fromY, radiusPx).progress(progress);
                 }
         }
 
@@ -1128,18 +1170,16 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
                     if (viewPager != null && viewPager.getAdapter() != null) {
 
                         int newCount = viewPager.getAdapter().getCount();
-                        int currCount = getCount();
                         int currItem = viewPager.getCurrentItem();
 
                         selectedPosition = currItem;
                         selectingPosition = currItem;
                         lastSelectedPosition = currItem;
 
+                        endAnimation();
                         setCount(newCount);
-
-                        if (currCount <= 0) {
-                            resetFrameValues();
-                        }
+                        resetFrameValues();
+                        setProgress(selectingPosition, 1.0f);
                     }
                 }
             };
@@ -1149,6 +1189,44 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
             } catch (IllegalStateException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    private void endAnimation() {
+        AbsAnimation anim = null;
+
+        switch (animationType) {
+            case COLOR:
+                anim = animation.color();
+                break;
+
+            case SLIDE:
+                anim =  animation.slide();
+                break;
+
+            case SCALE:
+                anim =  animation.scale();
+                break;
+
+            case WORM:
+                anim =  animation.worm();
+                break;
+
+            case THIN_WORM:
+                anim =  animation.thinWorm();
+                break;
+
+            case FILL:
+                anim = animation.fill();
+                break;
+
+            case DROP:
+                anim =  animation.drop();
+                break;
+        }
+
+        if (anim != null) {
+            anim.end();
         }
     }
 
@@ -1189,16 +1267,10 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
     @SuppressWarnings("UnnecessaryLocalVariable")
     private int getXCoordinate(int position) {
-        int actualViewWidth = calculateActualViewWidth();
-        int viewCenter = (getWidth() - actualViewWidth) / 2;
-        int x = viewCenter;
-
-        if (x < 0) {
-            x = 0;
-        }
-
+        int x = 0;
         for (int i = 0; i < count; i++) {
             x += radiusPx + strokePx;
+
             if (position == i) {
                 return x;
             }
@@ -1207,6 +1279,16 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         }
 
         return x;
+    }
+
+    private int getYCoordinate() {
+        int y = getHeight() / 2;
+
+        if (animationType == AnimationType.DROP) {
+            y += radiusPx;
+        }
+
+        return y;
     }
 
     private Pair<Integer, Float> getProgress(int position, float positionOffset) {
@@ -1238,20 +1320,5 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         }
 
         return new Pair<>(selectingPosition, selectingProgress);
-    }
-
-    private int calculateActualViewWidth() {
-        int width = 0;
-        int diameter = (radiusPx * 2) + strokePx;
-
-        for (int i = 0; i < count; i++) {
-            width += diameter;
-
-            if (i < count - 1) {
-                width += paddingPx;
-            }
-        }
-
-        return width;
     }
 }

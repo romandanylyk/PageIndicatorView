@@ -4,9 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.DecelerateInterpolator;
 
 public class WormAnimation extends AbsAnimation<AnimatorSet> {
 
@@ -29,6 +27,12 @@ public class WormAnimation extends AbsAnimation<AnimatorSet> {
         animator.setInterpolator(new AccelerateDecelerateInterpolator());
 
         return animator;
+    }
+
+    @Override
+    public WormAnimation duration(long duration) {
+        super.duration(duration);
+        return this;
     }
 
     public WormAnimation with(int fromValue, int toValue, int radius, boolean isRightSide) {

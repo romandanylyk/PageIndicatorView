@@ -18,8 +18,6 @@ public class ScaleAnimation extends ColorAnimation {
     private static final String ANIMATION_SCALE_REVERSE = "ANIMATION_SCALE_REVERSE";
     private static final String ANIMATION_SCALE = "ANIMATION_SCALE";
 
-    private static final int ANIMATION_DURATION = 350;
-
     private int radiusPx;
     private float scaleFactor;
 
@@ -31,7 +29,7 @@ public class ScaleAnimation extends ColorAnimation {
     @Override
     public ValueAnimator createAnimator() {
         ValueAnimator animator = new ValueAnimator();
-        animator.setDuration(ANIMATION_DURATION);
+        animator.setDuration(AbsAnimation.DEFAULT_ANIMATION_TIME);
         animator.setInterpolator(new DecelerateInterpolator());
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override

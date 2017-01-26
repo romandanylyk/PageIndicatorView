@@ -27,6 +27,7 @@
             <enum name="slide" value="4" />
             <enum name="fill" value="5" />
             <enum name="thinWorm" value="6" />
+            <enum name="drop" value="7" />
         </attr>
     </declare-styleable>
 

@@ -1,7 +1,6 @@
 package com.rd.animation;
 
 import android.animation.Animator;
-import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.support.annotation.NonNull;
 
@@ -26,11 +25,7 @@ public abstract class AbsAnimation<T extends Animator> {
     public AbsAnimation duration(long duration) {
         animationDuration = duration;
 
-        if (animator instanceof AnimatorSet) {
-            long singleDuration = animationDuration / 2;
-            animator.setDuration(singleDuration);
-
-        } else {
+        if (animator instanceof ValueAnimator) {
             animator.setDuration(animationDuration);
         }
 
