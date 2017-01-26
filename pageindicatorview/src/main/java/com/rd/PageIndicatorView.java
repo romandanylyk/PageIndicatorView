@@ -225,7 +225,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         }
 
         if (!interactiveAnimation || animationType == AnimationType.NONE) {
-            startSelection(position);
+            setSelection(position);
         }
     }
 
@@ -533,7 +533,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
      *
      * @param position position of indicator to select.
      */
-    public void startSelection(int position) {
+    public void setSelection(int position) {
         if (position < 0) {
             position = 0;
 
@@ -681,9 +681,8 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
                 break;
 
             case DROP:
-                drawWithDropAnimation(canvas, position, x, y);
+                drawWithDropAnimation(canvas, x, y);
                 break;
-
         }
     }
 
@@ -855,7 +854,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         canvas.drawRoundRect(rect, radiusPx, radiusPx, fillPaint);
     }
 
-    private void drawWithDropAnimation(@NonNull Canvas canvas, int position, int x, int y) {
+    private void drawWithDropAnimation(@NonNull Canvas canvas, int x, int y) {
         fillPaint.setColor(unselectedColor);
         canvas.drawCircle(x, y, radiusPx, fillPaint);
 
