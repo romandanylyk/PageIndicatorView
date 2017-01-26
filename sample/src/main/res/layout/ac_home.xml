@@ -23,8 +23,8 @@
         attrs:piv_animationType="drop"
         attrs:piv_dynamicCount="true"
         attrs:piv_interactiveAnimation="true"
-        attrs:piv_padding="24dp"
-        attrs:piv_radius="12dp"
+        attrs:piv_padding="16dp"
+        attrs:piv_radius="8dp"
         attrs:piv_viewPager="@id/viewPager" />
 
 </RelativeLayout>

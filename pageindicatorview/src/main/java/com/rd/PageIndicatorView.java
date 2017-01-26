@@ -875,10 +875,6 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     }
 
     private void initAttributes(@Nullable AttributeSet attrs) {
-        if (attrs == null) {
-            return;
-        }
-
         TypedArray typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.PageIndicatorView, 0, 0);
         initCountAttribute(typedArray);
         initColorAttribute(typedArray);
