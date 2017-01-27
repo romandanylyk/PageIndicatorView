@@ -87,7 +87,6 @@ Name| Support version| Preview
 `AnimationType.WORM`| 0.0.1 |![anim_prev_worm](https://raw.githubusercontent.com/romandanylyk/PageIndicatorView/master/assets/anim_prev_worm.gif)
 `AnimationType.FILL`| 0.0.6 |![anim_prev_worm](https://raw.githubusercontent.com/romandanylyk/PageIndicatorView/master/assets/anim_prev_fill.gif)
 `AnimationType.THIN_WORM`| 0.0.7 |![anim_prev_thin_worm](https://raw.githubusercontent.com/romandanylyk/PageIndicatorView/master/assets/anim_prev_thin_worm.gif)
-`AnimationType.DROP`| 0.1.0 |![anim_prev_drop](https://raw.githubusercontent.com/romandanylyk/PageIndicatorView/master/assets/anim_prev_drop.gif)
 
 ###**Release Note**
 See release notes on [github releases](https://github.com/romandanylyk/PageIndicatorView/releases) or [Bintray release notes](https://bintray.com/romandanylyk/maven/pageindicatorview#release).
