@@ -6,7 +6,7 @@
 
 `PageIndicatorView` will simplify your life while you working with Android `ViewPager` and need to indicate selected page. It's easy to setup and customize as you need with run-time preview rendering.
 
-![](https://github.com/romandanylyk/PageIndicatorView/blob/master/assets/preview_anim_thin_worm.gif?raw=true)
+![](https://github.com/romandanylyk/PageIndicatorView/blob/master/assets/preview_anim_drop.gif?raw=true)
 
 ###**Integration**
 To add `pageindicatorview` to your project, first make sure in root `build.gradle` you have specified the following repository:
