@@ -576,6 +576,10 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
             case DROP:
                 startDropAnimation();
                 break;
+
+            case SWAP:
+                startSwapAnimation();
+                break;
         }
     }
 
@@ -682,6 +686,10 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
             case DROP:
                 drawWithDropAnimation(canvas, x, y);
+                break;
+
+            case SWAP:
+                drawWithSwapAnimation(canvas, position, x, y);
                 break;
         }
     }
@@ -862,6 +870,24 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         canvas.drawCircle(frameX, frameY, frameRadiusPx, fillPaint);
     }
 
+    private void drawWithSwapAnimation(@NonNull Canvas canvas, int position, int x, int y) {
+        fillPaint.setColor(unselectedColor);
+
+        if(position == selectedPosition) {
+            fillPaint.setColor(selectedColor);
+            canvas.drawCircle(frameX, y, radiusPx, fillPaint);
+
+        }else if(interactiveAnimation && position == selectingPosition){
+            canvas.drawCircle(x - (frameX - getXCoordinate(selectedPosition)), y, radiusPx, fillPaint);
+
+        }else if(!interactiveAnimation){
+            canvas.drawCircle(x - (frameX - getXCoordinate(selectedPosition)), y, radiusPx, fillPaint);
+
+        }else {
+            canvas.drawCircle(x, y, radiusPx, fillPaint);
+        }
+    }
+
     private void init(@Nullable AttributeSet attrs) {
         initAttributes(attrs);
         initAnimation();
@@ -999,6 +1025,12 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
                 frameRadiusPx = selectedRadius;
                 invalidate();
             }
+
+            @Override
+            public void onSwapAnimationUpdated(int xCoordinate) {
+                frameX = xCoordinate;
+                invalidate();
+            }
         });
     }
 
@@ -1020,6 +1052,8 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
                 return AnimationType.THIN_WORM;
             case 7:
                 return AnimationType.DROP;
+            case 8:
+                return AnimationType.SWAP;
         }
 
         return AnimationType.NONE;
@@ -1122,6 +1156,14 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         animation.drop().duration(animationDuration).with(fromX, toX, fromY, radiusPx).start();
     }
 
+    private void startSwapAnimation() {
+        int fromX = getXCoordinate(lastSelectedPosition);
+        int toX = getXCoordinate(selectedPosition);
+
+        animation.swap().end();
+        animation.swap().with(fromX, toX).duration(animationDuration).start();
+    }
+
     @Nullable
     private AbsAnimation setAnimationProgress(float progress) {
         switch (animationType) {
@@ -1138,13 +1180,17 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
             case WORM:
             case SLIDE:
             case DROP:
+            case SWAP:
                 int fromX = getXCoordinate(selectedPosition);
                 int toX = getXCoordinate(selectingPosition);
 
                 if (animationType == AnimationType.SLIDE) {
                     return animation.slide().with(fromX, toX).progress(progress);
 
-                } else if (animationType == AnimationType.WORM || animationType == AnimationType.THIN_WORM) {
+                } else if(animationType == AnimationType.SWAP) {
+                    return animation.swap().with(fromX, toX).progress(progress);
+
+                }else if (animationType == AnimationType.WORM || animationType == AnimationType.THIN_WORM) {
                     boolean isRightSide = selectingPosition > selectedPosition;
                     if (animationType == AnimationType.WORM) {
                         return animation.worm().with(fromX, toX, radiusPx, isRightSide).progress(progress);
@@ -1222,6 +1268,10 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
             case DROP:
                 anim =  animation.drop();
+                break;
+
+            case SWAP:
+                anim = animation.swap();
                 break;
         }
 

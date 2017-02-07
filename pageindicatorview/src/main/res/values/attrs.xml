@@ -28,6 +28,7 @@
             <enum name="fill" value="5" />
             <enum name="thinWorm" value="6" />
             <enum name="drop" value="7" />
+            <enum name="swap" value="8" />
         </attr>
     </declare-styleable>
 
