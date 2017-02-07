@@ -872,15 +872,19 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
     private void drawWithSwapAnimation(@NonNull Canvas canvas, int position, int x, int y) {
         fillPaint.setColor(unselectedColor);
-        canvas.drawCircle(x, y, radiusPx, fillPaint);
 
-        if (interactiveAnimation && (position == selectingPosition || position == selectedPosition)) {
+        if(position == selectedPosition) {
             fillPaint.setColor(selectedColor);
             canvas.drawCircle(frameX, y, radiusPx, fillPaint);
 
-        } else if (!interactiveAnimation && (position == selectedPosition || position == lastSelectedPosition)) {
-            fillPaint.setColor(selectedColor);
-            canvas.drawCircle(frameX, y, radiusPx, fillPaint);
+        }else if(interactiveAnimation && position == selectingPosition){
+            canvas.drawCircle(x - (frameX - getXCoordinate(selectedPosition)), y, radiusPx, fillPaint);
+
+        }else if(!interactiveAnimation){
+            canvas.drawCircle(x - (frameX - getXCoordinate(selectedPosition)), y, radiusPx, fillPaint);
+
+        }else {
+            canvas.drawCircle(x, y, radiusPx, fillPaint);
         }
     }
 
@@ -1152,7 +1156,6 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         animation.drop().duration(animationDuration).with(fromX, toX, fromY, radiusPx).start();
     }
 
-    //TODO
     private void startSwapAnimation() {
         int fromX = getXCoordinate(lastSelectedPosition);
         int toX = getXCoordinate(selectedPosition);
