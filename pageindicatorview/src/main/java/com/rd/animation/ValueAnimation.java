@@ -12,6 +12,7 @@ public class ValueAnimation {
     private FillAnimation fillAnimation;
     private ThinWormAnimation thinWormAnimation;
     private DropAnimation dropAnimation;
+    private SwapAnimation swapAnimation;
 
     private UpdateListener updateListener;
 
@@ -30,6 +31,8 @@ public class ValueAnimation {
         void onThinWormAnimationUpdated(int leftX, int rightX, int height);
 
         void onDropAnimationUpdated(int x, int y, int selectedRadius);
+
+        void onSwapAnimationUpdated(int xCoordinate);
     }
 
     public ValueAnimation(@Nullable UpdateListener listener) {
@@ -98,4 +101,14 @@ public class ValueAnimation {
 
         return dropAnimation;
     }
+
+    @NonNull
+    public SwapAnimation swap() {
+        if (swapAnimation == null) {
+            swapAnimation = new SwapAnimation(updateListener);
+        }
+
+        return swapAnimation;
+    }
+
 }
