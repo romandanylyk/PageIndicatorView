@@ -119,25 +119,22 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
     @Override
     protected Parcelable onSaveInstanceState() {
-        SavedState savedState = new SavedState(super.onSaveInstanceState());
-        savedState.setSelectedPosition(selectedPosition);
-        savedState.setSelectingPosition(selectingPosition);
-        savedState.setLastSelectedPosition(lastSelectedPosition);
+        PositionSavedState positionSavedState = new PositionSavedState(super.onSaveInstanceState());
+        positionSavedState.setSelectedPosition(selectedPosition);
+        positionSavedState.setSelectingPosition(selectingPosition);
+        positionSavedState.setLastSelectedPosition(lastSelectedPosition);
 
-        return savedState;
+        return positionSavedState;
     }
 
     @Override
     protected void onRestoreInstanceState(Parcelable state) {
-        if (!(state instanceof SavedState)) {
-            super.onRestoreInstanceState(state);
-            return;
+        if (state instanceof PositionSavedState) {
+            PositionSavedState positionSavedState = (PositionSavedState) state;
+            this.selectedPosition = positionSavedState.getSelectedPosition();
+            this.selectingPosition = positionSavedState.getSelectingPosition();
+            this.lastSelectedPosition = positionSavedState.getLastSelectedPosition();
         }
-
-        SavedState savedState = (SavedState) state;
-        this.selectedPosition = savedState.getSelectedPosition();
-        this.selectingPosition = savedState.getSelectingPosition();
-        this.lastSelectedPosition = savedState.getLastSelectedPosition();
 
         super.onRestoreInstanceState(state);
     }
@@ -196,6 +193,10 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         setMeasuredDimension(width, height);
     }
 
+    private boolean isViewMeasured() {
+        return getMeasuredHeight() != 0 || getMeasuredWidth() != 0;
+    }
+
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
@@ -209,7 +210,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-        if (interactiveAnimation) {
+        if (isViewMeasured() && interactiveAnimation) {
             onPageScroll(position, positionOffset);
         }
     }
@@ -224,7 +225,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
             }
         }
 
-        if (!interactiveAnimation || animationType == AnimationType.NONE) {
+        if (isViewMeasured() && (!interactiveAnimation || animationType == AnimationType.NONE)) {
             setSelection(position);
         }
     }
@@ -873,22 +874,23 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     private void drawWithSwapAnimation(@NonNull Canvas canvas, int position, int x, int y) {
         fillPaint.setColor(unselectedColor);
 
-        if(position == selectedPosition) {
+        if (position == selectedPosition) {
             fillPaint.setColor(selectedColor);
             canvas.drawCircle(frameX, y, radiusPx, fillPaint);
 
-        }else if(interactiveAnimation && position == selectingPosition){
+        } else if (interactiveAnimation && position == selectingPosition) {
             canvas.drawCircle(x - (frameX - getXCoordinate(selectedPosition)), y, radiusPx, fillPaint);
 
-        }else if(!interactiveAnimation){
+        } else if (!interactiveAnimation) {
             canvas.drawCircle(x - (frameX - getXCoordinate(selectedPosition)), y, radiusPx, fillPaint);
 
-        }else {
+        } else {
             canvas.drawCircle(x, y, radiusPx, fillPaint);
         }
     }
 
     private void init(@Nullable AttributeSet attrs) {
+        setupId();
         initAttributes(attrs);
         initAnimation();
 
@@ -898,6 +900,12 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         strokePaint.setStyle(Paint.Style.STROKE);
         strokePaint.setAntiAlias(true);
         strokePaint.setStrokeWidth(strokePx);
+    }
+
+    private void setupId() {
+        if (getId() == NO_ID) {
+            setId(Utils.generateViewId());
+        }
     }
 
     private void initAttributes(@Nullable AttributeSet attrs) {
@@ -1187,10 +1195,10 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
                 if (animationType == AnimationType.SLIDE) {
                     return animation.slide().with(fromX, toX).progress(progress);
 
-                } else if(animationType == AnimationType.SWAP) {
+                } else if (animationType == AnimationType.SWAP) {
                     return animation.swap().with(fromX, toX).progress(progress);
 
-                }else if (animationType == AnimationType.WORM || animationType == AnimationType.THIN_WORM) {
+                } else if (animationType == AnimationType.WORM || animationType == AnimationType.THIN_WORM) {
                     boolean isRightSide = selectingPosition > selectedPosition;
                     if (animationType == AnimationType.WORM) {
                         return animation.worm().with(fromX, toX, radiusPx, isRightSide).progress(progress);
@@ -1199,7 +1207,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
                         return animation.thinWorm().with(fromX, toX, radiusPx, isRightSide).progress(progress);
                     }
 
-                } else{
+                } else {
                     int fromY = getYCoordinate();
                     return animation.drop().with(fromX, toX, fromY, radiusPx).progress(progress);
                 }
@@ -1247,19 +1255,19 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
                 break;
 
             case SLIDE:
-                anim =  animation.slide();
+                anim = animation.slide();
                 break;
 
             case SCALE:
-                anim =  animation.scale();
+                anim = animation.scale();
                 break;
 
             case WORM:
-                anim =  animation.worm();
+                anim = animation.worm();
                 break;
 
             case THIN_WORM:
-                anim =  animation.thinWorm();
+                anim = animation.thinWorm();
                 break;
 
             case FILL:
@@ -1267,7 +1275,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
                 break;
 
             case DROP:
-                anim =  animation.drop();
+                anim = animation.drop();
                 break;
 
             case SWAP:

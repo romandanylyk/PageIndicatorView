@@ -19,7 +19,6 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="50dp"
-        attrs:piv_animationDuration="2000"
         attrs:piv_animationType="drop"
         attrs:piv_dynamicCount="true"
         attrs:piv_interactiveAnimation="true"

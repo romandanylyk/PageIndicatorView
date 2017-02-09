@@ -4,17 +4,17 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.view.View;
 
-public class SavedState extends View.BaseSavedState {
+public class PositionSavedState extends View.BaseSavedState {
 
     private int selectedPosition;
     private int selectingPosition;
     private int lastSelectedPosition;
 
-    protected SavedState(Parcelable superState) {
+    protected PositionSavedState(Parcelable superState) {
         super(superState);
     }
 
-    private SavedState(Parcel in) {
+    private PositionSavedState(Parcel in) {
         super(in);
         this.selectedPosition = in.readInt();
         this.selectingPosition = in.readInt();
@@ -53,13 +53,13 @@ public class SavedState extends View.BaseSavedState {
         out.writeInt(this.lastSelectedPosition);
     }
 
-    public static final Parcelable.Creator<SavedState> CREATOR = new Parcelable.Creator<SavedState>() {
-        public SavedState createFromParcel(Parcel in) {
-            return new SavedState(in);
+    public static final Parcelable.Creator<PositionSavedState> CREATOR = new Parcelable.Creator<PositionSavedState>() {
+        public PositionSavedState createFromParcel(Parcel in) {
+            return new PositionSavedState(in);
         }
 
-        public SavedState[] newArray(int size) {
-            return new SavedState[size];
+        public PositionSavedState[] newArray(int size) {
+            return new PositionSavedState[size];
         }
     };
 }
