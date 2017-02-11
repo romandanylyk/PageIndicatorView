@@ -17,7 +17,6 @@ import android.support.v4.text.TextUtilsCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import com.rd.animation.*;
@@ -86,7 +85,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
     private ViewPager viewPager;
     private int viewPagerId;
-    private RtlMode rtlMode = RtlMode.Auto;
+    private RtlMode rtlMode = RtlMode.Off;
 
     public PageIndicatorView(Context context) {
         super(context);
@@ -641,13 +640,13 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
      * Specify to display PageIndicatorView with Right to left layout or not.
      * One of {@link RtlMode}: Off (Left to right), On (Right to left)
      * or Auto (handle this mode automatically based on users language preferences).
-     * Default is Auto.
+     * Default is Off.
      *
      * @param mode instance of {@link RtlMode}
      */
     public void setRtlMode(@Nullable RtlMode mode) {
         if (mode == null) {
-            rtlMode = RtlMode.Auto;
+            rtlMode = RtlMode.Off;
         } else {
             rtlMode = mode;
         }
@@ -661,7 +660,6 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         if (selectingProgress == 1) {
             lastSelectedPosition = selectedPosition;
             selectedPosition = selectingPosition;
-            Log.e("TEST", "BAM!");
         }
 
         setProgress(selectingPosition, selectingProgress);
@@ -983,7 +981,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         int animIndex = typedArray.getInt(R.styleable.PageIndicatorView_piv_animationType, AnimationType.NONE.ordinal());
         animationType = getAnimationType(animIndex);
 
-        int rtlIndex = typedArray.getInt(R.styleable.PageIndicatorView_piv_rtl_mode, RtlMode.Auto.ordinal());
+        int rtlIndex = typedArray.getInt(R.styleable.PageIndicatorView_piv_rtl_mode, RtlMode.Off.ordinal());
         rtlMode = getRtlMode(rtlIndex);
     }
 
@@ -1414,7 +1412,6 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         } else {
             isLeftOverScrolled = position + 1 < selectedPosition;
         }
-        Log.e("TEST", "isRightOverScrolled " + isRightOverScrolled + " isLeftOverScrolled " + isLeftOverScrolled);
 
         if (isRightOverScrolled || isLeftOverScrolled) {
             selectedPosition = position;
