@@ -17,6 +17,7 @@ import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.util.Pair;
 import android.view.View;
+
 import com.rd.animation.*;
 import com.rd.pageindicatorview.R;
 import com.rd.utils.DensityUtils;
@@ -84,6 +85,9 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     private ViewPager viewPager;
     private int viewPagerId;
 
+    /** Listener to set to notify the outside word about page change events. */
+    private ViewPager.OnPageChangeListener mOnPageChangeListener;
+
     public PageIndicatorView(Context context) {
         super(context);
         init(null);
@@ -134,9 +138,10 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
             this.selectedPosition = positionSavedState.getSelectedPosition();
             this.selectingPosition = positionSavedState.getSelectingPosition();
             this.lastSelectedPosition = positionSavedState.getLastSelectedPosition();
+            super.onRestoreInstanceState(positionSavedState.getSuperState());
+        } else {
+            super.onRestoreInstanceState(state);
         }
-
-        super.onRestoreInstanceState(state);
     }
 
     @SuppressWarnings("UnnecessaryLocalVariable")
@@ -213,6 +218,10 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         if (isViewMeasured() && interactiveAnimation) {
             onPageScroll(position, positionOffset);
         }
+
+        if (mOnPageChangeListener != null) {
+            mOnPageChangeListener.onPageScrolled(position, positionOffset, positionOffsetPixels);
+        }
     }
 
     @Override
@@ -228,10 +237,18 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         if (isViewMeasured() && (!interactiveAnimation || animationType == AnimationType.NONE)) {
             setSelection(position);
         }
+
+        if (mOnPageChangeListener != null) {
+            mOnPageChangeListener.onPageSelected(position);
+        }
     }
 
     @Override
-    public void onPageScrollStateChanged(int state) {/*empty*/}
+    public void onPageScrollStateChanged(int state) {
+        if (mOnPageChangeListener != null) {
+            mOnPageChangeListener.onPageScrollStateChanged(state);
+        }
+    }
 
     /**
      * Set static number of circle indicators to be displayed.
@@ -619,6 +636,16 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
             viewPager.removeOnPageChangeListener(this);
             viewPager = null;
         }
+    }
+
+    /**
+     * Set {@link ViewPager.android.support.v4.view.ViewPager.OnPageChangeListener} to be able to
+     * get notified on page change events outside of this view.
+     *
+     * @param listener instance of {@link android.support.v4.view.ViewPager.OnPageChangeListener}
+     */
+    public void setOnPageChangeListener(@Nullable ViewPager.OnPageChangeListener listener) {
+        mOnPageChangeListener = listener;
     }
 
     private void onPageScroll(int position, float positionOffset) {
