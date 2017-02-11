@@ -13,8 +13,11 @@ import android.os.Build;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.text.TextUtilsCompat;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import com.rd.animation.*;
@@ -83,6 +86,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
     private ViewPager viewPager;
     private int viewPagerId;
+    private RtlMode rtlMode = RtlMode.Auto;
 
     public PageIndicatorView(Context context) {
         super(context);
@@ -226,6 +230,10 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         }
 
         if (isViewMeasured() && (!interactiveAnimation || animationType == AnimationType.NONE)) {
+            if (isRtl()) {
+                position = (count - 1) - position;
+            }
+
             setSelection(position);
         }
     }
@@ -606,7 +614,14 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
             setDynamicCount(dynamicCount);
             if (!isCountSet) {
-                setCount(getViewPagerCount());
+
+                int count = getViewPagerCount();
+                if (isRtl()) {
+                    int selected = viewPager.getCurrentItem();
+                    this.selectedPosition = (count - 1) - selected;
+                }
+
+                setCount(count);
             }
         }
     }
@@ -621,6 +636,22 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         }
     }
 
+    /**
+     * Specify to display PageIndicatorView with Right to left layout or not.
+     * One of {@link RtlMode}: Off (Left to right), On (Right to left)
+     * or Auto (handle this mode automatically based on users language preferences).
+     * Default is Auto.
+     *
+     * @param mode instance of {@link RtlMode}
+     */
+    public void setRtlMode(@Nullable RtlMode mode) {
+        if (mode == null) {
+            rtlMode = RtlMode.Auto;
+        } else {
+            rtlMode = mode;
+        }
+    }
+
     private void onPageScroll(int position, float positionOffset) {
         Pair<Integer, Float> progressPair = getProgress(position, positionOffset);
         int selectingPosition = progressPair.first;
@@ -629,6 +660,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         if (selectingProgress == 1) {
             lastSelectedPosition = selectedPosition;
             selectedPosition = selectingPosition;
+            Log.e("TEST", "BAM!");
         }
 
         setProgress(selectingPosition, selectingProgress);
@@ -947,8 +979,11 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         animationDuration = typedArray.getInt(R.styleable.PageIndicatorView_piv_animationDuration, AbsAnimation.DEFAULT_ANIMATION_TIME);
         interactiveAnimation = typedArray.getBoolean(R.styleable.PageIndicatorView_piv_interactiveAnimation, false);
 
-        int index = typedArray.getInt(R.styleable.PageIndicatorView_piv_animationType, AnimationType.NONE.ordinal());
-        animationType = getAnimationType(index);
+        int animIndex = typedArray.getInt(R.styleable.PageIndicatorView_piv_animationType, AnimationType.NONE.ordinal());
+        animationType = getAnimationType(animIndex);
+
+        int rtlIndex = typedArray.getInt(R.styleable.PageIndicatorView_piv_rtl_mode, RtlMode.Auto.ordinal());
+        rtlMode = getRtlMode(rtlIndex);
     }
 
     private void initSizeAttribute(@NonNull TypedArray typedArray) {
@@ -1065,6 +1100,19 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         }
 
         return AnimationType.NONE;
+    }
+
+    private RtlMode getRtlMode(int index) {
+        switch (index) {
+            case 0:
+                return RtlMode.On;
+            case 1:
+                return RtlMode.Off;
+            case 2:
+                return RtlMode.Auto;
+        }
+
+        return RtlMode.Auto;
     }
 
     private void resetFrameValues() {
@@ -1350,8 +1398,22 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     }
 
     private Pair<Integer, Float> getProgress(int position, float positionOffset) {
+        if (isRtl()) {
+            position = (count - 1) - position;
+
+            if (position < 0) {
+                position = 0;
+            }
+        }
+
         boolean isRightOverScrolled = position > selectedPosition;
-        boolean isLeftOverScrolled = position + 1 < selectedPosition;
+        boolean isLeftOverScrolled;
+        if (isRtl()) {
+            isLeftOverScrolled = position - 1 < selectedPosition;
+        } else {
+            isLeftOverScrolled = position + 1 < selectedPosition;
+        }
+        Log.e("TEST", "isRightOverScrolled " + isRightOverScrolled + " isLeftOverScrolled " + isLeftOverScrolled);
 
         if (isRightOverScrolled || isLeftOverScrolled) {
             selectedPosition = position;
@@ -1362,7 +1424,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         float selectingProgress;
 
         if (isSlideToRightSide) {
-            selectingPosition = position + 1;
+            selectingPosition = isRtl() ? position - 1 : position + 1;
             selectingProgress = positionOffset;
 
         } else {
@@ -1378,5 +1440,20 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         }
 
         return new Pair<>(selectingPosition, selectingProgress);
+    }
+
+    private boolean isRtl() {
+        switch (rtlMode) {
+            case On:
+                return true;
+
+            case Off:
+                return false;
+
+            case Auto:
+                return TextUtilsCompat.getLayoutDirectionFromLocale(getContext().getResources().getConfiguration().locale) == ViewCompat.LAYOUT_DIRECTION_RTL;
+        }
+
+        return false;
     }
 }
