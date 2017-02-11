@@ -9,8 +9,7 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
         <activity
-                android:name="com.rd.pageindicatorview.home.HomeActivity"
-                android:screenOrientation="portrait">
+                android:name="com.rd.pageindicatorview.home.HomeActivity">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
