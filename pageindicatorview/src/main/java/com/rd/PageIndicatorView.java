@@ -138,9 +138,10 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
             this.selectedPosition = positionSavedState.getSelectedPosition();
             this.selectingPosition = positionSavedState.getSelectingPosition();
             this.lastSelectedPosition = positionSavedState.getLastSelectedPosition();
+            super.onRestoreInstanceState(positionSavedState.getSuperState());
+        } else {
+            super.onRestoreInstanceState(state);
         }
-
-        super.onRestoreInstanceState(state);
     }
 
     @SuppressWarnings("UnnecessaryLocalVariable")
