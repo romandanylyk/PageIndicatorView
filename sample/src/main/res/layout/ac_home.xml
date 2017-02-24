@@ -19,7 +19,7 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="50dp"
-        attrs:piv_animationType="drop"
+        attrs:piv_animationType="dragWorm"
         attrs:piv_dynamicCount="true"
         attrs:piv_interactiveAnimation="true"
         attrs:piv_padding="16dp"
