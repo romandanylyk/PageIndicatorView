@@ -14,6 +14,7 @@
         android:layout_height="match_parent" />
 
     <com.rd.PageIndicatorView
+        android:id="@+id/pageindicatorview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -22,8 +23,8 @@
         attrs:piv_animationType="dragWorm"
         attrs:piv_dynamicCount="true"
         attrs:piv_interactiveAnimation="true"
+        attrs:piv_animationType="drop"
         attrs:piv_padding="16dp"
-        attrs:piv_radius="8dp"
-        attrs:piv_viewPager="@id/viewPager" />
+        attrs:piv_radius="8dp" />
 
 </RelativeLayout>
