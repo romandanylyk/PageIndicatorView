@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import com.rd.PageIndicatorView;
 import com.rd.pageindicatorview.sample.R;
 
 import java.util.ArrayList;
@@ -27,6 +28,9 @@ public class HomeActivity extends AppCompatActivity {
 
         ViewPager pager = (ViewPager) findViewById(R.id.viewPager);
         pager.setAdapter(adapter);
+
+        PageIndicatorView indicatorView = (PageIndicatorView) findViewById(R.id.pageindicatorview);
+        indicatorView.setViewPager(pager);
     }
 
     @NonNull
