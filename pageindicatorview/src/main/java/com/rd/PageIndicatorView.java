@@ -24,6 +24,8 @@ import com.rd.pageindicatorview.R;
 import com.rd.utils.DensityUtils;
 
 public class PageIndicatorView extends View implements ViewPager.OnPageChangeListener {
+    private static final int HORIZONTAL = 0;
+    private static final int VERTICAL = 1;
 
     private static final int DEFAULT_CIRCLES_COUNT = 3;
     private static final int COUNT_NOT_SET = -1;
@@ -44,6 +46,9 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
     private int frameColor;
     private int frameColorReverse;
+
+    // Orientation
+    private int orientation = HORIZONTAL;
 
     //Scale
     private int frameRadiusPx;
