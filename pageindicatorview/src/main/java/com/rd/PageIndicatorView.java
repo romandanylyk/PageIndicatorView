@@ -251,6 +251,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
             this.count = count;
             this.isCountSet = true;
 
+            setViewVisibility(count);
             requestLayout();
         }
     }
@@ -622,6 +623,8 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
                 }
 
                 setCount(count);
+            } else  {
+                setViewVisibility(count);
             }
         }
     }
@@ -1290,6 +1293,14 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
             } catch (IllegalStateException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    private void setViewVisibility(int currentCount){
+        if (currentCount > 1 && getVisibility() == View.INVISIBLE){
+            setVisibility(View.VISIBLE);
+        } else if(currentCount <=1 && getVisibility() == View.VISIBLE){
+            setVisibility(View.INVISIBLE);
         }
     }
 
