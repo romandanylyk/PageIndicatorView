@@ -17,6 +17,7 @@ import android.support.v4.text.TextUtilsCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import com.rd.animation.*;
@@ -148,6 +149,8 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         }
     }
 
+    private static final String TAG = "PageIndicatorView";
+
     @SuppressWarnings("UnnecessaryLocalVariable")
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -158,18 +161,28 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         int heightSize = MeasureSpec.getSize(heightMeasureSpec);
 
         int circleDiameterPx = radiusPx * 2;
-        int desiredHeight = circleDiameterPx + strokePx;
+
         int desiredWidth = 0;
+        int desiredHeight = 0;
+
+        if (orientation == HORIZONTAL)
+            desiredHeight = circleDiameterPx + strokePx;
+        else
+            desiredWidth = circleDiameterPx + strokePx;
 
         if (count != 0) {
             int diameterSum = circleDiameterPx * count;
             int strokeSum = (strokePx * 2) * count;
             int paddingSum = paddingPx * (count - 1);
-            desiredWidth = diameterSum + strokeSum + paddingSum;
+
+            if (orientation == HORIZONTAL)
+                desiredWidth = diameterSum + strokeSum + paddingSum;
+            else
+                desiredHeight = diameterSum + strokeSum + paddingSum;
         }
 
-        int width;
-        int height;
+        int width = 0;
+        int height = 0;
 
         if (widthMode == MeasureSpec.EXACTLY) {
             width = widthSize;
@@ -188,7 +201,10 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         }
 
         if (animationType == AnimationType.DROP) {
-            height *= 2;
+            if (orientation == HORIZONTAL)
+                height *= 2;
+            else
+                width *= 2;
         }
 
         if (width < 0) {
@@ -199,6 +215,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
             height = 0;
         }
 
+        Log.d(TAG, "onMeasure: w:"+width+" h:"+height);
         setMeasuredDimension(width, height);
     }
 
@@ -950,6 +967,11 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         initColorAttribute(typedArray);
         initAnimationAttribute(typedArray);
         initSizeAttribute(typedArray);
+        initOrientationAttribute(typedArray);
+    }
+
+    private void initOrientationAttribute(TypedArray typedArray) {
+        orientation = typedArray.getInteger(R.styleable.PageIndicatorView_orientation, 0);
     }
 
     private void initCountAttribute(@NonNull TypedArray typedArray) {
