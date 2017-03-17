@@ -29,6 +29,10 @@ class HomeAdapter extends PagerAdapter {
         collection.removeView((View) view);
     }
 
+    public void add(View v) {
+        viewList.add(v);
+    }
+
     @Override
     public int getCount() {
         return viewList.size();

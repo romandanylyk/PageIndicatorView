@@ -17,7 +17,6 @@ import android.support.v4.text.TextUtilsCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import com.rd.animation.*;
@@ -215,7 +214,6 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
             height = 0;
         }
 
-        Log.d(TAG, "onMeasure: w:"+width+" h:"+height);
         setMeasuredDimension(width, height);
     }
 
@@ -688,10 +686,10 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     }
 
     private void drawIndicatorView(@NonNull Canvas canvas) {
-        int y = getYCoordinate();
 
         for (int i = 0; i < count; i++) {
             int x = getXCoordinate(i);
+            int y = getYCoordinate(i);
             drawCircle(canvas, i, x, y);
         }
     }
@@ -1172,7 +1170,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
         //slide & drop
         frameX = xCoordinate;
-        frameY = getYCoordinate();
+        frameY = getYCoordinate(selectedPosition);
 
         //fill
         frameStrokePx = radiusPx;
@@ -1232,7 +1230,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     private void startDropAnimation() {
         int fromX = getXCoordinate(lastSelectedPosition);
         int toX = getXCoordinate(selectedPosition);
-        int fromY = getYCoordinate();
+        int fromY = getYCoordinate(selectedPosition);
 
         animation.drop().end();
         animation.drop().duration(animationDuration).with(fromX, toX, fromY, radiusPx).start();
@@ -1282,7 +1280,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
                     }
 
                 } else {
-                    int fromY = getYCoordinate();
+                    int fromY = getYCoordinate(selectedPosition);
                     return animation.drop().with(fromX, toX, fromY, radiusPx).progress(progress);
                 }
         }
@@ -1399,28 +1397,55 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
     @SuppressWarnings("UnnecessaryLocalVariable")
     private int getXCoordinate(int position) {
-        int x = 0;
-        for (int i = 0; i < count; i++) {
-            x += radiusPx + strokePx;
+        if (orientation == HORIZONTAL) {
+            int x = 0;
+            for (int i = 0; i < count; i++) {
+                x += radiusPx + strokePx;
 
-            if (position == i) {
-                return x;
+                if (position == i) {
+                    return x;
+                }
+
+                x += radiusPx + paddingPx;
             }
 
-            x += radiusPx + paddingPx;
-        }
+            return x;
 
-        return x;
+        } else {
+            int x = getWidth()/2;
+
+            if (animationType == AnimationType.DROP) {
+                x += radiusPx + strokePx;
+            }
+
+            return x;
+        }
     }
 
-    private int getYCoordinate() {
-        int y = getHeight() / 2;
+    private int getYCoordinate(int position) {
+        if (orientation == HORIZONTAL) {
+            int y = getHeight() / 2;
 
-        if (animationType == AnimationType.DROP) {
-            y += radiusPx;
+            if (animationType == AnimationType.DROP) {
+                y += radiusPx;
+            }
+
+            return y;
+
+        } else {
+            int y = 0;
+
+            for (int i = 0; i < count; i++) {
+                y += radiusPx + strokePx;
+
+                if (position == i)
+                    return y;
+
+                y += radiusPx + paddingPx;
+            }
+
+            return y;
         }
-
-        return y;
     }
 
     private Pair<Integer, Float> getProgress(int position, float positionOffset) {
