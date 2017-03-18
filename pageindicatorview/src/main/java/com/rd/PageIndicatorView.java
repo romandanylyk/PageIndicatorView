@@ -60,8 +60,8 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     private int frameStrokeReversePx;
 
     //Worm
-    private int frameLeftX;
-    private int frameRightX;
+    private int frameFrom;
+    private int frameTo;
 
     //Slide & Drop
     private int frameX;
@@ -840,16 +840,16 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         int radius = radiusPx;
 
         if (orientation == HORIZONTAL) {
-            rect.left = frameLeftX;
-            rect.right = frameRightX;
+            rect.left = frameFrom;
+            rect.right = frameTo;
             rect.top = y - radius;
             rect.bottom = y + radius;
 
         } else {
             rect.left = x - radiusPx;
             rect.right = x + radiusPx;
-            rect.top = frameLeftX;
-            rect.bottom = frameRightX;
+            rect.top = frameFrom;
+            rect.bottom = frameTo;
         }
 
         fillPaint.setColor(unselectedColor);
@@ -900,8 +900,8 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     private void drawWithThinWormAnimation(@NonNull Canvas canvas, int x, int y) {
         int radius = radiusPx;
 
-        int left = frameLeftX;
-        int right = frameRightX;
+        int left = frameFrom;
+        int right = frameTo;
         int top = y - (frameHeight / 2);
         int bot = y + (frameHeight / 2);
 
@@ -1063,15 +1063,15 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
             @Override
             public void onWormAnimationUpdated(int leftX, int rightX) {
                 // hot poin
-                frameLeftX = leftX;
-                frameRightX = rightX;
+                frameFrom = leftX;
+                frameTo = rightX;
                 invalidate();
             }
 
             @Override
             public void onThinWormAnimationUpdated(int leftX, int rightX, int height) {
-                frameLeftX = leftX;
-                frameRightX = rightX;
+                frameFrom = leftX;
+                frameTo = rightX;
                 frameHeight = height;
                 invalidate();
             }
@@ -1164,12 +1164,12 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         //worm
         int xCoordinate = getXCoordinate(selectedPosition);
         if (xCoordinate - radiusPx >= 0) {
-            frameLeftX = xCoordinate - radiusPx;
-            frameRightX = xCoordinate + radiusPx;
+            frameFrom = xCoordinate - radiusPx;
+            frameTo = xCoordinate + radiusPx;
 
         } else {
-            frameLeftX = xCoordinate;
-            frameRightX = xCoordinate + (radiusPx * 2);
+            frameFrom = xCoordinate;
+            frameTo = xCoordinate + (radiusPx * 2);
         }
 
         //slide & drop
