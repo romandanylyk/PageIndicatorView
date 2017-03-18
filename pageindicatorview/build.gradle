@@ -46,7 +46,7 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:24.2.1'
+    compile 'com.android.support:appcompat-v7:25.3.0'
 }
 
 allprojects {
