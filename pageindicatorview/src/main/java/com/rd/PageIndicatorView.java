@@ -900,15 +900,18 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     private void drawWithThinWormAnimation(@NonNull Canvas canvas, int x, int y) {
         int radius = radiusPx;
 
-        int left = frameFrom;
-        int right = frameTo;
-        int top = y - (frameHeight / 2);
-        int bot = y + (frameHeight / 2);
+        if (orientation == HORIZONTAL) {
+            rect.left = frameFrom;
+            rect.right = frameTo;
+            rect.top = y - (frameHeight / 2);
+            rect.bottom = y + (frameHeight / 2);
 
-        rect.left = left;
-        rect.right = right;
-        rect.top = top;
-        rect.bottom = bot;
+        } else {
+            rect.left = x - (frameHeight / 2);
+            rect.right = x + (frameHeight / 2);
+            rect.top = frameFrom;
+            rect.bottom = frameTo;
+        }
 
         fillPaint.setColor(unselectedColor);
         canvas.drawCircle(x, y, radius, fillPaint);
