@@ -23,7 +23,7 @@ public class HomeActivity extends AppCompatActivity {
 
     @SuppressWarnings("ConstantConditions")
     private void initViews() {
-        final HomeAdapter adapter = new HomeAdapter();
+        HomeAdapter adapter = new HomeAdapter();
         adapter.setData(createPageList());
 
         ViewPager pager = (ViewPager) findViewById(R.id.viewPager);

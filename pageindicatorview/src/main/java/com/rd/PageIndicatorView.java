@@ -5,11 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.database.DataSetObserver;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Path;
-import android.graphics.RectF;
+import android.graphics.*;
 import android.os.Build;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
@@ -18,7 +14,6 @@ import android.support.v4.text.TextUtilsCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import com.rd.animation.*;
@@ -36,9 +31,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     private int radiusPx;
     private int paddingPx;
     private int strokePx;
-
     private int count;
-    private boolean isCountSet;
 
     //Color
     private int unselectedColor;
@@ -69,7 +62,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
     //Thin Worm
     private int frameHeight;
-
+    private boolean autoVisibility;
 
     private int selectedPosition;
     private int selectingPosition;
@@ -256,9 +249,8 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     public void setCount(int count) {
         if (this.count != count) {
             this.count = count;
-            this.isCountSet = true;
 
-            setViewVisibility(count);
+            updateVisibility();
             requestLayout();
         }
     }
@@ -620,24 +612,22 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     public void setViewPager(@Nullable ViewPager pager) {
         releaseViewPager();
 
-        if (pager != null) {
-            viewPager = pager;
-            viewPager.addOnPageChangeListener(this);
-
-            setDynamicCount(dynamicCount);
-            if (!isCountSet) {
-
-                int count = getViewPagerCount();
-                if (isRtl()) {
-                    int selected = viewPager.getCurrentItem();
-                    this.selectedPosition = (count - 1) - selected;
-                }
-
-                setCount(count);
-            } else  {
-                setViewVisibility(count);
-            }
+        if (pager == null) {
+            return;
         }
+
+        viewPager = pager;
+        viewPager.addOnPageChangeListener(this);
+
+        setDynamicCount(dynamicCount);
+        int count = getViewPagerCount();
+
+        if (isRtl()) {
+            int selected = viewPager.getCurrentItem();
+            this.selectedPosition = (count - 1) - selected;
+        }
+
+        setCount(count);
     }
 
     /**
@@ -739,7 +729,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
                 break;
 
             case DRAG_WORM:
-                drawWithDragWormAnimation(canvas,x,y);
+                drawWithDragWormAnimation(canvas, x, y);
         }
     }
 
@@ -923,18 +913,18 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
         fillPaint.setColor(selectedColor);
 
-        canvas.drawCircle(left+radius,radiusPx,frameRadiusReversePx,fillPaint);
-        canvas.drawCircle(right-radius,radiusPx,frameRadiusPx,fillPaint);
+        canvas.drawCircle(left + radius, radiusPx, frameRadiusReversePx, fillPaint);
+        canvas.drawCircle(right - radius, radiusPx, frameRadiusPx, fillPaint);
 
-        float center = (left+right)/2;
+        float center = (left + right) / 2;
         path.reset();
-        path.moveTo(left+radius,radius-frameRadiusReversePx);
-        path.quadTo(center,radiusPx,right-radius,radius-frameRadiusPx);
-        path.lineTo(right-radius,radius+frameRadiusPx);
-        path.quadTo(center,radiusPx,left+radius,radius+frameRadiusReversePx);
-        path.lineTo(left+radius,radius-frameRadiusReversePx);
+        path.moveTo(left + radius, radius - frameRadiusReversePx);
+        path.quadTo(center, radiusPx, right - radius, radius - frameRadiusPx);
+        path.lineTo(right - radius, radius + frameRadiusPx);
+        path.quadTo(center, radiusPx, left + radius, radius + frameRadiusReversePx);
+        path.lineTo(left + radius, radius - frameRadiusReversePx);
 
-        canvas.drawPath(path,fillPaint);
+        canvas.drawPath(path, fillPaint);
     }
 
     private void drawWithDropAnimation(@NonNull Canvas canvas, int x, int y) {
@@ -967,6 +957,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         setupId();
         initAttributes(attrs);
         initAnimation();
+        updateVisibility();
 
         fillPaint.setStyle(Paint.Style.FILL);
         fillPaint.setAntiAlias(true);
@@ -991,18 +982,18 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     }
 
     private void initCountAttribute(@NonNull TypedArray typedArray) {
+        autoVisibility = typedArray.getBoolean(R.styleable.PageIndicatorView_piv_autoVisibility, true);
         dynamicCount = typedArray.getBoolean(R.styleable.PageIndicatorView_piv_dynamicCount, false);
         count = typedArray.getInt(R.styleable.PageIndicatorView_piv_count, COUNT_NOT_SET);
 
-        if (count != COUNT_NOT_SET) {
-            isCountSet = true;
-        } else {
+        if (count == COUNT_NOT_SET) {
             count = DEFAULT_CIRCLES_COUNT;
         }
 
         int position = typedArray.getInt(R.styleable.PageIndicatorView_piv_select, 0);
         if (position < 0) {
             position = 0;
+
         } else if (count > 0 && position > count - 1) {
             position = count - 1;
         }
@@ -1359,10 +1350,15 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         }
     }
 
-    private void setViewVisibility(int currentCount){
-        if (currentCount > 1 && getVisibility() == View.INVISIBLE){
-            setVisibility(View.VISIBLE);
-        } else if(currentCount <=1 && getVisibility() == View.VISIBLE){
+    private void updateVisibility() {
+        if (!autoVisibility) {
+            return;
+        }
+
+        if (count > 1 && getVisibility() != VISIBLE) {
+            setVisibility(VISIBLE);
+
+        } else if (count <= 1 && getVisibility() != INVISIBLE) {
             setVisibility(View.INVISIBLE);
         }
     }
