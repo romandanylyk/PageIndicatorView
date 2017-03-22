@@ -839,15 +839,18 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     private void drawWithWormAnimation(@NonNull Canvas canvas, int x, int y) {
         int radius = radiusPx;
 
-        int left = frameLeftX;
-        int right = frameRightX;
-        int top = y - radius;
-        int bot = y + radius;
+        if (orientation == HORIZONTAL) {
+            rect.left = frameLeftX;
+            rect.right = frameRightX;
+            rect.top = y - radius;
+            rect.bottom = y + radius;
 
-        rect.left = left;
-        rect.right = right;
-        rect.top = top;
-        rect.bottom = bot;
+        } else {
+            rect.left = x - radiusPx;
+            rect.right = x + radiusPx;
+            rect.top = frameLeftX;
+            rect.bottom = frameRightX;
+        }
 
         fillPaint.setColor(unselectedColor);
         canvas.drawCircle(x, y, radius, fillPaint);
@@ -1059,6 +1062,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
             @Override
             public void onWormAnimationUpdated(int leftX, int rightX) {
+                // hot poin
                 frameLeftX = leftX;
                 frameRightX = rightX;
                 invalidate();
@@ -1261,27 +1265,33 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
             case SLIDE:
             case DROP:
             case SWAP:
-                int fromX = getXCoordinate(selectedPosition);
-                int toX = getXCoordinate(selectingPosition);
+                int from = orientation == HORIZONTAL
+                    ? getXCoordinate(selectedPosition)
+                    : getYCoordinate(selectedPosition);
 
+                int to = orientation == HORIZONTAL
+                    ? getXCoordinate(selectingPosition)
+                    : getYCoordinate(selectingPosition);
+
+                // TEST FROM TO WITH NO VERTICAL
                 if (animationType == AnimationType.SLIDE) {
-                    return animation.slide().with(fromX, toX).progress(progress);
+                    return animation.slide().with(from, to).progress(progress);
 
                 } else if (animationType == AnimationType.SWAP) {
-                    return animation.swap().with(fromX, toX).progress(progress);
+                    return animation.swap().with(from, to).progress(progress);
 
                 } else if (animationType == AnimationType.WORM || animationType == AnimationType.THIN_WORM) {
                     boolean isRightSide = selectingPosition > selectedPosition;
                     if (animationType == AnimationType.WORM) {
-                        return animation.worm().with(fromX, toX, radiusPx, isRightSide).progress(progress);
+                        return animation.worm().with(from, to, radiusPx, isRightSide).progress(progress);
 
                     } else if (animationType == AnimationType.THIN_WORM) {
-                        return animation.thinWorm().with(fromX, toX, radiusPx, isRightSide).progress(progress);
+                        return animation.thinWorm().with(from, to, radiusPx, isRightSide).progress(progress);
                     }
 
                 } else {
                     int fromY = getYCoordinate(selectedPosition);
-                    return animation.drop().with(fromX, toX, fromY, radiusPx).progress(progress);
+                    return animation.drop().with(from, to, fromY, radiusPx).progress(progress);
                 }
         }
 
