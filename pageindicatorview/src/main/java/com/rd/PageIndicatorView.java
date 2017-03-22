@@ -1259,13 +1259,8 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     }
 
     private void startDropAnimation() {
-        int from = orientation == HORIZONTAL
-            ? getXCoordinate(lastSelectedPosition)
-            : getYCoordinate(lastSelectedPosition);
-
-        int to = orientation == HORIZONTAL
-            ? getXCoordinate(selectedPosition)
-            : getYCoordinate(selectedPosition);
+        int from = getCoordinate(lastSelectedPosition);
+        int to = getCoordinate(selectedPosition);
 
         int center = (orientation == HORIZONTAL)
             ? getYCoordinate(selectedPosition)
@@ -1273,6 +1268,12 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
         animation.drop().end();
         animation.drop().duration(animationDuration).with(from, to, center, radiusPx).start();
+    }
+
+    private int getCoordinate(int position) {
+        return orientation == HORIZONTAL
+            ? getXCoordinate(position)
+            : getYCoordinate(position);
     }
 
     private void startSwapAnimation() {
