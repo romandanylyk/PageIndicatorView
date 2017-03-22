@@ -64,7 +64,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     private int frameTo;
 
     //Slide & Drop
-    private int frameX;
+    private int frameSlideFrom;
     private int frameY;
 
     //Thin Worm
@@ -822,17 +822,22 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         canvas.drawCircle(x, y, radius, fillPaint);
     }
 
+    // TODO
     private void drawWithSlideAnimation(@NonNull Canvas canvas, int position, int x, int y) {
         fillPaint.setColor(unselectedColor);
         canvas.drawCircle(x, y, radiusPx, fillPaint);
 
         if (interactiveAnimation && (position == selectingPosition || position == selectedPosition)) {
             fillPaint.setColor(selectedColor);
-            canvas.drawCircle(frameX, y, radiusPx, fillPaint);
+
+            if (orientation == HORIZONTAL)
+                canvas.drawCircle(frameSlideFrom, y, radiusPx, fillPaint);
+            else
+                canvas.drawCircle(x, frameSlideFrom, radiusPx, fillPaint);
 
         } else if (!interactiveAnimation && (position == selectedPosition || position == lastSelectedPosition)) {
             fillPaint.setColor(selectedColor);
-            canvas.drawCircle(frameX, y, radiusPx, fillPaint);
+            canvas.drawCircle(frameSlideFrom, y, radiusPx, fillPaint);
         }
     }
 
@@ -925,7 +930,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         canvas.drawCircle(x, y, radiusPx, fillPaint);
 
         fillPaint.setColor(selectedColor);
-        canvas.drawCircle(frameX, frameY, frameRadiusPx, fillPaint);
+        canvas.drawCircle(frameSlideFrom, frameY, frameRadiusPx, fillPaint);
     }
 
     private void drawWithSwapAnimation(@NonNull Canvas canvas, int position, int x, int y) {
@@ -933,13 +938,13 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
         if (position == selectedPosition) {
             fillPaint.setColor(selectedColor);
-            canvas.drawCircle(frameX, y, radiusPx, fillPaint);
+            canvas.drawCircle(frameSlideFrom, y, radiusPx, fillPaint);
 
         } else if (interactiveAnimation && position == selectingPosition) {
-            canvas.drawCircle(x - (frameX - getXCoordinate(selectedPosition)), y, radiusPx, fillPaint);
+            canvas.drawCircle(x - (frameSlideFrom - getXCoordinate(selectedPosition)), y, radiusPx, fillPaint);
 
         } else if (!interactiveAnimation) {
-            canvas.drawCircle(x - (frameX - getXCoordinate(selectedPosition)), y, radiusPx, fillPaint);
+            canvas.drawCircle(x - (frameSlideFrom - getXCoordinate(selectedPosition)), y, radiusPx, fillPaint);
 
         } else {
             canvas.drawCircle(x, y, radiusPx, fillPaint);
@@ -1058,8 +1063,8 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
             }
 
             @Override
-            public void onSlideAnimationUpdated(int xCoordinate) {
-                frameX = xCoordinate;
+            public void onSlideAnimationUpdated(int value) {
+                frameSlideFrom = value;
                 invalidate();
             }
 
@@ -1094,7 +1099,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
             @Override
             public void onDropAnimationUpdated(int x, int y, int selectedRadius) {
-                frameX = x;
+                frameSlideFrom = x;
                 frameY = y;
                 frameRadiusPx = selectedRadius;
                 invalidate();
@@ -1102,7 +1107,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
             @Override
             public void onSwapAnimationUpdated(int xCoordinate) {
-                frameX = xCoordinate;
+                frameSlideFrom = xCoordinate;
                 invalidate();
             }
         });
@@ -1176,7 +1181,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         }
 
         //slide & drop
-        frameX = xCoordinate;
+        frameSlideFrom = xCoordinate;
         frameY = getYCoordinate(selectedPosition);
 
         //fill
@@ -1276,7 +1281,6 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
                     ? getXCoordinate(selectingPosition)
                     : getYCoordinate(selectingPosition);
 
-                // TEST FROM TO WITH NO VERTICAL
                 if (animationType == AnimationType.SLIDE) {
                     return animation.slide().with(from, to).progress(progress);
 

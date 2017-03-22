@@ -27,17 +27,7 @@ public class HomeActivity extends AppCompatActivity {
 
         ViewPager pager = (ViewPager) findViewById(R.id.viewPager);
         pager.setAdapter(adapter);
-
-        findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                adapter.add(createPageView(R.color.colorPrimaryDark));
-                adapter.notifyDataSetChanged();
-            }
-        });
     }
-
-
 
     @NonNull
     private List<View> createPageList() {

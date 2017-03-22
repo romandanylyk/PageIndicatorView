@@ -22,7 +22,7 @@ public class ValueAnimation {
 
         void onScaleAnimationUpdated(int color, int colorReverse, int radius, int radiusReverse);
 
-        void onSlideAnimationUpdated(int xCoordinate);
+        void onSlideAnimationUpdated(int value);
 
         void onWormAnimationUpdated(int leftX, int rightX);
 
