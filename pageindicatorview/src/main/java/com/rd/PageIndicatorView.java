@@ -741,7 +741,11 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
                 break;
 
             case SWAP:
-                drawWithSwapAnimation(canvas, position, x, y);
+                if (orientation == HORIZONTAL)
+                    drawWithSwapAnimation(canvas, position, x, y);
+                else
+                    drawWithSwapAnimationVertically(canvas, position, x, y);
+
                 break;
         }
     }
@@ -945,6 +949,24 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
         } else if (!interactiveAnimation) {
             canvas.drawCircle(x - (frameSlideFrom - getXCoordinate(selectedPosition)), y, radiusPx, fillPaint);
+
+        } else {
+            canvas.drawCircle(x, y, radiusPx, fillPaint);
+        }
+    }
+
+    private void drawWithSwapAnimationVertically(@NonNull Canvas canvas, int position, int x, int y) {
+        fillPaint.setColor(unselectedColor);
+
+        if (position == selectedPosition) {
+            fillPaint.setColor(selectedColor);
+            canvas.drawCircle(x, frameSlideFrom, radiusPx, fillPaint);
+
+        } else if (interactiveAnimation && position == selectingPosition) {
+            canvas.drawCircle(x, y - (frameSlideFrom - getYCoordinate(selectedPosition)), radiusPx, fillPaint);
+
+        } else if (!interactiveAnimation) {
+            canvas.drawCircle(y - (frameSlideFrom - getYCoordinate(selectedPosition)), y, radiusPx, fillPaint);
 
         } else {
             canvas.drawCircle(x, y, radiusPx, fillPaint);
