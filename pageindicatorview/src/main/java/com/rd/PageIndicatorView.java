@@ -148,8 +148,6 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         }
     }
 
-    private static final String TAG = "PageIndicatorView";
-
     @SuppressWarnings("UnnecessaryLocalVariable")
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -699,11 +697,10 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         boolean selectingItem = interactiveAnimation && (position == selectingPosition || position == selectedPosition);
         boolean isSelectedItem = selectedItem | selectingItem;
 
-        if (isSelectedItem) {
+        if (isSelectedItem)
             drawWithAnimationEffect(canvas, position, x, y);
-        } else {
+        else
             drawWithNoEffect(canvas, position, x, y);
-        }
     }
 
     private void drawWithAnimationEffect(@NonNull Canvas canvas, int position, int x, int y) {
@@ -1121,8 +1118,8 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
             @Override
             public void onDropAnimationUpdated(int x, int y, int selectedRadius) {
-                frameSlideFrom = x;
-                frameY = y;
+                frameSlideFrom = (orientation == HORIZONTAL) ? x : y;
+                frameY = (orientation == HORIZONTAL) ? y : x;
                 frameRadiusPx = selectedRadius;
                 invalidate();
             }
@@ -1319,8 +1316,11 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
                     }
 
                 } else {
-                    int fromY = getYCoordinate(selectedPosition);
-                    return animation.drop().with(from, to, fromY, radiusPx).progress(progress);
+                    int center = (orientation == HORIZONTAL)
+                        ? getYCoordinate(selectedPosition)
+                        : getXCoordinate(selectedPosition);
+
+                    return animation.drop().with(from, to, center, radiusPx).progress(progress);
                 }
         }
 
