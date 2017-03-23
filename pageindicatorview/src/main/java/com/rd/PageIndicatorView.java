@@ -827,17 +827,16 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         fillPaint.setColor(unselectedColor);
         canvas.drawCircle(x, y, radiusPx, fillPaint);
 
+        int from = orientation == HORIZONTAL ? frameSlideFrom : x;
+        int to = orientation == HORIZONTAL ? y : frameSlideFrom;
+
         if (interactiveAnimation && (position == selectingPosition || position == selectedPosition)) {
             fillPaint.setColor(selectedColor);
-
-            if (orientation == HORIZONTAL)
-                canvas.drawCircle(frameSlideFrom, y, radiusPx, fillPaint);
-            else
-                canvas.drawCircle(x, frameSlideFrom, radiusPx, fillPaint);
+            canvas.drawCircle(from, to, radiusPx, fillPaint);
 
         } else if (!interactiveAnimation && (position == selectedPosition || position == lastSelectedPosition)) {
             fillPaint.setColor(selectedColor);
-            canvas.drawCircle(frameSlideFrom, y, radiusPx, fillPaint);
+            canvas.drawCircle(from, to, radiusPx, fillPaint);
         }
     }
 
@@ -1227,8 +1226,8 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     }
 
     private void startSlideAnimation() {
-        int fromX = getXCoordinate(lastSelectedPosition);
-        int toX = getXCoordinate(selectedPosition);
+        int fromX = getCoordinate(lastSelectedPosition);
+        int toX = getCoordinate(selectedPosition);
 
         animation.slide().end();
         animation.slide().with(fromX, toX).duration(animationDuration).start();
