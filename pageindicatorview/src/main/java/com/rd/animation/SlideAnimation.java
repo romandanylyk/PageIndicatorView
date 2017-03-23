@@ -8,7 +8,7 @@ import android.view.animation.DecelerateInterpolator;
 
 public class SlideAnimation extends AbsAnimation<ValueAnimator> {
 
-    private static final String ANIMATION_X_COORDINATE = "ANIMATION_X_COORDINATE";
+    private static final String ANIMATION_X_COORDINATE = "ANIMATION_COORDINATE";
     private static final int COORDINATE_NONE = -1;
 
     private int fromCoordinate = COORDINATE_NONE;
