@@ -12,11 +12,11 @@ import android.view.animation.DecelerateInterpolator;
 
 public class SwapAnimation extends AbsAnimation<ValueAnimator> {
 
-    private static final String ANIMATION_X_COORDINATE = "ANIMATION_X_COORDINATE";
+    private static final String ANIMATION_COORDINATE = "ANIMATION_COORDINATE";
     private static final int COORDINATE_NONE = -1;
 
-    private int xStartCoordinate = COORDINATE_NONE;
-    private int xEndCoordinate = COORDINATE_NONE;
+    private int startCoordinate = COORDINATE_NONE;
+    private int endCoordinate = COORDINATE_NONE;
 
     public SwapAnimation(@NonNull ValueAnimation.UpdateListener listener) {
         super(listener);
@@ -54,9 +54,8 @@ public class SwapAnimation extends AbsAnimation<ValueAnimator> {
     @NonNull
     public SwapAnimation with(int startValue, int endValue) {
         if (animator != null && hasChanges(startValue, endValue)) {
-
-            xStartCoordinate = startValue;
-            xEndCoordinate = endValue;
+            startCoordinate = startValue;
+            endCoordinate = endValue;
 
             PropertyValuesHolder holder = createColorPropertyHolder();
             animator.setValues(holder);
@@ -66,27 +65,27 @@ public class SwapAnimation extends AbsAnimation<ValueAnimator> {
     }
 
     private PropertyValuesHolder createColorPropertyHolder() {
-        PropertyValuesHolder holder = PropertyValuesHolder.ofInt(ANIMATION_X_COORDINATE, xStartCoordinate, xEndCoordinate);
+        PropertyValuesHolder holder = PropertyValuesHolder.ofInt(ANIMATION_COORDINATE, startCoordinate, endCoordinate);
         holder.setEvaluator(new IntEvaluator());
 
         return holder;
     }
 
     private void onAnimateUpdated(@NonNull ValueAnimator animation) {
-        int xCoordinate = (int) animation.getAnimatedValue(ANIMATION_X_COORDINATE);
+        int coordinate = (int) animation.getAnimatedValue(ANIMATION_COORDINATE);
 
         if (listener != null) {
-            listener.onSwapAnimationUpdated(xCoordinate);
+            listener.onSwapAnimationUpdated(coordinate);
         }
     }
 
     @SuppressWarnings("RedundantIfStatement")
     private boolean hasChanges(int startValue, int endValue) {
-        if (xStartCoordinate != startValue) {
+        if (startCoordinate != startValue) {
             return true;
         }
 
-        if (xEndCoordinate != endValue) {
+        if (endCoordinate != endValue) {
             return true;
         }
 

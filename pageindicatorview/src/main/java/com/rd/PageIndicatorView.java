@@ -684,7 +684,6 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     }
 
     private void drawIndicatorView(@NonNull Canvas canvas) {
-
         for (int i = 0; i < count; i++) {
             int x = getXCoordinate(i);
             int y = getYCoordinate(i);
@@ -963,7 +962,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
             canvas.drawCircle(x, y - (frameSlideFrom - getYCoordinate(selectedPosition)), radiusPx, fillPaint);
 
         } else if (!interactiveAnimation) {
-            canvas.drawCircle(y - (frameSlideFrom - getYCoordinate(selectedPosition)), y, radiusPx, fillPaint);
+            canvas.drawCircle(x, y - (frameSlideFrom - getYCoordinate(selectedPosition)), radiusPx, fillPaint);
 
         } else {
             canvas.drawCircle(x, y, radiusPx, fillPaint);
@@ -1270,18 +1269,12 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         animation.drop().duration(animationDuration).with(from, to, center, radiusPx).start();
     }
 
-    private int getCoordinate(int position) {
-        return orientation == HORIZONTAL
-            ? getXCoordinate(position)
-            : getYCoordinate(position);
-    }
-
     private void startSwapAnimation() {
-        int fromX = getXCoordinate(lastSelectedPosition);
-        int toX = getXCoordinate(selectedPosition);
+        int from = getCoordinate(lastSelectedPosition);
+        int to = getCoordinate(selectedPosition);
 
         animation.swap().end();
-        animation.swap().with(fromX, toX).duration(animationDuration).start();
+        animation.swap().with(from, to).duration(animationDuration).start();
     }
 
     @Nullable
@@ -1494,6 +1487,12 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
             return y;
         }
+    }
+
+    private int getCoordinate(int position) {
+        return orientation == HORIZONTAL
+            ? getXCoordinate(position)
+            : getYCoordinate(position);
     }
 
     private Pair<Integer, Float> getProgress(int position, float positionOffset) {
