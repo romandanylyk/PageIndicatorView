@@ -1000,7 +1000,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     }
 
     private void initOrientationAttribute(TypedArray typedArray) {
-        orientation = typedArray.getInteger(R.styleable.PageIndicatorView_orientation, 0);
+        orientation = typedArray.getInteger(R.styleable.PageIndicatorView_piv_orientation, 0);
     }
 
     private void initCountAttribute(@NonNull TypedArray typedArray) {
