@@ -934,9 +934,8 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     private void drawWithDragWormAnimation(@NonNull Canvas canvas, int x, int y) {
         int radius = radiusPx;
 
-        int left = frameLeftX;
-        int right = frameRightX;
-
+        int left = frameFrom;
+        int right = frameTo;
 
         fillPaint.setColor(unselectedColor);
         canvas.drawCircle(x, y, radius, fillPaint);
@@ -1137,8 +1136,8 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
             @Override
             public void onDragWormAnimationUpdated(int leftX, int rightX, int radius, int radiusReverse) {
-                frameLeftX = leftX;
-                frameRightX = rightX;
+                frameFrom = leftX;
+                frameTo = rightX;
 
                 frameRadiusPx = radius;
                 frameRadiusReversePx = radiusReverse;
@@ -1317,8 +1316,8 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         int to = getCoordinate(selectedPosition);
 
         int center = (orientation == HORIZONTAL)
-            ? getYCoordinate(selectedPosition)
-            : getXCoordinate(selectedPosition);
+                ? getYCoordinate(selectedPosition)
+                : getXCoordinate(selectedPosition);
 
         animation.drop().end();
         animation.drop().duration(animationDuration).with(from, to, center, radiusPx).start();
@@ -1350,12 +1349,12 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
             case DROP:
             case SWAP:
                 int from = orientation == HORIZONTAL
-                    ? getXCoordinate(selectedPosition)
-                    : getYCoordinate(selectedPosition);
+                        ? getXCoordinate(selectedPosition)
+                        : getYCoordinate(selectedPosition);
 
                 int to = orientation == HORIZONTAL
-                    ? getXCoordinate(selectingPosition)
-                    : getYCoordinate(selectingPosition);
+                        ? getXCoordinate(selectingPosition)
+                        : getYCoordinate(selectingPosition);
 
                 if (animationType == AnimationType.SLIDE) {
                     return animation.slide().with(from, to).progress(progress);
@@ -1372,14 +1371,14 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
                     } else if (animationType == AnimationType.THIN_WORM) {
                         return animation.thinWorm().with(from, to, radiusPx, isRightSide).progress(progress);
 
-                    }else if (animationType == AnimationType.DRAG_WORM) {
+                    } else if (animationType == AnimationType.DRAG_WORM) {
                         return animation.dragWorm().with(from, to, radiusPx, isRightSide).progress(progress);
                     }
 
                 } else {
                     int center = (orientation == HORIZONTAL)
-                        ? getYCoordinate(selectedPosition)
-                        : getXCoordinate(selectedPosition);
+                            ? getYCoordinate(selectedPosition)
+                            : getXCoordinate(selectedPosition);
 
                     return animation.drop().with(from, to, center, radiusPx).progress(progress);
                 }
@@ -1525,7 +1524,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
             return x;
 
         } else {
-            int x = getWidth()/2;
+            int x = getWidth() / 2;
 
             if (animationType == AnimationType.DROP) {
                 x += radiusPx + strokePx;
@@ -1563,8 +1562,8 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
     private int getCoordinate(int position) {
         return orientation == HORIZONTAL
-            ? getXCoordinate(position)
-            : getYCoordinate(position);
+                ? getXCoordinate(position)
+                : getYCoordinate(position);
     }
 
     private Pair<Integer, Float> getProgress(int position, float positionOffset) {
