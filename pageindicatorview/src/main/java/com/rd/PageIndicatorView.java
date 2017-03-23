@@ -22,6 +22,9 @@ import com.rd.utils.DensityUtils;
 
 public class PageIndicatorView extends View implements ViewPager.OnPageChangeListener {
 
+    private static final int HORIZONTAL = 0;
+    private static final int VERTICAL = 1;
+
     private static final int DEFAULT_CIRCLES_COUNT = 3;
     private static final int COUNT_NOT_SET = -1;
 
@@ -40,6 +43,9 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     private int frameColor;
     private int frameColorReverse;
 
+    // Orientation
+    private int orientation = HORIZONTAL;
+
     //Scale
     private int frameRadiusPx;
     private int frameRadiusReversePx;
@@ -50,14 +56,14 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     private int frameStrokeReversePx;
 
     //Worm
-    private int frameLeftX;
-    private int frameRightX;
+    private int frameFrom;
+    private int frameTo;
 
     //DragWorm
     private Path path = new Path();
 
     //Slide & Drop
-    private int frameX;
+    private int frameSlideFrom;
     private int frameY;
 
     //Thin Worm
@@ -85,7 +91,6 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     private ViewPager viewPager;
     private int viewPagerId;
     private RtlMode rtlMode = RtlMode.Off;
-
 
     public PageIndicatorView(Context context) {
         super(context);
@@ -153,18 +158,28 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         int heightSize = MeasureSpec.getSize(heightMeasureSpec);
 
         int circleDiameterPx = radiusPx * 2;
-        int desiredHeight = circleDiameterPx + strokePx;
+
         int desiredWidth = 0;
+        int desiredHeight = 0;
+
+        if (orientation == HORIZONTAL)
+            desiredHeight = circleDiameterPx + strokePx;
+        else
+            desiredWidth = circleDiameterPx + strokePx;
 
         if (count != 0) {
             int diameterSum = circleDiameterPx * count;
             int strokeSum = (strokePx * 2) * count;
             int paddingSum = paddingPx * (count - 1);
-            desiredWidth = diameterSum + strokeSum + paddingSum;
+
+            if (orientation == HORIZONTAL)
+                desiredWidth = diameterSum + strokeSum + paddingSum;
+            else
+                desiredHeight = diameterSum + strokeSum + paddingSum;
         }
 
-        int width;
-        int height;
+        int width = 0;
+        int height = 0;
 
         if (widthMode == MeasureSpec.EXACTLY) {
             width = widthSize;
@@ -183,7 +198,10 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         }
 
         if (animationType == AnimationType.DROP) {
-            height *= 2;
+            if (orientation == HORIZONTAL)
+                height *= 2;
+            else
+                width *= 2;
         }
 
         if (width < 0) {
@@ -670,10 +688,9 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     }
 
     private void drawIndicatorView(@NonNull Canvas canvas) {
-        int y = getYCoordinate();
-
         for (int i = 0; i < count; i++) {
             int x = getXCoordinate(i);
+            int y = getYCoordinate(i);
             drawCircle(canvas, i, x, y);
         }
     }
@@ -683,11 +700,10 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         boolean selectingItem = interactiveAnimation && (position == selectingPosition || position == selectedPosition);
         boolean isSelectedItem = selectedItem | selectingItem;
 
-        if (isSelectedItem) {
+        if (isSelectedItem)
             drawWithAnimationEffect(canvas, position, x, y);
-        } else {
+        else
             drawWithNoEffect(canvas, position, x, y);
-        }
     }
 
     private void drawWithAnimationEffect(@NonNull Canvas canvas, int position, int x, int y) {
@@ -725,7 +741,11 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
                 break;
 
             case SWAP:
-                drawWithSwapAnimation(canvas, position, x, y);
+                if (orientation == HORIZONTAL)
+                    drawWithSwapAnimation(canvas, position, x, y);
+                else
+                    drawWithSwapAnimationVertically(canvas, position, x, y);
+
                 break;
 
             case DRAG_WORM:
@@ -809,32 +829,39 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         canvas.drawCircle(x, y, radius, fillPaint);
     }
 
+    // TODO
     private void drawWithSlideAnimation(@NonNull Canvas canvas, int position, int x, int y) {
         fillPaint.setColor(unselectedColor);
         canvas.drawCircle(x, y, radiusPx, fillPaint);
 
+        int from = orientation == HORIZONTAL ? frameSlideFrom : x;
+        int to = orientation == HORIZONTAL ? y : frameSlideFrom;
+
         if (interactiveAnimation && (position == selectingPosition || position == selectedPosition)) {
             fillPaint.setColor(selectedColor);
-            canvas.drawCircle(frameX, y, radiusPx, fillPaint);
+            canvas.drawCircle(from, to, radiusPx, fillPaint);
 
         } else if (!interactiveAnimation && (position == selectedPosition || position == lastSelectedPosition)) {
             fillPaint.setColor(selectedColor);
-            canvas.drawCircle(frameX, y, radiusPx, fillPaint);
+            canvas.drawCircle(from, to, radiusPx, fillPaint);
         }
     }
 
     private void drawWithWormAnimation(@NonNull Canvas canvas, int x, int y) {
         int radius = radiusPx;
 
-        int left = frameLeftX;
-        int right = frameRightX;
-        int top = y - radius;
-        int bot = y + radius;
+        if (orientation == HORIZONTAL) {
+            rect.left = frameFrom;
+            rect.right = frameTo;
+            rect.top = y - radius;
+            rect.bottom = y + radius;
 
-        rect.left = left;
-        rect.right = right;
-        rect.top = top;
-        rect.bottom = bot;
+        } else {
+            rect.left = x - radiusPx;
+            rect.right = x + radiusPx;
+            rect.top = frameFrom;
+            rect.bottom = frameTo;
+        }
 
         fillPaint.setColor(unselectedColor);
         canvas.drawCircle(x, y, radius, fillPaint);
@@ -884,15 +911,18 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     private void drawWithThinWormAnimation(@NonNull Canvas canvas, int x, int y) {
         int radius = radiusPx;
 
-        int left = frameLeftX;
-        int right = frameRightX;
-        int top = y - (frameHeight / 2);
-        int bot = y + (frameHeight / 2);
+        if (orientation == HORIZONTAL) {
+            rect.left = frameFrom;
+            rect.right = frameTo;
+            rect.top = y - (frameHeight / 2);
+            rect.bottom = y + (frameHeight / 2);
 
-        rect.left = left;
-        rect.right = right;
-        rect.top = top;
-        rect.bottom = bot;
+        } else {
+            rect.left = x - (frameHeight / 2);
+            rect.right = x + (frameHeight / 2);
+            rect.top = frameFrom;
+            rect.bottom = frameTo;
+        }
 
         fillPaint.setColor(unselectedColor);
         canvas.drawCircle(x, y, radius, fillPaint);
@@ -932,7 +962,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         canvas.drawCircle(x, y, radiusPx, fillPaint);
 
         fillPaint.setColor(selectedColor);
-        canvas.drawCircle(frameX, frameY, frameRadiusPx, fillPaint);
+        canvas.drawCircle(frameSlideFrom, frameY, frameRadiusPx, fillPaint);
     }
 
     private void drawWithSwapAnimation(@NonNull Canvas canvas, int position, int x, int y) {
@@ -940,13 +970,31 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
         if (position == selectedPosition) {
             fillPaint.setColor(selectedColor);
-            canvas.drawCircle(frameX, y, radiusPx, fillPaint);
+            canvas.drawCircle(frameSlideFrom, y, radiusPx, fillPaint);
 
         } else if (interactiveAnimation && position == selectingPosition) {
-            canvas.drawCircle(x - (frameX - getXCoordinate(selectedPosition)), y, radiusPx, fillPaint);
+            canvas.drawCircle(x - (frameSlideFrom - getXCoordinate(selectedPosition)), y, radiusPx, fillPaint);
 
         } else if (!interactiveAnimation) {
-            canvas.drawCircle(x - (frameX - getXCoordinate(selectedPosition)), y, radiusPx, fillPaint);
+            canvas.drawCircle(x - (frameSlideFrom - getXCoordinate(selectedPosition)), y, radiusPx, fillPaint);
+
+        } else {
+            canvas.drawCircle(x, y, radiusPx, fillPaint);
+        }
+    }
+
+    private void drawWithSwapAnimationVertically(@NonNull Canvas canvas, int position, int x, int y) {
+        fillPaint.setColor(unselectedColor);
+
+        if (position == selectedPosition) {
+            fillPaint.setColor(selectedColor);
+            canvas.drawCircle(x, frameSlideFrom, radiusPx, fillPaint);
+
+        } else if (interactiveAnimation && position == selectingPosition) {
+            canvas.drawCircle(x, y - (frameSlideFrom - getYCoordinate(selectedPosition)), radiusPx, fillPaint);
+
+        } else if (!interactiveAnimation) {
+            canvas.drawCircle(x, y - (frameSlideFrom - getYCoordinate(selectedPosition)), radiusPx, fillPaint);
 
         } else {
             canvas.drawCircle(x, y, radiusPx, fillPaint);
@@ -979,6 +1027,11 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         initColorAttribute(typedArray);
         initAnimationAttribute(typedArray);
         initSizeAttribute(typedArray);
+        initOrientationAttribute(typedArray);
+    }
+
+    private void initOrientationAttribute(TypedArray typedArray) {
+        orientation = typedArray.getInteger(R.styleable.PageIndicatorView_piv_orientation, 0);
     }
 
     private void initCountAttribute(@NonNull TypedArray typedArray) {
@@ -1061,22 +1114,23 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
             }
 
             @Override
-            public void onSlideAnimationUpdated(int xCoordinate) {
-                frameX = xCoordinate;
+            public void onSlideAnimationUpdated(int value) {
+                frameSlideFrom = value;
                 invalidate();
             }
 
             @Override
             public void onWormAnimationUpdated(int leftX, int rightX) {
-                frameLeftX = leftX;
-                frameRightX = rightX;
+                // hot poin
+                frameFrom = leftX;
+                frameTo = rightX;
                 invalidate();
             }
 
             @Override
             public void onThinWormAnimationUpdated(int leftX, int rightX, int height) {
-                frameLeftX = leftX;
-                frameRightX = rightX;
+                frameFrom = leftX;
+                frameTo = rightX;
                 frameHeight = height;
                 invalidate();
             }
@@ -1107,15 +1161,15 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
             @Override
             public void onDropAnimationUpdated(int x, int y, int selectedRadius) {
-                frameX = x;
-                frameY = y;
+                frameSlideFrom = (orientation == HORIZONTAL) ? x : y;
+                frameY = (orientation == HORIZONTAL) ? y : x;
                 frameRadiusPx = selectedRadius;
                 invalidate();
             }
 
             @Override
             public void onSwapAnimationUpdated(int xCoordinate) {
-                frameX = xCoordinate;
+                frameSlideFrom = xCoordinate;
                 invalidate();
             }
         });
@@ -1182,17 +1236,17 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         //worm
         int xCoordinate = getXCoordinate(selectedPosition);
         if (xCoordinate - radiusPx >= 0) {
-            frameLeftX = xCoordinate - radiusPx;
-            frameRightX = xCoordinate + radiusPx;
+            frameFrom = xCoordinate - radiusPx;
+            frameTo = xCoordinate + radiusPx;
 
         } else {
-            frameLeftX = xCoordinate;
-            frameRightX = xCoordinate + (radiusPx * 2);
+            frameFrom = xCoordinate;
+            frameTo = xCoordinate + (radiusPx * 2);
         }
 
         //slide & drop
-        frameX = xCoordinate;
-        frameY = getYCoordinate();
+        frameSlideFrom = xCoordinate;
+        frameY = getYCoordinate(selectedPosition);
 
         //fill
         frameStrokePx = radiusPx;
@@ -1219,20 +1273,20 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     }
 
     private void startSlideAnimation() {
-        int fromX = getXCoordinate(lastSelectedPosition);
-        int toX = getXCoordinate(selectedPosition);
+        int fromX = getCoordinate(lastSelectedPosition);
+        int toX = getCoordinate(selectedPosition);
 
         animation.slide().end();
         animation.slide().with(fromX, toX).duration(animationDuration).start();
     }
 
     private void startWormAnimation() {
-        int fromX = getXCoordinate(lastSelectedPosition);
-        int toX = getXCoordinate(selectedPosition);
+        int from = getCoordinate(lastSelectedPosition);
+        int to = getCoordinate(selectedPosition);
         boolean isRightSide = selectedPosition > lastSelectedPosition;
 
         animation.worm().end();
-        animation.worm().duration(animationDuration).with(fromX, toX, radiusPx, isRightSide).start();
+        animation.worm().duration(animationDuration).with(from, to, radiusPx, isRightSide).start();
     }
 
     private void startFillAnimation() {
@@ -1241,12 +1295,12 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     }
 
     private void startThinWormAnimation() {
-        int fromX = getXCoordinate(lastSelectedPosition);
-        int toX = getXCoordinate(selectedPosition);
+        int from = getCoordinate(lastSelectedPosition);
+        int to = getCoordinate(selectedPosition);
         boolean isRightSide = selectedPosition > lastSelectedPosition;
 
         animation.thinWorm().end();
-        animation.thinWorm().duration(animationDuration).with(fromX, toX, radiusPx, isRightSide).start();
+        animation.thinWorm().duration(animationDuration).with(from, to, radiusPx, isRightSide).start();
     }
 
     private void startDragWormAnimation() {
@@ -1259,20 +1313,23 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     }
 
     private void startDropAnimation() {
-        int fromX = getXCoordinate(lastSelectedPosition);
-        int toX = getXCoordinate(selectedPosition);
-        int fromY = getYCoordinate();
+        int from = getCoordinate(lastSelectedPosition);
+        int to = getCoordinate(selectedPosition);
+
+        int center = (orientation == HORIZONTAL)
+            ? getYCoordinate(selectedPosition)
+            : getXCoordinate(selectedPosition);
 
         animation.drop().end();
-        animation.drop().duration(animationDuration).with(fromX, toX, fromY, radiusPx).start();
+        animation.drop().duration(animationDuration).with(from, to, center, radiusPx).start();
     }
 
     private void startSwapAnimation() {
-        int fromX = getXCoordinate(lastSelectedPosition);
-        int toX = getXCoordinate(selectedPosition);
+        int from = getCoordinate(lastSelectedPosition);
+        int to = getCoordinate(selectedPosition);
 
         animation.swap().end();
-        animation.swap().with(fromX, toX).duration(animationDuration).start();
+        animation.swap().with(from, to).duration(animationDuration).start();
     }
 
     @Nullable
@@ -1292,28 +1349,39 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
             case SLIDE:
             case DROP:
             case SWAP:
-                int fromX = getXCoordinate(selectedPosition);
-                int toX = getXCoordinate(selectingPosition);
+                int from = orientation == HORIZONTAL
+                    ? getXCoordinate(selectedPosition)
+                    : getYCoordinate(selectedPosition);
+
+                int to = orientation == HORIZONTAL
+                    ? getXCoordinate(selectingPosition)
+                    : getYCoordinate(selectingPosition);
 
                 if (animationType == AnimationType.SLIDE) {
-                    return animation.slide().with(fromX, toX).progress(progress);
+                    return animation.slide().with(from, to).progress(progress);
 
                 } else if (animationType == AnimationType.SWAP) {
-                    return animation.swap().with(fromX, toX).progress(progress);
+                    return animation.swap().with(from, to).progress(progress);
 
                 } else if (animationType == AnimationType.WORM || animationType == AnimationType.THIN_WORM || animationType == AnimationType.DRAG_WORM) {
                     boolean isRightSide = selectingPosition > selectedPosition;
+
                     if (animationType == AnimationType.WORM) {
-                        return animation.worm().with(fromX, toX, radiusPx, isRightSide).progress(progress);
+                        return animation.worm().with(from, to, radiusPx, isRightSide).progress(progress);
+
                     } else if (animationType == AnimationType.THIN_WORM) {
-                        return animation.thinWorm().with(fromX, toX, radiusPx, isRightSide).progress(progress);
-                    } else if (animationType == AnimationType.DRAG_WORM) {
-                        return animation.dragWorm().with(fromX, toX, radiusPx, isRightSide).progress(progress);
+                        return animation.thinWorm().with(from, to, radiusPx, isRightSide).progress(progress);
+
+                    }else if (animationType == AnimationType.DRAG_WORM) {
+                        return animation.dragWorm().with(from, to, radiusPx, isRightSide).progress(progress);
                     }
 
                 } else {
-                    int fromY = getYCoordinate();
-                    return animation.drop().with(fromX, toX, fromY, radiusPx).progress(progress);
+                    int center = (orientation == HORIZONTAL)
+                        ? getYCoordinate(selectedPosition)
+                        : getXCoordinate(selectedPosition);
+
+                    return animation.drop().with(from, to, center, radiusPx).progress(progress);
                 }
         }
 
@@ -1442,28 +1510,61 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
     @SuppressWarnings("UnnecessaryLocalVariable")
     private int getXCoordinate(int position) {
-        int x = 0;
-        for (int i = 0; i < count; i++) {
-            x += radiusPx + strokePx;
+        if (orientation == HORIZONTAL) {
+            int x = 0;
+            for (int i = 0; i < count; i++) {
+                x += radiusPx + strokePx;
 
-            if (position == i) {
-                return x;
+                if (position == i) {
+                    return x;
+                }
+
+                x += radiusPx + paddingPx;
             }
 
-            x += radiusPx + paddingPx;
-        }
+            return x;
 
-        return x;
+        } else {
+            int x = getWidth()/2;
+
+            if (animationType == AnimationType.DROP) {
+                x += radiusPx + strokePx;
+            }
+
+            return x;
+        }
     }
 
-    private int getYCoordinate() {
-        int y = getHeight() / 2;
+    private int getYCoordinate(int position) {
+        if (orientation == HORIZONTAL) {
+            int y = getHeight() / 2;
 
-        if (animationType == AnimationType.DROP) {
-            y += radiusPx;
+            if (animationType == AnimationType.DROP) {
+                y += radiusPx;
+            }
+
+            return y;
+
+        } else {
+            int y = 0;
+
+            for (int i = 0; i < count; i++) {
+                y += radiusPx + strokePx;
+
+                if (position == i)
+                    return y;
+
+                y += radiusPx + paddingPx;
+            }
+
+            return y;
         }
+    }
 
-        return y;
+    private int getCoordinate(int position) {
+        return orientation == HORIZONTAL
+            ? getXCoordinate(position)
+            : getYCoordinate(position);
     }
 
     private Pair<Integer, Float> getProgress(int position, float positionOffset) {

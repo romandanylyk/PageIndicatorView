@@ -8,8 +8,8 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 
 public class DropAnimation extends AbsAnimation<AnimatorSet> {
 
-    private int xFromValue;
-    private int xToValue;
+    private int fromValue;
+    private int toValue;
 
     private int center;
     private int radius;
@@ -75,12 +75,12 @@ public class DropAnimation extends AbsAnimation<AnimatorSet> {
     }
 
     @SuppressWarnings("UnnecessaryLocalVariable")
-    public DropAnimation with(int xFromValue, int xToValue, int center, int radius) {
-        if (hasChanges(xFromValue, xToValue, center, radius)) {
+    public DropAnimation with(int fromValue, int toValue, int center, int radius) {
+        if (hasChanges(fromValue, toValue, center, radius)) {
             animator = createAnimator();
 
-            this.xFromValue = xFromValue;
-            this.xToValue = xToValue;
+            this.fromValue = fromValue;
+            this.toValue = toValue;
 
             this.center = center;
             this.radius = radius;
@@ -92,11 +92,11 @@ public class DropAnimation extends AbsAnimation<AnimatorSet> {
             int toSelectedRadius = (int) (radius / 1.5);
             long halfDuration = animationDuration / 2;
 
-            frameX = xFromValue;
+            frameX = fromValue;
             frameY = yFromValue;
             frameRadius = radius;
 
-            ValueAnimator widthAnimator = createValueAnimation(xFromValue, xToValue, animationDuration, AnimationType.Width);
+            ValueAnimator widthAnimator = createValueAnimation(fromValue, toValue, animationDuration, AnimationType.Width);
             ValueAnimator heightForwardAnimator = createValueAnimation(yFromValue, yToValue, halfDuration, AnimationType.Height);
             ValueAnimator heightBackwardAnimator = createValueAnimation(yToValue, yFromValue, halfDuration, AnimationType.Height);
 
@@ -146,11 +146,11 @@ public class DropAnimation extends AbsAnimation<AnimatorSet> {
 
     @SuppressWarnings("RedundantIfStatement")
     private boolean hasChanges(int fromValue, int toValue, int center, int radius) {
-        if (this.xFromValue != fromValue) {
+        if (this.fromValue != fromValue) {
             return true;
         }
 
-        if (this.xToValue != toValue) {
+        if (this.toValue != toValue) {
             return true;
         }
 
