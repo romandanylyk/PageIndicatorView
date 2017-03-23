@@ -19,6 +19,7 @@ import android.view.View;
 import com.rd.animation.*;
 import com.rd.pageindicatorview.R;
 import com.rd.utils.DensityUtils;
+import com.rd.utils.IdUtils;
 
 public class PageIndicatorView extends View implements ViewPager.OnPageChangeListener {
 
@@ -34,7 +35,9 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     private int radiusPx;
     private int paddingPx;
     private int strokePx;
+
     private int count;
+    private boolean isCountSet;
 
     //Color
     private int unselectedColor;
@@ -178,21 +181,25 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
                 desiredHeight = diameterSum + strokeSum + paddingSum;
         }
 
-        int width = 0;
-        int height = 0;
+        int width;
+        int height;
 
         if (widthMode == MeasureSpec.EXACTLY) {
             width = widthSize;
+
         } else if (widthMode == MeasureSpec.AT_MOST) {
             width = Math.min(desiredWidth, widthSize);
+
         } else {
             width = desiredWidth;
         }
 
         if (heightMode == MeasureSpec.EXACTLY) {
             height = heightSize;
+
         } else if (heightMode == MeasureSpec.AT_MOST) {
             height = Math.min(desiredHeight, heightSize);
+
         } else {
             height = desiredHeight;
         }
@@ -267,6 +274,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     public void setCount(int count) {
         if (this.count != count) {
             this.count = count;
+            this.isCountSet = true;
 
             updateVisibility();
             requestLayout();
@@ -1016,7 +1024,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
     private void setupId() {
         if (getId() == NO_ID) {
-            setId(Utils.generateViewId());
+            setId(IdUtils.generateViewId());
         }
     }
 
@@ -1038,7 +1046,8 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         dynamicCount = typedArray.getBoolean(R.styleable.PageIndicatorView_piv_dynamicCount, false);
         count = typedArray.getInt(R.styleable.PageIndicatorView_piv_count, COUNT_NOT_SET);
 
-        if (count == COUNT_NOT_SET) {
+        if (!isCountSet && count == COUNT_NOT_SET) {
+            isCountSet = true;
             count = DEFAULT_CIRCLES_COUNT;
         }
 
