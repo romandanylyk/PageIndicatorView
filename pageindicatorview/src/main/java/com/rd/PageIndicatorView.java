@@ -62,9 +62,6 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     private int frameFrom;
     private int frameTo;
 
-    //DragWorm
-    private Path path = new Path();
-
     //Slide & Drop
     private int frameSlideFrom;
     private int frameY;
@@ -608,10 +605,6 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
                 startThinWormAnimation();
                 break;
 
-            case DRAG_WORM:
-                startDragWormAnimation();
-                break;
-
             case DROP:
                 startDropAnimation();
                 break;
@@ -753,11 +746,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
                     drawWithSwapAnimation(canvas, position, x, y);
                 else
                     drawWithSwapAnimationVertically(canvas, position, x, y);
-
                 break;
-
-            case DRAG_WORM:
-                drawWithDragWormAnimation(canvas, x, y);
         }
     }
 
@@ -937,31 +926,6 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
         fillPaint.setColor(selectedColor);
         canvas.drawRoundRect(rect, radiusPx, radiusPx, fillPaint);
-    }
-
-    private void drawWithDragWormAnimation(@NonNull Canvas canvas, int x, int y) {
-        int radius = radiusPx;
-
-        int left = frameFrom;
-        int right = frameTo;
-
-        fillPaint.setColor(unselectedColor);
-        canvas.drawCircle(x, y, radius, fillPaint);
-
-        fillPaint.setColor(selectedColor);
-
-        canvas.drawCircle(left + radius, radiusPx, frameRadiusReversePx, fillPaint);
-        canvas.drawCircle(right - radius, radiusPx, frameRadiusPx, fillPaint);
-
-        float center = (left + right) / 2;
-        path.reset();
-        path.moveTo(left + radius, radius - frameRadiusReversePx);
-        path.quadTo(center, radiusPx, right - radius, radius - frameRadiusPx);
-        path.lineTo(right - radius, radius + frameRadiusPx);
-        path.quadTo(center, radiusPx, left + radius, radius + frameRadiusReversePx);
-        path.lineTo(left + radius, radius - frameRadiusReversePx);
-
-        canvas.drawPath(path, fillPaint);
     }
 
     private void drawWithDropAnimation(@NonNull Canvas canvas, int x, int y) {
@@ -1144,17 +1108,6 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
             }
 
             @Override
-            public void onDragWormAnimationUpdated(int leftX, int rightX, int radius, int radiusReverse) {
-                frameFrom = leftX;
-                frameTo = rightX;
-
-                frameRadiusPx = radius;
-                frameRadiusReversePx = radiusReverse;
-
-                invalidate();
-            }
-
-            @Override
             public void onFillAnimationUpdated(int color, int colorReverse, int radius, int radiusReverse, int stroke, int strokeReverse) {
                 frameColor = color;
                 frameColorReverse = colorReverse;
@@ -1311,15 +1264,6 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         animation.thinWorm().duration(animationDuration).with(from, to, radiusPx, isRightSide).start();
     }
 
-    private void startDragWormAnimation() {
-        int fromX = getXCoordinate(lastSelectedPosition);
-        int toX = getXCoordinate(selectedPosition);
-        boolean isRightSide = selectedPosition > lastSelectedPosition;
-
-        animation.dragWorm().end();
-        animation.dragWorm().duration(animationDuration).with(fromX, toX, radiusPx, isRightSide).start();
-    }
-
     private void startDropAnimation() {
         int from = getCoordinate(lastSelectedPosition);
         int to = getCoordinate(selectedPosition);
@@ -1379,9 +1323,6 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
                     } else if (animationType == AnimationType.THIN_WORM) {
                         return animation.thinWorm().with(from, to, radiusPx, isRightSide).progress(progress);
-
-                    } else if (animationType == AnimationType.DRAG_WORM) {
-                        return animation.dragWorm().with(from, to, radiusPx, isRightSide).progress(progress);
                     }
 
                 } else {
