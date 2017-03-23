@@ -1235,12 +1235,12 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     }
 
     private void startWormAnimation() {
-        int fromX = getXCoordinate(lastSelectedPosition);
-        int toX = getXCoordinate(selectedPosition);
+        int from = getCoordinate(lastSelectedPosition);
+        int to = getCoordinate(selectedPosition);
         boolean isRightSide = selectedPosition > lastSelectedPosition;
 
         animation.worm().end();
-        animation.worm().duration(animationDuration).with(fromX, toX, radiusPx, isRightSide).start();
+        animation.worm().duration(animationDuration).with(from, to, radiusPx, isRightSide).start();
     }
 
     private void startFillAnimation() {
