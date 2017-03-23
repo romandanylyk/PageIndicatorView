@@ -2,6 +2,10 @@
 
 <resources>
     <declare-styleable name="PageIndicatorView">
+        <attr name="orientation">
+            <enum name="horizontal" value="0" />
+            <enum name="vertical" value="1" />
+        </attr>
 
         <attr name="piv_viewPager" format="reference" />
         <attr name="piv_select" format="integer" />

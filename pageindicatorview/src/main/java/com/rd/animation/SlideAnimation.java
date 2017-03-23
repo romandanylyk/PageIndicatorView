@@ -8,11 +8,11 @@ import android.view.animation.DecelerateInterpolator;
 
 public class SlideAnimation extends AbsAnimation<ValueAnimator> {
 
-    private static final String ANIMATION_X_COORDINATE = "ANIMATION_X_COORDINATE";
+    private static final String ANIMATION_X_COORDINATE = "ANIMATION_COORDINATE";
     private static final int COORDINATE_NONE = -1;
 
-    private int xStartCoordinate = COORDINATE_NONE;
-    private int xEndCoordinate = COORDINATE_NONE;
+    private int fromCoordinate = COORDINATE_NONE;
+    private int toCoordinate = COORDINATE_NONE;
 
     public SlideAnimation(@NonNull ValueAnimation.UpdateListener listener) {
         super(listener);
@@ -51,38 +51,38 @@ public class SlideAnimation extends AbsAnimation<ValueAnimator> {
     public SlideAnimation with(int startValue, int endValue) {
         if (animator != null && hasChanges(startValue, endValue)) {
 
-            xStartCoordinate = startValue;
-            xEndCoordinate = endValue;
+            fromCoordinate = startValue;
+            toCoordinate = endValue;
 
-            PropertyValuesHolder holder = createColorPropertyHolder();
+            PropertyValuesHolder holder = createSlidePropertyHolder();
             animator.setValues(holder);
         }
 
         return this;
     }
 
-    private PropertyValuesHolder createColorPropertyHolder() {
-        PropertyValuesHolder holder = PropertyValuesHolder.ofInt(ANIMATION_X_COORDINATE, xStartCoordinate, xEndCoordinate);
+    private PropertyValuesHolder createSlidePropertyHolder() {
+        PropertyValuesHolder holder = PropertyValuesHolder.ofInt(ANIMATION_X_COORDINATE, fromCoordinate, toCoordinate);
         holder.setEvaluator(new IntEvaluator());
 
         return holder;
     }
 
     private void onAnimateUpdated(@NonNull ValueAnimator animation) {
-        int xCoordinate = (int) animation.getAnimatedValue(ANIMATION_X_COORDINATE);
+        int value = (int) animation.getAnimatedValue(ANIMATION_X_COORDINATE);
 
         if (listener != null) {
-            listener.onSlideAnimationUpdated(xCoordinate);
+            listener.onSlideAnimationUpdated(value);
         }
     }
 
     @SuppressWarnings("RedundantIfStatement")
     private boolean hasChanges(int startValue, int endValue) {
-        if (xStartCoordinate != startValue) {
+        if (fromCoordinate != startValue) {
             return true;
         }
 
-        if (xEndCoordinate != endValue) {
+        if (toCoordinate != endValue) {
             return true;
         }
 

@@ -74,6 +74,11 @@ setProgress(int selectingPosition, float progress)
 setSelection(int position)
 ```
 
+```xml
+// set orientation
+app:orientation="{vertical||horizontal}"
+```
+
 ![](https://github.com/romandanylyk/PageIndicatorView/blob/master/assets/attributes.gif?raw=true)
 
 Here you can see all the animations `PageIndicatorView` support.
