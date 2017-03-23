@@ -1249,12 +1249,12 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     }
 
     private void startThinWormAnimation() {
-        int fromX = getXCoordinate(lastSelectedPosition);
-        int toX = getXCoordinate(selectedPosition);
+        int from = getCoordinate(lastSelectedPosition);
+        int to = getCoordinate(selectedPosition);
         boolean isRightSide = selectedPosition > lastSelectedPosition;
 
         animation.thinWorm().end();
-        animation.thinWorm().duration(animationDuration).with(fromX, toX, radiusPx, isRightSide).start();
+        animation.thinWorm().duration(animationDuration).with(from, to, radiusPx, isRightSide).start();
     }
 
     private void startDropAnimation() {
