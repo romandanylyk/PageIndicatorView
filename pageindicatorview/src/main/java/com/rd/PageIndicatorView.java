@@ -5,7 +5,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.database.DataSetObserver;
-import android.graphics.*;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.RectF;
 import android.os.Build;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
@@ -126,7 +129,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     }
 
     @Override
-    protected Parcelable onSaveInstanceState() {
+    public Parcelable onSaveInstanceState() {
         PositionSavedState positionSavedState = new PositionSavedState(super.onSaveInstanceState());
         positionSavedState.setSelectedPosition(selectedPosition);
         positionSavedState.setSelectingPosition(selectingPosition);
@@ -136,7 +139,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     }
 
     @Override
-    protected void onRestoreInstanceState(Parcelable state) {
+    public void onRestoreInstanceState(Parcelable state) {
         if (state instanceof PositionSavedState) {
             PositionSavedState positionSavedState = (PositionSavedState) state;
             this.selectedPosition = positionSavedState.getSelectedPosition();
@@ -158,24 +161,25 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         int heightSize = MeasureSpec.getSize(heightMeasureSpec);
 
         int circleDiameterPx = radiusPx * 2;
-
         int desiredWidth = 0;
         int desiredHeight = 0;
 
-        if (orientation == HORIZONTAL)
+        if (orientation == HORIZONTAL) {
             desiredHeight = circleDiameterPx + strokePx;
-        else
+        } else {
             desiredWidth = circleDiameterPx + strokePx;
+        }
 
         if (count != 0) {
             int diameterSum = circleDiameterPx * count;
             int strokeSum = (strokePx * 2) * count;
             int paddingSum = paddingPx * (count - 1);
 
-            if (orientation == HORIZONTAL)
+            if (orientation == HORIZONTAL) {
                 desiredWidth = diameterSum + strokeSum + paddingSum;
-            else
+            } else {
                 desiredHeight = diameterSum + strokeSum + paddingSum;
+            }
         }
 
         int width;
@@ -183,29 +187,26 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
         if (widthMode == MeasureSpec.EXACTLY) {
             width = widthSize;
-
         } else if (widthMode == MeasureSpec.AT_MOST) {
             width = Math.min(desiredWidth, widthSize);
-
         } else {
             width = desiredWidth;
         }
 
         if (heightMode == MeasureSpec.EXACTLY) {
             height = heightSize;
-
         } else if (heightMode == MeasureSpec.AT_MOST) {
             height = Math.min(desiredHeight, heightSize);
-
         } else {
             height = desiredHeight;
         }
 
         if (animationType == AnimationType.DROP) {
-            if (orientation == HORIZONTAL)
+            if (orientation == HORIZONTAL) {
                 height *= 2;
-            else
+            } else {
                 width *= 2;
+            }
         }
 
         if (width < 0) {
@@ -273,6 +274,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
             this.count = count;
             this.isCountSet = true;
 
+            resetFrameValues();
             updateVisibility();
             requestLayout();
         }
@@ -1353,7 +1355,6 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
                         endAnimation();
                         setCount(newCount);
-                        resetFrameValues();
                         setProgress(selectingPosition, 1.0f);
                     }
                 }
