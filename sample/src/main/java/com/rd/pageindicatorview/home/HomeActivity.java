@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import com.rd.Orientation;
 import com.rd.PageIndicatorView;
 import com.rd.pageindicatorview.sample.R;
 
@@ -31,6 +32,7 @@ public class HomeActivity extends AppCompatActivity {
 
         PageIndicatorView indicatorView = (PageIndicatorView) findViewById(R.id.pageindicatorview);
         indicatorView.setViewPager(pager);
+        indicatorView.setOrientation(Orientation.VERTICAL);
     }
 
     @NonNull
