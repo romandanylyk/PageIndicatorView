@@ -26,9 +26,6 @@ import com.rd.utils.IdUtils;
 
 public class PageIndicatorView extends View implements ViewPager.OnPageChangeListener {
 
-    private static final int HORIZONTAL = 0;
-    private static final int VERTICAL = 1;
-
     private static final int DEFAULT_CIRCLES_COUNT = 3;
     private static final int COUNT_NOT_SET = -1;
 
@@ -50,7 +47,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     private int frameColorReverse;
 
     // Orientation
-    private int orientation = HORIZONTAL;
+    private Orientation orientation = Orientation.HORIZONTAL;
 
     //Scale
     private int frameRadiusPx;
@@ -164,7 +161,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         int desiredWidth = 0;
         int desiredHeight = 0;
 
-        if (orientation == HORIZONTAL) {
+        if (orientation == Orientation.HORIZONTAL) {
             desiredHeight = circleDiameterPx + strokePx;
         } else {
             desiredWidth = circleDiameterPx + strokePx;
@@ -175,7 +172,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
             int strokeSum = (strokePx * 2) * count;
             int paddingSum = paddingPx * (count - 1);
 
-            if (orientation == HORIZONTAL) {
+            if (orientation == Orientation.HORIZONTAL) {
                 desiredWidth = diameterSum + strokeSum + paddingSum;
             } else {
                 desiredHeight = diameterSum + strokeSum + paddingSum;
@@ -202,7 +199,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         }
 
         if (animationType == AnimationType.DROP) {
-            if (orientation == HORIZONTAL) {
+            if (orientation == Orientation.HORIZONTAL) {
                 height *= 2;
             } else {
                 width *= 2;
@@ -498,6 +495,19 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     }
 
     /**
+     * Set orientation for indicator, one of HORIZONTAL or VERTICAL.
+     * Default is HORIZONTAL.
+     *
+     * @param orientation an orientation to display page indicators..
+     */
+    public void setOrientation(@Nullable Orientation orientation) {
+        if (orientation != null) {
+            this.orientation = orientation;
+            requestLayout();
+        }
+    }
+
+    /**
      * Return color of selected circle indicator. If custom unselected color.
      * is not set, return default color {@link ColorAnimation#DEFAULT_SELECTED_COLOR}.
      */
@@ -759,7 +769,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
                 break;
 
             case SWAP:
-                if (orientation == HORIZONTAL)
+                if (orientation == Orientation.HORIZONTAL)
                     drawWithSwapAnimation(canvas, position, x, y);
                 else
                     drawWithSwapAnimationVertically(canvas, position, x, y);
@@ -848,8 +858,8 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         fillPaint.setColor(unselectedColor);
         canvas.drawCircle(x, y, radiusPx, fillPaint);
 
-        int from = orientation == HORIZONTAL ? frameSlideFrom : x;
-        int to = orientation == HORIZONTAL ? y : frameSlideFrom;
+        int from = orientation == Orientation.HORIZONTAL ? frameSlideFrom : x;
+        int to = orientation == Orientation.HORIZONTAL ? y : frameSlideFrom;
 
         if (interactiveAnimation && (position == selectingPosition || position == selectedPosition)) {
             fillPaint.setColor(selectedColor);
@@ -864,7 +874,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     private void drawWithWormAnimation(@NonNull Canvas canvas, int x, int y) {
         int radius = radiusPx;
 
-        if (orientation == HORIZONTAL) {
+        if (orientation == Orientation.HORIZONTAL) {
             rect.left = frameFrom;
             rect.right = frameTo;
             rect.top = y - radius;
@@ -925,7 +935,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     private void drawWithThinWormAnimation(@NonNull Canvas canvas, int x, int y) {
         int radius = radiusPx;
 
-        if (orientation == HORIZONTAL) {
+        if (orientation == Orientation.HORIZONTAL) {
             rect.left = frameFrom;
             rect.right = frameTo;
             rect.top = y - (frameHeight / 2);
@@ -1015,11 +1025,6 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         initColorAttribute(typedArray);
         initAnimationAttribute(typedArray);
         initSizeAttribute(typedArray);
-        initOrientationAttribute(typedArray);
-    }
-
-    private void initOrientationAttribute(TypedArray typedArray) {
-        orientation = typedArray.getInteger(R.styleable.PageIndicatorView_piv_orientation, 0);
     }
 
     private void initCountAttribute(@NonNull TypedArray typedArray) {
@@ -1062,6 +1067,13 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     }
 
     private void initSizeAttribute(@NonNull TypedArray typedArray) {
+        int orientationIndex = typedArray.getInt(R.styleable.PageIndicatorView_piv_orientation, Orientation.HORIZONTAL.ordinal());
+        if (orientationIndex == 0) {
+            orientation = Orientation.HORIZONTAL;
+        } else {
+            orientation = Orientation.VERTICAL;
+        }
+
         radiusPx = (int) typedArray.getDimension(R.styleable.PageIndicatorView_piv_radius, DensityUtils.dpToPx(DEFAULT_RADIUS_DP));
         paddingPx = (int) typedArray.getDimension(R.styleable.PageIndicatorView_piv_padding, DensityUtils.dpToPx(DEFAULT_PADDING_DP));
 
@@ -1139,8 +1151,8 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
             @Override
             public void onDropAnimationUpdated(int x, int y, int selectedRadius) {
-                frameSlideFrom = (orientation == HORIZONTAL) ? x : y;
-                frameY = (orientation == HORIZONTAL) ? y : x;
+                frameSlideFrom = (orientation == Orientation.HORIZONTAL) ? x : y;
+                frameY = (orientation == Orientation.HORIZONTAL) ? y : x;
                 frameRadiusPx = selectedRadius;
                 invalidate();
             }
@@ -1285,7 +1297,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         int from = getCoordinate(lastSelectedPosition);
         int to = getCoordinate(selectedPosition);
 
-        int center = (orientation == HORIZONTAL)
+        int center = (orientation == Orientation.HORIZONTAL)
                 ? getYCoordinate(selectedPosition)
                 : getXCoordinate(selectedPosition);
 
@@ -1318,11 +1330,11 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
             case SLIDE:
             case DROP:
             case SWAP:
-                int from = orientation == HORIZONTAL
+                int from = orientation == Orientation.HORIZONTAL
                         ? getXCoordinate(selectedPosition)
                         : getYCoordinate(selectedPosition);
 
-                int to = orientation == HORIZONTAL
+                int to = orientation == Orientation.HORIZONTAL
                         ? getXCoordinate(selectingPosition)
                         : getYCoordinate(selectingPosition);
 
@@ -1343,7 +1355,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
                     }
 
                 } else {
-                    int center = (orientation == HORIZONTAL)
+                    int center = (orientation == Orientation.HORIZONTAL)
                             ? getYCoordinate(selectedPosition)
                             : getXCoordinate(selectedPosition);
 
@@ -1475,7 +1487,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
     @SuppressWarnings("UnnecessaryLocalVariable")
     private int getXCoordinate(int position) {
-        if (orientation == HORIZONTAL) {
+        if (orientation == Orientation.HORIZONTAL) {
             int x = 0;
             for (int i = 0; i < count; i++) {
                 x += radiusPx + strokePx;
@@ -1501,7 +1513,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     }
 
     private int getYCoordinate(int position) {
-        if (orientation == HORIZONTAL) {
+        if (orientation == Orientation.HORIZONTAL) {
             int y = getHeight() / 2;
 
             if (animationType == AnimationType.DROP) {
@@ -1527,7 +1539,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     }
 
     private int getCoordinate(int position) {
-        return orientation == HORIZONTAL
+        return orientation == Orientation.HORIZONTAL
                 ? getXCoordinate(position)
                 : getYCoordinate(position);
     }
