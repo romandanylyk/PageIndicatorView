@@ -1,5 +1,5 @@
 
-###**PageIndicatorView**
+### **PageIndicatorView**
 [ ![Download](https://api.bintray.com/packages/romandanylyk/maven/pageindicatorview/images/download.svg) ](https://bintray.com/romandanylyk/maven/pageindicatorview/_latestVersion)[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-PageIndicatorView-green.svg?style=true)](https://android-arsenal.com/details/1/4555)  
 [![API](https://img.shields.io/badge/API-14%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=14)
 
@@ -8,9 +8,9 @@
 
 ![](https://github.com/romandanylyk/PageIndicatorView/blob/master/assets/preview_anim_drop.gif?raw=true)
 
-###**Integration**
+### **Integration**
 To add `pageindicatorview` to your project, first make sure in root `build.gradle` you have specified the following repository:
-```java
+```groovy
     repositories {
         jcenter()
     }
@@ -20,19 +20,24 @@ To add `pageindicatorview` to your project, first make sure in root `build.gradl
 Once you make sure you have `jcenter` repository in your project, all you need to do is to add the following line in `dependencies` section of your project `build.gradle`.
  
 See latest library version [ ![Download](https://api.bintray.com/packages/romandanylyk/maven/pageindicatorview/images/download.svg) ](https://bintray.com/romandanylyk/maven/pageindicatorview/_latestVersion)
-```java
+```groovy
 compile 'com.romandanylyk:pageindicatorview:X.X.X'
 ```
-Keep in mind, that `PageIndicatorView` has min [API level 14](https://developer.android.com/about/dashboards/index.html)
+If your project already use `appcompat-v7` support library, you can omit `PageIndicatorView` dependencies by adding a single .aar file to your project, that will decrease total amount of methods used in your project.
 
-*Note: If your project use Android Support Library then you must exclude internal dependency:*
 ```groovy
-compile ('com.romandanylyk:pageindicatorview:X.X.X') {
-  exclude group: 'com.android.support'
-}
+compile 'com.romandanylyk:pageindicatorview:X.X.X@aar'
 ```
 
-###**Usage Sample**
+Keep in mind, that `PageIndicatorView` has min [API level 14](https://developer.android.com/about/dashboards/index.html) and these dependencies:
+
+```groovy
+ compile 'com.android.support:support-annotations:25.3.0'
+ compile 'com.android.support:support-compat:25.3.0'
+ compile 'com.android.support:support-core-ui:25.3.0'
+```
+
+### **Usage Sample**
 During implementation of `PageIndicatorView` I tried to make it's setup as easy as possible. 
 After you set adapter to your `ViewPager`, all you need to do is to `setViewPager()` and that's it! `PageIndicatorView` will get count from your adapter and start working with instance of your `ViewPager` automatically.  
 
@@ -55,7 +60,7 @@ Keep in mind that all public methods are also exist as attributes, so you can ev
         attrs:piv_viewPager="@id/viewPager"/>
 ```
 
-###**Customization**
+### **Customization**
 One of the most important feature of every custom view is ability to customize its look as user need. By calling the following methods (or attributes) you will be able to customize `PageIndicatorView` as you need.
 
 ```java
@@ -66,6 +71,9 @@ setDynamicCount(boolean dynamicCount)
 setRadius(int radiusDp)
 setPadding(int paddingDp)
 setStrokeWidth(int strokeDp)
+
+setAutoVisibility(boolean autoVisibility)
+setOrientation(Orientation orientation)
 
 //set color
 setUnselectedColor(int color)
@@ -102,12 +110,12 @@ Name| Support version| Preview
 `AnimationType.DROP`| 0.1.0 |![anim_drop](https://raw.githubusercontent.com/romandanylyk/PageIndicatorView/master/assets/anim_drop.gif)
 `AnimationType.SWAP`| 0.1.1 |![anim_swap](https://raw.githubusercontent.com/romandanylyk/PageIndicatorView/master/assets/anim_swap.gif)
 
-###**Release Note**
+### **Release Note**
 See release notes on [github releases](https://github.com/romandanylyk/PageIndicatorView/releases) or [Bintray release notes](https://bintray.com/romandanylyk/maven/pageindicatorview#release).
 
-###**License**
+### **License**
 
-    Copyright 2016 Roman Danylyk
+    Copyright 2017 Roman Danylyk
     
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
