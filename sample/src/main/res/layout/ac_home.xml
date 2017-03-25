@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:attrs="http://schemas.android.com/apk/res-auto"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="#3D86FC"
-                android:orientation="horizontal"
-                tools:context="com.rd.pageindicatorview.home.HomeActivity">
+    xmlns:attrs="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#3D86FC"
+    android:orientation="horizontal"
+    tools:context="com.rd.pageindicatorview.home.HomeActivity">
 
     <android.support.v4.view.ViewPager
         android:id="@+id/viewPager"
@@ -14,13 +14,14 @@
         android:layout_height="match_parent" />
 
     <com.rd.PageIndicatorView
+        android:id="@+id/pageindicatorview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="50dp"
-        attrs:piv_animationType="drop"
         attrs:piv_dynamicCount="true"
+        attrs:piv_animationType="drop"
         attrs:piv_interactiveAnimation="true"
         attrs:piv_padding="16dp"
         attrs:piv_radius="8dp"

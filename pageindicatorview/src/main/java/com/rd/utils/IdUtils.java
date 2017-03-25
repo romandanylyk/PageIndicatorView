@@ -1,11 +1,11 @@
-package com.rd;
+package com.rd.utils;
 
 import android.os.Build;
 import android.view.View;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class Utils {
+public class IdUtils {
 
     private static final AtomicInteger nextGeneratedId = new AtomicInteger(1);
 
