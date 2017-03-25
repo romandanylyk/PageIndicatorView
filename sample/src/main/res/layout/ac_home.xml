@@ -21,6 +21,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="50dp"
         attrs:piv_dynamicCount="true"
+        attrs:piv_animationType="drop"
         attrs:piv_interactiveAnimation="true"
         attrs:piv_padding="16dp"
         attrs:piv_radius="8dp"

@@ -237,7 +237,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-        if (isViewMeasured() && interactiveAnimation) {
+        if (isViewMeasured() && interactiveAnimation && animationType != AnimationType.NONE) {
             onPageScroll(position, positionOffset);
         }
     }
@@ -291,7 +291,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
      * Dynamic count will automatically update number of circle indicators
      * if {@link ViewPager} page count updated on run-time. If new count will be bigger than current count,
      * selected circle will stay as it is, otherwise it will be set to last one.
-     * Note: works if {@link ViewPager} set. See {@link #setViewPager(ViewPager)}.
+     * Note: works if {@link ViewPager} set and already have it's adapter. See {@link #setViewPager(ViewPager)}.
      *
      * @param dynamicCount boolean value to add/remove indicators dynamically.
      */
@@ -480,6 +480,21 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     public void setSelectedColor(int color) {
         selectedColor = color;
         invalidate();
+    }
+
+    /**
+     * Automatically hide (View.INVISIBLE) PageIndicatorView while indicator count is <= 1.
+     * Default is true.
+     *
+     * @param autoVisibility auto hide indicators.
+     */
+    public void setAutoVisibility(boolean autoVisibility) {
+        if(!autoVisibility){
+            setVisibility(VISIBLE);
+        }
+
+        this.autoVisibility = autoVisibility;
+        updateVisibility();
     }
 
     /**
@@ -1184,7 +1199,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     }
 
     private void setupFrameValues() {
-        if (isFrameValuesSet) {
+        if (!isViewMeasured() || isFrameValuesSet) {
             return;
         }
 
