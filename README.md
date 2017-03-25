@@ -25,6 +25,13 @@ compile 'com.romandanylyk:pageindicatorview:X.X.X'
 ```
 Keep in mind, that `PageIndicatorView` has min [API level 14](https://developer.android.com/about/dashboards/index.html)
 
+*Note: If your project use Android Support Library then you must exclude internal dependency:*
+```groovy
+compile ('com.romandanylyk:pageindicatorview:X.X.X') {
+  exclude group: 'com.android.support'
+}
+```
+
 ###**Usage Sample**
 During implementation of `PageIndicatorView` I tried to make it's setup as easy as possible. 
 After you set adapter to your `ViewPager`, all you need to do is to `setViewPager()` and that's it! `PageIndicatorView` will get count from your adapter and start working with instance of your `ViewPager` automatically.  
