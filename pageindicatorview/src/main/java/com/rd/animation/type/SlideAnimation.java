@@ -1,12 +1,13 @@
-package com.rd.animation;
+package com.rd.animation.type;
 
 import android.animation.IntEvaluator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.support.annotation.NonNull;
 import android.view.animation.DecelerateInterpolator;
+import com.rd.animation.controller.ValueAnimation;
 
-public class SlideAnimation extends AbsAnimation<ValueAnimator> {
+public class SlideAnimation extends BaseAnimation<ValueAnimator> {
 
     private static final String ANIMATION_X_COORDINATE = "ANIMATION_COORDINATE";
     private static final int COORDINATE_NONE = -1;
@@ -22,7 +23,7 @@ public class SlideAnimation extends AbsAnimation<ValueAnimator> {
     @Override
     public ValueAnimator createAnimator() {
         ValueAnimator animator = new ValueAnimator();
-        animator.setDuration(AbsAnimation.DEFAULT_ANIMATION_TIME);
+        animator.setDuration(BaseAnimation.DEFAULT_ANIMATION_TIME);
         animator.setInterpolator(new DecelerateInterpolator());
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override

@@ -1,12 +1,13 @@
-package com.rd.animation;
+package com.rd.animation.type;
 
 import android.animation.ArgbEvaluator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.support.annotation.NonNull;
 import android.view.animation.DecelerateInterpolator;
+import com.rd.animation.controller.ValueAnimation;
 
-public class ColorAnimation extends AbsAnimation<ValueAnimator> {
+public class ColorAnimation extends BaseAnimation<ValueAnimator> {
 
     public static final String DEFAULT_UNSELECTED_COLOR = "#33ffffff";
     public static final String DEFAULT_SELECTED_COLOR = "#ffffff";
@@ -25,7 +26,7 @@ public class ColorAnimation extends AbsAnimation<ValueAnimator> {
     @Override
     public ValueAnimator createAnimator() {
         ValueAnimator animator = new ValueAnimator();
-        animator.setDuration(AbsAnimation.DEFAULT_ANIMATION_TIME);
+        animator.setDuration(BaseAnimation.DEFAULT_ANIMATION_TIME);
         animator.setInterpolator(new DecelerateInterpolator());
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override

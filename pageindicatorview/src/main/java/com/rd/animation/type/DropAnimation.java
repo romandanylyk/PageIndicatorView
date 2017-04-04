@@ -1,12 +1,13 @@
-package com.rd.animation;
+package com.rd.animation.type;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.support.annotation.NonNull;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import com.rd.animation.controller.ValueAnimation;
 
-public class DropAnimation extends AbsAnimation<AnimatorSet> {
+public class DropAnimation extends BaseAnimation<AnimatorSet> {
 
     private int fromValue;
     private int toValue;

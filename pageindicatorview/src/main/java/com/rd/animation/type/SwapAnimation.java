@@ -1,16 +1,17 @@
-package com.rd.animation;
+package com.rd.animation.type;
 
 import android.animation.IntEvaluator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.support.annotation.NonNull;
 import android.view.animation.DecelerateInterpolator;
+import com.rd.animation.controller.ValueAnimation;
 
 /**
  * Created by Andy on 2/7/17.
  */
 
-public class SwapAnimation extends AbsAnimation<ValueAnimator> {
+public class SwapAnimation extends BaseAnimation<ValueAnimator> {
 
     private static final String ANIMATION_COORDINATE = "ANIMATION_COORDINATE";
     private static final int COORDINATE_NONE = -1;
@@ -26,7 +27,7 @@ public class SwapAnimation extends AbsAnimation<ValueAnimator> {
     @Override
     public ValueAnimator createAnimator() {
         ValueAnimator animator = new ValueAnimator();
-        animator.setDuration(AbsAnimation.DEFAULT_ANIMATION_TIME);
+        animator.setDuration(BaseAnimation.DEFAULT_ANIMATION_TIME);
         animator.setInterpolator(new DecelerateInterpolator());
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override

@@ -1,7 +1,8 @@
-package com.rd.animation;
+package com.rd.animation.controller;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import com.rd.animation.type.*;
 
 public class ValueAnimation {
 
@@ -17,22 +18,23 @@ public class ValueAnimation {
     private UpdateListener updateListener;
 
     public interface UpdateListener {
+        //Prefix "fr" stands for "frame", that mean that value will frequently update, for each frame
 
-        void onColorAnimationUpdated(int color, int colorReverse);
+        void onColorAnimationUpdated(int frColor, int frColorReverse);
 
-        void onScaleAnimationUpdated(int color, int colorReverse, int radius, int radiusReverse);
+        void onScaleAnimationUpdated(int frColor, int frColorReverse, int frRadius, int frRadiusReverse);
 
-        void onSlideAnimationUpdated(int value);
+        void onSlideAnimationUpdated(int frX);
 
-        void onWormAnimationUpdated(int leftX, int rightX);
+        void onWormAnimationUpdated(int frLeftX, int frRightX);
 
-        void onFillAnimationUpdated(int color, int colorReverse, int radius, int radiusReverse, int strokeWidth, int strokeWidthReverse);
+        void onFillAnimationUpdated(int frColor, int frColorReverse, int frRadius, int frRadiusReverse, int frStroke, int frStrokeReverse);
 
-        void onThinWormAnimationUpdated(int leftX, int rightX, int height);
+        void onThinWormAnimationUpdated(int frLeftX, int frRightX, int frHeight);
 
-        void onDropAnimationUpdated(int x, int y, int selectedRadius);
+        void onDropAnimationUpdated(int frX, int frY, int frRadius);
 
-        void onSwapAnimationUpdated(int xCoordinate);
+        void onSwapAnimationUpdated(int frX);
     }
 
     public ValueAnimation(@Nullable UpdateListener listener) {

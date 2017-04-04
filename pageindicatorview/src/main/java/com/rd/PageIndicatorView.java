@@ -19,7 +19,15 @@ import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.util.Pair;
 import android.view.View;
-import com.rd.animation.*;
+import com.rd.animation.type.BaseAnimation;
+import com.rd.animation.type.ColorAnimation;
+import com.rd.animation.type.FillAnimation;
+import com.rd.animation.type.ScaleAnimation;
+import com.rd.animation.controller.ValueAnimation;
+import com.rd.animation.data.AnimationType;
+import com.rd.data.Orientation;
+import com.rd.data.PositionSavedState;
+import com.rd.data.RtlMode;
 import com.rd.pageindicatorview.R;
 import com.rd.utils.DensityUtils;
 import com.rd.utils.IdUtils;
@@ -516,7 +524,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     }
 
     /**
-     * Set animation duration time in millisecond. Default animation duration time is {@link AbsAnimation#DEFAULT_ANIMATION_TIME}.
+     * Set animation duration time in millisecond. Default animation duration time is {@link BaseAnimation#DEFAULT_ANIMATION_TIME}.
      * (Won't affect on anything unless {@link #setAnimationType(AnimationType type)} is specified
      * and {@link #setInteractiveAnimation(boolean isInteractive)} is false).
      *
@@ -528,7 +536,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
     /**
      * Return animation duration time in milliseconds. If custom duration is not set,
-     * return default duration time {@link AbsAnimation#DEFAULT_ANIMATION_TIME}.
+     * return default duration time {@link BaseAnimation#DEFAULT_ANIMATION_TIME}.
      */
     public long getAnimationDuration() {
         return animationDuration;
@@ -1056,7 +1064,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     }
 
     private void initAnimationAttribute(@NonNull TypedArray typedArray) {
-        animationDuration = typedArray.getInt(R.styleable.PageIndicatorView_piv_animationDuration, AbsAnimation.DEFAULT_ANIMATION_TIME);
+        animationDuration = typedArray.getInt(R.styleable.PageIndicatorView_piv_animationDuration, BaseAnimation.DEFAULT_ANIMATION_TIME);
         interactiveAnimation = typedArray.getBoolean(R.styleable.PageIndicatorView_piv_interactiveAnimation, false);
 
         int animIndex = typedArray.getInt(R.styleable.PageIndicatorView_piv_animationType, AnimationType.NONE.ordinal());
@@ -1098,9 +1106,9 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     private void initAnimation() {
         animation = new ValueAnimation(new ValueAnimation.UpdateListener() {
             @Override
-            public void onColorAnimationUpdated(int color, int colorReverse) {
-                frameColor = color;
-                frameColorReverse = colorReverse;
+            public void onColorAnimationUpdated(int frColor, int frColorReverse) {
+                frameColor = frColor;
+                frameColorReverse = frColorReverse;
                 invalidate();
             }
 
@@ -1122,7 +1130,6 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
             @Override
             public void onWormAnimationUpdated(int leftX, int rightX) {
-                // hot poin
                 frameFrom = leftX;
                 frameTo = rightX;
                 invalidate();
@@ -1314,7 +1321,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     }
 
     @Nullable
-    private AbsAnimation setAnimationProgress(float progress) {
+    private BaseAnimation setAnimationProgress(float progress) {
         switch (animationType) {
             case COLOR:
                 return animation.color().with(unselectedColor, selectedColor).progress(progress);
@@ -1409,7 +1416,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     }
 
     private void endAnimation() {
-        AbsAnimation anim = null;
+        BaseAnimation anim = null;
 
         switch (animationType) {
             case COLOR:

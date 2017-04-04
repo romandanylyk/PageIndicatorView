@@ -1,8 +1,9 @@
-package com.rd.animation;
+package com.rd.animation.type;
 
 import android.animation.ValueAnimator;
 import android.support.annotation.NonNull;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import com.rd.animation.controller.ValueAnimation;
 
 public class ThinWormAnimation extends WormAnimation {
 
