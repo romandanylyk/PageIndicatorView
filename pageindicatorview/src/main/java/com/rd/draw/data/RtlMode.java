@@ -1,3 +1,3 @@
-package com.rd.data;
+package com.rd.draw.data;
 
 public enum RtlMode {On, Off, Auto}

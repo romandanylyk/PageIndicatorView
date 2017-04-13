@@ -1,4 +1,4 @@
-package com.rd.data;
+package com.rd.draw.data;
 
 import android.os.Parcel;
 import android.os.Parcelable;

@@ -3,17 +3,18 @@ package com.rd.animation.type;
 import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.support.annotation.NonNull;
-import com.rd.animation.controller.ValueAnimation;
+import android.support.annotation.Nullable;
+import com.rd.animation.controller.ValueController;
 
 public abstract class BaseAnimation<T extends Animator> {
 
     public static final int DEFAULT_ANIMATION_TIME = 350;
-
     protected long animationDuration = DEFAULT_ANIMATION_TIME;
-    protected ValueAnimation.UpdateListener listener;
+
+    protected ValueController.UpdateListener listener;
     protected T animator;
 
-    public BaseAnimation(@NonNull ValueAnimation.UpdateListener listener) {
+    public BaseAnimation(@Nullable ValueController.UpdateListener listener) {
         this.listener = listener;
         animator = createAnimator();
     }

@@ -5,12 +5,10 @@ import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.support.annotation.NonNull;
 import android.view.animation.DecelerateInterpolator;
-import com.rd.animation.controller.ValueAnimation;
+import com.rd.animation.controller.ValueController;
+import com.rd.animation.data.type.FillAnimationValue;
 
 public class FillAnimation extends ColorAnimation {
-
-    private static final String ANIMATION_COLOR_REVERSE = "ANIMATION_COLOR_REVERSE";
-    private static final String ANIMATION_COLOR = "ANIMATION_COLOR";
 
     private static final String ANIMATION_RADIUS_REVERSE = "ANIMATION_RADIUS_REVERSE";
     private static final String ANIMATION_RADIUS = "ANIMATION_RADIUS";
@@ -19,11 +17,14 @@ public class FillAnimation extends ColorAnimation {
     private static final String ANIMATION_STROKE = "ANIMATION_STROKE";
 
     public static final int DEFAULT_STROKE_DP = 1;
-    private int radiusPx;
-    private int strokePx;
+    private FillAnimationValue value;
 
-    public FillAnimation(@NonNull ValueAnimation.UpdateListener listener) {
+    private int radius;
+    private int stroke;
+
+    public FillAnimation(@NonNull ValueController.UpdateListener listener) {
         super(listener);
+        value = new FillAnimationValue();
     }
 
     @NonNull
@@ -43,13 +44,14 @@ public class FillAnimation extends ColorAnimation {
     }
 
     @NonNull
-    public FillAnimation with(int colorStartValue, int colorEndValue, int radiusValue, int strokeValue) {
-        if (animator != null && hasChanges(colorStartValue, colorEndValue, radiusValue, strokeValue)) {
+    public FillAnimation with(int colorStart, int colorEnd, int radius, int stroke) {
+        if (animator != null && hasChanges(colorStart, colorEnd, radius, stroke)) {
 
-            startColor = colorStartValue;
-            endColor = colorEndValue;
-            radiusPx = radiusValue;
-            strokePx = strokeValue;
+            this.colorStart = colorStart;
+            this.colorEnd = colorEnd;
+
+            this.radius = radius;
+            this.stroke = stroke;
 
             PropertyValuesHolder colorHolder = createColorPropertyHolder(false);
             PropertyValuesHolder reverseColorHolder = createColorPropertyHolder(true);
@@ -82,12 +84,12 @@ public class FillAnimation extends ColorAnimation {
 
         if (isReverse) {
             propertyName = ANIMATION_RADIUS_REVERSE;
-            startRadiusValue = radiusPx / 2;
-            endRadiusValue = radiusPx;
+            startRadiusValue = radius / 2;
+            endRadiusValue = radius;
         } else {
             propertyName = ANIMATION_RADIUS;
-            startRadiusValue = radiusPx;
-            endRadiusValue = radiusPx / 2;
+            startRadiusValue = radius;
+            endRadiusValue = radius / 2;
         }
 
         PropertyValuesHolder holder = PropertyValuesHolder.ofInt(propertyName, startRadiusValue, endRadiusValue);
@@ -104,12 +106,12 @@ public class FillAnimation extends ColorAnimation {
 
         if (isReverse) {
             propertyName = ANIMATION_STROKE_REVERSE;
-            startStrokeValue = radiusPx;
+            startStrokeValue = radius;
             endStrokeValue = 0;
         } else {
             propertyName = ANIMATION_STROKE;
             startStrokeValue = 0;
-            endStrokeValue = radiusPx;
+            endStrokeValue = radius;
         }
 
         PropertyValuesHolder holder = PropertyValuesHolder.ofInt(propertyName, startStrokeValue, endStrokeValue);
@@ -128,34 +130,35 @@ public class FillAnimation extends ColorAnimation {
         int stroke = (int) animation.getAnimatedValue(ANIMATION_STROKE);
         int strokeReverse = (int) animation.getAnimatedValue(ANIMATION_STROKE_REVERSE);
 
+        value.setColor(color);
+        value.setColorReverse(colorReverse);
+
+        value.setRadius(radius);
+        value.setRadiusReverse(radiusReverse);
+
+        value.setStroke(stroke);
+        value.setStrokeReverse(strokeReverse);
+
         if (listener != null) {
-            listener.onFillAnimationUpdated(
-                    color,
-                    colorReverse,
-
-                    radius,
-                    radiusReverse,
-
-                    stroke,
-                    strokeReverse);
+            listener.onFillAnimationUpdated(value);
         }
     }
 
     @SuppressWarnings("RedundantIfStatement")
-    private boolean hasChanges(int colorStartValue, int colorEndValue, int radiusValue, int strokeValue) {
-        if (startColor != colorStartValue) {
+    private boolean hasChanges(int colorStart, int colorEnd, int radiusValue, int strokeValue) {
+        if (this.colorStart != colorStart) {
             return true;
         }
 
-        if (endColor != colorEndValue) {
+        if (this.colorEnd != colorEnd) {
             return true;
         }
 
-        if (radiusPx != radiusValue) {
+        if (radius != radiusValue) {
             return true;
         }
 
-        if (strokePx != strokeValue) {
+        if (stroke != strokeValue) {
             return true;
         }
 

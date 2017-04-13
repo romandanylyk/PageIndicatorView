@@ -23,11 +23,11 @@ import com.rd.animation.type.BaseAnimation;
 import com.rd.animation.type.ColorAnimation;
 import com.rd.animation.type.FillAnimation;
 import com.rd.animation.type.ScaleAnimation;
-import com.rd.animation.controller.ValueAnimation;
-import com.rd.animation.data.AnimationType;
-import com.rd.data.Orientation;
-import com.rd.data.PositionSavedState;
-import com.rd.data.RtlMode;
+import com.rd.animation.AnimationManager;
+import com.rd.animation.type.AnimationType;
+import com.rd.draw.data.Orientation;
+import com.rd.draw.data.PositionSavedState;
+import com.rd.draw.data.RtlMode;
 import com.rd.pageindicatorview.R;
 import com.rd.utils.DensityUtils;
 import com.rd.utils.IdUtils;
@@ -94,7 +94,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     private RectF rect = new RectF();
 
     private AnimationType animationType = AnimationType.NONE;
-    private ValueAnimation animation;
+    private AnimationManager animation;
 
     private ViewPager viewPager;
     private int viewPagerId;
@@ -414,7 +414,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     }
 
     /**
-     * Set stroke width in px to draw while {@link AnimationType#FILL} is selected.
+     * Set stroke width in px to set while {@link AnimationType#FILL} is selected.
      * Default value is {@link FillAnimation#DEFAULT_STROKE_DP}
      *
      * @param strokePx stroke width in px.
@@ -432,7 +432,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     }
 
     /**
-     * Set stroke width in dp to draw while {@link AnimationType#FILL} is selected.
+     * Set stroke width in dp to set while {@link AnimationType#FILL} is selected.
      * Default value is {@link FillAnimation#DEFAULT_STROKE_DP}
      *
      * @param strokeDp stroke width in dp.
@@ -494,7 +494,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
      * @param autoVisibility auto hide indicators.
      */
     public void setAutoVisibility(boolean autoVisibility) {
-        if(!autoVisibility){
+        if (!autoVisibility) {
             setVisibility(VISIBLE);
         }
 
@@ -1104,72 +1104,72 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     }
 
     private void initAnimation() {
-        animation = new ValueAnimation(new ValueAnimation.UpdateListener() {
-            @Override
-            public void onColorAnimationUpdated(int frColor, int frColorReverse) {
-                frameColor = frColor;
-                frameColorReverse = frColorReverse;
-                invalidate();
-            }
-
-            @Override
-            public void onScaleAnimationUpdated(int color, int colorReverse, int radius, int radiusReverse) {
-                frameColor = color;
-                frameColorReverse = colorReverse;
-
-                frameRadiusPx = radius;
-                frameRadiusReversePx = radiusReverse;
-                invalidate();
-            }
-
-            @Override
-            public void onSlideAnimationUpdated(int value) {
-                frameSlideFrom = value;
-                invalidate();
-            }
-
-            @Override
-            public void onWormAnimationUpdated(int leftX, int rightX) {
-                frameFrom = leftX;
-                frameTo = rightX;
-                invalidate();
-            }
-
-            @Override
-            public void onThinWormAnimationUpdated(int leftX, int rightX, int height) {
-                frameFrom = leftX;
-                frameTo = rightX;
-                frameHeight = height;
-                invalidate();
-            }
-
-            @Override
-            public void onFillAnimationUpdated(int color, int colorReverse, int radius, int radiusReverse, int stroke, int strokeReverse) {
-                frameColor = color;
-                frameColorReverse = colorReverse;
-
-                frameRadiusPx = radius;
-                frameRadiusReversePx = radiusReverse;
-
-                frameStrokePx = stroke;
-                frameStrokeReversePx = strokeReverse;
-                invalidate();
-            }
-
-            @Override
-            public void onDropAnimationUpdated(int x, int y, int selectedRadius) {
-                frameSlideFrom = (orientation == Orientation.HORIZONTAL) ? x : y;
-                frameY = (orientation == Orientation.HORIZONTAL) ? y : x;
-                frameRadiusPx = selectedRadius;
-                invalidate();
-            }
-
-            @Override
-            public void onSwapAnimationUpdated(int xCoordinate) {
-                frameSlideFrom = xCoordinate;
-                invalidate();
-            }
-        });
+//        animation = new AnimationManager(new AnimationManager.UpdateListener() {
+//            @Override
+//            public void onColorAnimationUpdated(int frColor, int frColorReverse) {
+//                frameColor = frColor;
+//                frameColorReverse = frColorReverse;
+//                invalidate();
+//            }
+//
+//            @Override
+//            public void onScaleAnimationUpdated(int color, int colorReverse, int radius, int radiusReverse) {
+//                frameColor = color;
+//                frameColorReverse = colorReverse;
+//
+//                frameRadiusPx = radius;
+//                frameRadiusReversePx = radiusReverse;
+//                invalidate();
+//            }
+//
+//            @Override
+//            public void onSlideAnimationUpdated(int value) {
+//                frameSlideFrom = value;
+//                invalidate();
+//            }
+//
+//            @Override
+//            public void onWormAnimationUpdated(int leftX, int rightX) {
+//                frameFrom = leftX;
+//                frameTo = rightX;
+//                invalidate();
+//            }
+//
+//            @Override
+//            public void onThinWormAnimationUpdated(int leftX, int rightX, int height) {
+//                frameFrom = leftX;
+//                frameTo = rightX;
+//                frameHeight = height;
+//                invalidate();
+//            }
+//
+//            @Override
+//            public void onFillAnimationUpdated(int color, int colorReverse, int radius, int radiusReverse, int stroke, int strokeReverse) {
+//                frameColor = color;
+//                frameColorReverse = colorReverse;
+//
+//                frameRadiusPx = radius;
+//                frameRadiusReversePx = radiusReverse;
+//
+//                frameStrokePx = stroke;
+//                frameStrokeReversePx = strokeReverse;
+//                invalidate();
+//            }
+//
+//            @Override
+//            public void onDropAnimationUpdated(int x, int y, int selectedRadius) {
+//                frameSlideFrom = (orientation == Orientation.HORIZONTAL) ? x : y;
+//                frameY = (orientation == Orientation.HORIZONTAL) ? y : x;
+//                frameRadiusPx = selectedRadius;
+//                invalidate();
+//            }
+//
+//            @Override
+//            public void onSwapAnimationUpdated(int xCoordinate) {
+//                frameSlideFrom = xCoordinate;
+//                invalidate();
+//            }
+//        });
     }
 
     private AnimationType getAnimationType(int index) {
@@ -1260,115 +1260,115 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     }
 
     private void startColorAnimation() {
-        animation.color().end();
-        animation.color().with(unselectedColor, selectedColor).duration(animationDuration).start();
+//        animation.color().end();
+//        animation.color().with(unselectedColor, selectedColor).duration(animationDuration).start();
     }
 
     private void startScaleAnimation() {
-        animation.scale().end();
-        animation.scale().with(unselectedColor, selectedColor, radiusPx, scaleFactor).duration(animationDuration).start();
+//        animation.scale().end();
+//        animation.scale().with(unselectedColor, selectedColor, radiusPx, scaleFactor).duration(animationDuration).start();
     }
 
     private void startSlideAnimation() {
-        int fromX = getCoordinate(lastSelectedPosition);
-        int toX = getCoordinate(selectedPosition);
-
-        animation.slide().end();
-        animation.slide().with(fromX, toX).duration(animationDuration).start();
+//        int fromX = getCoordinate(lastSelectedPosition);
+//        int toX = getCoordinate(selectedPosition);
+//
+//        animation.slide().end();
+//        animation.slide().with(fromX, toX).duration(animationDuration).start();
     }
 
     private void startWormAnimation() {
-        int from = getCoordinate(lastSelectedPosition);
-        int to = getCoordinate(selectedPosition);
-        boolean isRightSide = selectedPosition > lastSelectedPosition;
-
-        animation.worm().end();
-        animation.worm().duration(animationDuration).with(from, to, radiusPx, isRightSide).start();
+//        int from = getCoordinate(lastSelectedPosition);
+//        int to = getCoordinate(selectedPosition);
+//        boolean isRightSide = selectedPosition > lastSelectedPosition;
+//
+//        animation.worm().end();
+//        animation.worm().duration(animationDuration).with(from, to, radiusPx, isRightSide).start();
     }
 
     private void startFillAnimation() {
-        animation.fill().end();
-        animation.fill().with(unselectedColor, selectedColor, radiusPx, strokePx).duration(animationDuration).start();
+//        animation.fill().end();
+//        animation.fill().with(unselectedColor, selectedColor, radiusPx, strokePx).duration(animationDuration).start();
     }
 
     private void startThinWormAnimation() {
-        int from = getCoordinate(lastSelectedPosition);
-        int to = getCoordinate(selectedPosition);
-        boolean isRightSide = selectedPosition > lastSelectedPosition;
-
-        animation.thinWorm().end();
-        animation.thinWorm().duration(animationDuration).with(from, to, radiusPx, isRightSide).start();
+//        int from = getCoordinate(lastSelectedPosition);
+//        int to = getCoordinate(selectedPosition);
+//        boolean isRightSide = selectedPosition > lastSelectedPosition;
+//
+//        animation.thinWorm().end();
+//        animation.thinWorm().duration(animationDuration).with(from, to, radiusPx, isRightSide).start();
     }
 
     private void startDropAnimation() {
-        int from = getCoordinate(lastSelectedPosition);
-        int to = getCoordinate(selectedPosition);
-
-        int center = (orientation == Orientation.HORIZONTAL)
-                ? getYCoordinate(selectedPosition)
-                : getXCoordinate(selectedPosition);
-
-        animation.drop().end();
-        animation.drop().duration(animationDuration).with(from, to, center, radiusPx).start();
+//        int from = getCoordinate(lastSelectedPosition);
+//        int to = getCoordinate(selectedPosition);
+//
+//        int center = (orientation == Orientation.HORIZONTAL)
+//                ? getYCoordinate(selectedPosition)
+//                : getXCoordinate(selectedPosition);
+//
+//        animation.drop().end();
+//        animation.drop().duration(animationDuration).with(from, to, center, radiusPx).start();
     }
 
     private void startSwapAnimation() {
-        int from = getCoordinate(lastSelectedPosition);
-        int to = getCoordinate(selectedPosition);
-
-        animation.swap().end();
-        animation.swap().with(from, to).duration(animationDuration).start();
+//        int from = getCoordinate(lastSelectedPosition);
+//        int to = getCoordinate(selectedPosition);
+//
+//        animation.swap().end();
+//        animation.swap().with(from, to).duration(animationDuration).start();
     }
 
     @Nullable
     private BaseAnimation setAnimationProgress(float progress) {
-        switch (animationType) {
-            case COLOR:
-                return animation.color().with(unselectedColor, selectedColor).progress(progress);
-
-            case SCALE:
-                return animation.scale().with(unselectedColor, selectedColor, radiusPx, scaleFactor).progress(progress);
-
-            case FILL:
-                return animation.fill().with(unselectedColor, selectedColor, radiusPx, strokePx).progress(progress);
-            case DRAG_WORM:
-            case THIN_WORM:
-            case WORM:
-            case SLIDE:
-            case DROP:
-            case SWAP:
-                int from = orientation == Orientation.HORIZONTAL
-                        ? getXCoordinate(selectedPosition)
-                        : getYCoordinate(selectedPosition);
-
-                int to = orientation == Orientation.HORIZONTAL
-                        ? getXCoordinate(selectingPosition)
-                        : getYCoordinate(selectingPosition);
-
-                if (animationType == AnimationType.SLIDE) {
-                    return animation.slide().with(from, to).progress(progress);
-
-                } else if (animationType == AnimationType.SWAP) {
-                    return animation.swap().with(from, to).progress(progress);
-
-                } else if (animationType == AnimationType.WORM || animationType == AnimationType.THIN_WORM || animationType == AnimationType.DRAG_WORM) {
-                    boolean isRightSide = selectingPosition > selectedPosition;
-
-                    if (animationType == AnimationType.WORM) {
-                        return animation.worm().with(from, to, radiusPx, isRightSide).progress(progress);
-
-                    } else if (animationType == AnimationType.THIN_WORM) {
-                        return animation.thinWorm().with(from, to, radiusPx, isRightSide).progress(progress);
-                    }
-
-                } else {
-                    int center = (orientation == Orientation.HORIZONTAL)
-                            ? getYCoordinate(selectedPosition)
-                            : getXCoordinate(selectedPosition);
-
-                    return animation.drop().with(from, to, center, radiusPx).progress(progress);
-                }
-        }
+//        switch (animationType) {
+//            case COLOR:
+//                return animation.color().with(unselectedColor, selectedColor).progress(progress);
+//
+//            case SCALE:
+//                return animation.scale().with(unselectedColor, selectedColor, radiusPx, scaleFactor).progress(progress);
+//
+//            case FILL:
+//                return animation.fill().with(unselectedColor, selectedColor, radiusPx, strokePx).progress(progress);
+//            case DRAG_WORM:
+//            case THIN_WORM:
+//            case WORM:
+//            case SLIDE:
+//            case DROP:
+//            case SWAP:
+//                int from = orientation == Orientation.HORIZONTAL
+//                        ? getXCoordinate(selectedPosition)
+//                        : getYCoordinate(selectedPosition);
+//
+//                int to = orientation == Orientation.HORIZONTAL
+//                        ? getXCoordinate(selectingPosition)
+//                        : getYCoordinate(selectingPosition);
+//
+//                if (animationType == AnimationType.SLIDE) {
+//                    return animation.slide().with(from, to).progress(progress);
+//
+//                } else if (animationType == AnimationType.SWAP) {
+//                    return animation.swap().with(from, to).progress(progress);
+//
+//                } else if (animationType == AnimationType.WORM || animationType == AnimationType.THIN_WORM || animationType == AnimationType.DRAG_WORM) {
+//                    boolean isRightSide = selectingPosition > selectedPosition;
+//
+//                    if (animationType == AnimationType.WORM) {
+//                        return animation.worm().with(from, to, radiusPx, isRightSide).progress(progress);
+//
+//                    } else if (animationType == AnimationType.THIN_WORM) {
+//                        return animation.thinWorm().with(from, to, radiusPx, isRightSide).progress(progress);
+//                    }
+//
+//                } else {
+//                    int center = (orientation == Orientation.HORIZONTAL)
+//                            ? getYCoordinate(selectedPosition)
+//                            : getXCoordinate(selectedPosition);
+//
+//                    return animation.drop().with(from, to, center, radiusPx).progress(progress);
+//                }
+//        }
 
         return null;
     }
@@ -1416,45 +1416,45 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     }
 
     private void endAnimation() {
-        BaseAnimation anim = null;
-
-        switch (animationType) {
-            case COLOR:
-                anim = animation.color();
-                break;
-
-            case SLIDE:
-                anim = animation.slide();
-                break;
-
-            case SCALE:
-                anim = animation.scale();
-                break;
-
-            case WORM:
-                anim = animation.worm();
-                break;
-
-            case THIN_WORM:
-                anim = animation.thinWorm();
-                break;
-
-            case FILL:
-                anim = animation.fill();
-                break;
-
-            case DROP:
-                anim = animation.drop();
-                break;
-
-            case SWAP:
-                anim = animation.swap();
-                break;
-        }
-
-        if (anim != null) {
-            anim.end();
-        }
+//        BaseAnimation anim = null;
+//
+//        switch (animationType) {
+//            case COLOR:
+//                anim = animation.color();
+//                break;
+//
+//            case SLIDE:
+//                anim = animation.slide();
+//                break;
+//
+//            case SCALE:
+//                anim = animation.scale();
+//                break;
+//
+//            case WORM:
+//                anim = animation.worm();
+//                break;
+//
+//            case THIN_WORM:
+//                anim = animation.thinWorm();
+//                break;
+//
+//            case FILL:
+//                anim = animation.fill();
+//                break;
+//
+//            case DROP:
+//                anim = animation.drop();
+//                break;
+//
+//            case SWAP:
+//                anim = animation.swap();
+//                break;
+//        }
+//
+//        if (anim != null) {
+//            anim.end();
+//        }
     }
 
     private void unRegisterSetObserver() {

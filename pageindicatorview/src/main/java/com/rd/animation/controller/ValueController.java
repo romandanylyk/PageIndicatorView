@@ -2,9 +2,10 @@ package com.rd.animation.controller;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import com.rd.animation.data.Value;
 import com.rd.animation.type.*;
 
-public class ValueAnimation {
+public class ValueController {
 
     private ColorAnimation colorAnimation;
     private ScaleAnimation scaleAnimation;
@@ -18,26 +19,10 @@ public class ValueAnimation {
     private UpdateListener updateListener;
 
     public interface UpdateListener {
-        //Prefix "fr" stands for "frame", that mean that value will frequently update, for each frame
-
-        void onColorAnimationUpdated(int frColor, int frColorReverse);
-
-        void onScaleAnimationUpdated(int frColor, int frColorReverse, int frRadius, int frRadiusReverse);
-
-        void onSlideAnimationUpdated(int frX);
-
-        void onWormAnimationUpdated(int frLeftX, int frRightX);
-
-        void onFillAnimationUpdated(int frColor, int frColorReverse, int frRadius, int frRadiusReverse, int frStroke, int frStrokeReverse);
-
-        void onThinWormAnimationUpdated(int frLeftX, int frRightX, int frHeight);
-
-        void onDropAnimationUpdated(int frX, int frY, int frRadius);
-
-        void onSwapAnimationUpdated(int frX);
+        void onValueUpdated(@NonNull Value value);
     }
 
-    public ValueAnimation(@Nullable UpdateListener listener) {
+    public ValueController(@Nullable UpdateListener listener) {
         updateListener = listener;
     }
 

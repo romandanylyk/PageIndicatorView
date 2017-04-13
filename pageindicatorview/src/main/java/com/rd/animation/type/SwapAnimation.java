@@ -5,22 +5,21 @@ import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.support.annotation.NonNull;
 import android.view.animation.DecelerateInterpolator;
-import com.rd.animation.controller.ValueAnimation;
-
-/**
- * Created by Andy on 2/7/17.
- */
+import com.rd.animation.controller.ValueController;
+import com.rd.animation.data.type.SwapAnimationValue;
 
 public class SwapAnimation extends BaseAnimation<ValueAnimator> {
 
     private static final String ANIMATION_COORDINATE = "ANIMATION_COORDINATE";
     private static final int COORDINATE_NONE = -1;
 
-    private int startCoordinate = COORDINATE_NONE;
-    private int endCoordinate = COORDINATE_NONE;
+    private SwapAnimationValue value;
+    private int widthStart = COORDINATE_NONE;
+    private int widthEnd = COORDINATE_NONE;
 
-    public SwapAnimation(@NonNull ValueAnimation.UpdateListener listener) {
+    public SwapAnimation(@NonNull ValueController.UpdateListener listener) {
         super(listener);
+        value = new SwapAnimationValue();
     }
 
     @NonNull
@@ -53,10 +52,10 @@ public class SwapAnimation extends BaseAnimation<ValueAnimator> {
     }
 
     @NonNull
-    public SwapAnimation with(int startValue, int endValue) {
-        if (animator != null && hasChanges(startValue, endValue)) {
-            startCoordinate = startValue;
-            endCoordinate = endValue;
+    public SwapAnimation with(int widthStart, int widthEnd) {
+        if (animator != null && hasChanges(widthStart, widthEnd)) {
+            this.widthStart = widthStart;
+            this.widthEnd = widthEnd;
 
             PropertyValuesHolder holder = createColorPropertyHolder();
             animator.setValues(holder);
@@ -66,7 +65,7 @@ public class SwapAnimation extends BaseAnimation<ValueAnimator> {
     }
 
     private PropertyValuesHolder createColorPropertyHolder() {
-        PropertyValuesHolder holder = PropertyValuesHolder.ofInt(ANIMATION_COORDINATE, startCoordinate, endCoordinate);
+        PropertyValuesHolder holder = PropertyValuesHolder.ofInt(ANIMATION_COORDINATE, widthStart, widthEnd);
         holder.setEvaluator(new IntEvaluator());
 
         return holder;
@@ -74,19 +73,20 @@ public class SwapAnimation extends BaseAnimation<ValueAnimator> {
 
     private void onAnimateUpdated(@NonNull ValueAnimator animation) {
         int coordinate = (int) animation.getAnimatedValue(ANIMATION_COORDINATE);
+        value.setWidth(coordinate);
 
         if (listener != null) {
-            listener.onSwapAnimationUpdated(coordinate);
+            listener.onSwapAnimationUpdated(value);
         }
     }
 
     @SuppressWarnings("RedundantIfStatement")
-    private boolean hasChanges(int startValue, int endValue) {
-        if (startCoordinate != startValue) {
+    private boolean hasChanges(int widthStart, int widthEnd) {
+        if (this.widthStart != widthStart) {
             return true;
         }
 
-        if (endCoordinate != endValue) {
+        if (this.widthEnd != widthEnd) {
             return true;
         }
 

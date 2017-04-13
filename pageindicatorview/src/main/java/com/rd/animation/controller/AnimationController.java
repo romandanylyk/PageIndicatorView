@@ -1,217 +1,239 @@
 package com.rd.animation.controller;
 
-import com.rd.DrawManager;
-import com.rd.animation.data.AnimationType;
-import com.rd.data.Indicator;
+import android.support.annotation.NonNull;
+import com.rd.animation.type.AnimationType;
+import com.rd.animation.type.BaseAnimation;
+import com.rd.animation.type.DropAnimation;
+import com.rd.animation.type.WormAnimation;
+import com.rd.draw.data.Indicator;
+import com.rd.utils.CoordinatesUtils;
 
-public class AnimationController implements ValueAnimation.UpdateListener {
+public class AnimationController {
 
-    private DrawManager drawManager;
-    private AnimationType animationType;
-    private ValueAnimation animation;
+    private ValueController valueController;
+    private Indicator indicator;
 
-    private int frColor;
-    private int frColorReverse;
+    private float progress;
+    private boolean isInteractive;
 
-    private int frHeight;
-    private int frRadius;
-    private int frRadiusReverse;
-
-    private int frStroke;
-    private int frStrokeReverse;
-
-    private int frX;
-    private int frY;
-
-    private int frLeftX;
-    private int frRightX;
-
-    AnimationController() {
-        drawManager = new DrawManager();
-        animationType = AnimationType.NONE;
-        animation = new ValueAnimation(this);
+    public AnimationController(@NonNull ValueController valueController, @NonNull Indicator indicator) {
+        this.valueController = valueController;
+        this.indicator = indicator;
     }
 
-    @Override
-    public void onColorAnimationUpdated(int frColor, int frColorReverse) {
-        this.frColor = frColor;
-        this.frColorReverse = frColorReverse;
+    public void interactive(float progress) {
+        this.isInteractive = true;
+        this.progress = progress;
+        animate();
     }
 
-    @Override
-    public void onScaleAnimationUpdated(int frColor, int frColorReverse, int frRadius, int frRadiusReverse) {
-        this.frColor = frColor;
-        this.frColorReverse = frColorReverse;
-
-        this.frRadius = frRadius;
-        this.frColorReverse = frRadiusReverse;
+    public void basic() {
+        this.isInteractive = false;
+        this.progress = 0;
+        animate();
     }
 
-    @Override
-    public void onSlideAnimationUpdated(int frX) {
-        this.frX = frX;
-    }
-
-    @Override
-    public void onWormAnimationUpdated(int frLeftX, int frRightX) {
-        this.frLeftX = frLeftX;
-        this.frRightX = frRightX;
-    }
-
-    @Override
-    public void onFillAnimationUpdated(int frColor, int frColorReverse, int frRadius, int frRadiusReverse, int frStroke, int frStrokeReverse) {
-        this.frColor = frColor;
-        this.frColorReverse = frColorReverse;
-
-        this.frRadius = frRadius;
-        this.frRadiusReverse = frRadiusReverse;
-
-        this.frStroke = frStroke;
-        this.frStrokeReverse = frStrokeReverse;
-    }
-
-    @Override
-    public void onThinWormAnimationUpdated(int frLeftX, int frRightX, int frHeight) {
-        this.frLeftX = frLeftX;
-        this.frRightX = frRightX;
-        this.frHeight = frHeight;
-    }
-
-    @Override
-    public void onDropAnimationUpdated(int frX, int frY, int frRadius) {
-        this.frX = frX;
-        this.frY = frY;
-        this.frRadius = frRadius;
-    }
-
-    @Override
-    public void onSwapAnimationUpdated(int frX) {
-        this.frX = frX;
-    }
-
-    void start() {
-        if (animationType == null) {
-            startCurrentAnimation();
-        }
-    }
-
-    void end() {
-
-    }
-
-    private void startCurrentAnimation() {
+    private void animate() {
+        AnimationType animationType = indicator.getAnimationType();
         switch (animationType) {
             case NONE:
                 break;
 
             case COLOR:
-                startColorAnimation();
+                colorAnimation();
                 break;
 
             case SCALE:
-                startScaleAnimation();
+                scaleAnimation();
                 break;
 
             case WORM:
-                startWormAnimation();
+                wormAnimation();
                 break;
 
             case FILL:
-                startFillAnimation();
+                fillAnimation();
                 break;
 
             case SLIDE:
-                startSlideAnimation();
+                slideAnimation();
                 break;
 
             case THIN_WORM:
-                startThinWormAnimation();
+                thinWormAnimation();
                 break;
 
             case DROP:
-                startDropAnimation();
+                dropAnimation();
                 break;
 
             case SWAP:
-                startSwapAnimation();
+                swapAnimation();
                 break;
         }
     }
 
-    private void startColorAnimation() {
-        Indicator indicator = drawManager.getIndicator();
+    private void colorAnimation() {
         int selectedColor = indicator.getSelectedColor();
         int unselectedColor = indicator.getUnselectedColor();
-        long animationDuration = drawManager.getAnimationDuration();
+        long animationDuration = indicator.getAnimationDuration();
 
-        animation.color()
+        BaseAnimation animation = valueController
+                .color()
                 .with(unselectedColor, selectedColor)
-                .duration(animationDuration)
-                .start();
+                .duration(animationDuration);
+
+        if (isInteractive) {
+            animation.progress(progress);
+        } else {
+            animation.start();
+        }
     }
 
-    private void startScaleAnimation() {
-        Indicator indicator = drawManager.getIndicator();
+    private void scaleAnimation() {
         int selectedColor = indicator.getSelectedColor();
         int unselectedColor = indicator.getUnselectedColor();
         int radiusPx = indicator.getRadiusPx();
         int scaleFactor = indicator.getScaleFactor();
-        long animationDuration = drawManager.getAnimationDuration();
+        long animationDuration = indicator.getAnimationDuration();
 
-        animation.scale()
+        BaseAnimation animation = valueController
+                .scale()
                 .with(unselectedColor, selectedColor, radiusPx, scaleFactor)
+                .duration(animationDuration);
+
+        if (isInteractive) {
+            animation.progress(progress);
+        } else {
+            animation.start();
+        }
+    }
+
+    private void slideAnimation() {
+        int lastSelectedPosition = indicator.getLastSelectedPosition();
+        int selectedPosition = indicator.getSelectedPosition();
+
+        int from = CoordinatesUtils.getCoordinate(indicator, lastSelectedPosition);
+        int to = CoordinatesUtils.getCoordinate(indicator, selectedPosition);
+        long animationDuration = indicator.getAnimationDuration();
+
+        BaseAnimation animation = valueController
+                .slide()
+                .with(from, to)
+                .duration(animationDuration);
+
+        if (isInteractive) {
+            animation.progress(progress);
+        } else {
+            animation.start();
+        }
+    }
+
+    private void wormAnimation() {
+        int lastSelectedPosition = indicator.getLastSelectedPosition();
+        int selectedPosition = indicator.getSelectedPosition();
+
+        int from = CoordinatesUtils.getCoordinate(indicator, lastSelectedPosition);
+        int to = CoordinatesUtils.getCoordinate(indicator, selectedPosition);
+        boolean isRightSide = selectedPosition > lastSelectedPosition;
+
+        int radiusPx = indicator.getRadiusPx();
+        long animationDuration = indicator.getAnimationDuration();
+
+        WormAnimation animation = valueController
+                .worm()
+                .with(from, to, radiusPx, isRightSide)
+                .duration(animationDuration);
+
+        if (isInteractive) {
+            animation.progress(progress);
+        } else {
+            animation.start();
+        }
+    }
+
+    private void fillAnimation() {
+        int selectedColor = indicator.getSelectedColor();
+        int unselectedColor = indicator.getUnselectedColor();
+        int radiusPx = indicator.getRadiusPx();
+        int strokePx = indicator.getStrokePx();
+        long animationDuration = indicator.getAnimationDuration();
+
+        BaseAnimation animation = valueController
+                .fill()
+                .with(unselectedColor, selectedColor, radiusPx, strokePx)
+                .duration(animationDuration);
+
+        if (isInteractive) {
+            animation.progress(progress);
+        } else {
+            animation.start();
+        }
+    }
+
+    private void thinWormAnimation() {
+        int lastSelectedPosition = indicator.getLastSelectedPosition();
+        int selectedPosition = indicator.getSelectedPosition();
+
+        int from = CoordinatesUtils.getCoordinate(indicator, lastSelectedPosition);
+        int to = CoordinatesUtils.getCoordinate(indicator, selectedPosition);
+        boolean isRightSide = selectedPosition > lastSelectedPosition;
+
+        int radiusPx = indicator.getRadiusPx();
+        long animationDuration = indicator.getAnimationDuration();
+
+        WormAnimation animation = valueController
+                .thinWorm()
+                .with(from, to, radiusPx, isRightSide)
+                .duration(animationDuration);
+
+        if (isInteractive) {
+            animation.progress(progress);
+        } else {
+            animation.start();
+        }
+    }
+
+    private void dropAnimation() {
+        int lastSelectedPosition = indicator.getLastSelectedPosition();
+        int selectedPosition = indicator.getSelectedPosition();
+
+        int from = CoordinatesUtils.getCoordinate(indicator, lastSelectedPosition);
+        int to = CoordinatesUtils.getCoordinate(indicator, selectedPosition);
+
+        long animationDuration = indicator.getAnimationDuration();
+        int radiusPx = indicator.getRadiusPx();
+
+        DropAnimation animation = valueController
+                .drop()
                 .duration(animationDuration)
-                .start();
+                .with(from, to, to, radiusPx);
+
+        if (isInteractive) {
+            animation.progress(progress);
+        } else {
+            animation.start();
+        }
     }
 
-    private void startSlideAnimation() {
-//        int fromX = getCoordinate(lastSelectedPosition);
-//        int toX = getCoordinate(selectedPosition);
-//
-//        animation.slide().end();
-//        animation.slide().with(fromX, toX).duration(animationDuration).start();
-    }
+    private void swapAnimation() {
+        int lastSelectedPosition = indicator.getLastSelectedPosition();
+        int selectedPosition = indicator.getSelectedPosition();
 
-    private void startWormAnimation() {
-//        int from = getCoordinate(lastSelectedPosition);
-//        int to = getCoordinate(selectedPosition);
-//        boolean isRightSide = selectedPosition > lastSelectedPosition;
-//
-//        animation.worm().end();
-//        animation.worm().duration(animationDuration).with(from, to, radiusPx, isRightSide).start();
-    }
+        int from = CoordinatesUtils.getCoordinate(indicator, lastSelectedPosition);
+        int to = CoordinatesUtils.getCoordinate(indicator, selectedPosition);
+        long animationDuration = indicator.getAnimationDuration();
 
-    private void startFillAnimation() {
-//        animation.fill().end();
-//        animation.fill().with(unselectedColor, selectedColor, radiusPx, strokePx).duration(animationDuration).start();
-    }
+        BaseAnimation animation = valueController
+                .swap()
+                .with(from, to)
+                .duration(animationDuration);
 
-    private void startThinWormAnimation() {
-//        int from = getCoordinate(lastSelectedPosition);
-//        int to = getCoordinate(selectedPosition);
-//        boolean isRightSide = selectedPosition > lastSelectedPosition;
-//
-//        animation.thinWorm().end();
-//        animation.thinWorm().duration(animationDuration).with(from, to, radiusPx, isRightSide).start();
-    }
-
-    private void startDropAnimation() {
-//        int from = getCoordinate(lastSelectedPosition);
-//        int to = getCoordinate(selectedPosition);
-//
-//        int center = (orientation == Orientation.HORIZONTAL)
-//                ? getYCoordinate(selectedPosition)
-//                : getXCoordinate(selectedPosition);
-//
-//        animation.drop().end();
-//        animation.drop().duration(animationDuration).with(from, to, center, radiusPx).start();
-    }
-
-    private void startSwapAnimation() {
-//        int from = getCoordinate(lastSelectedPosition);
-//        int to = getCoordinate(selectedPosition);
-//
-//        animation.swap().end();
-//        animation.swap().with(from, to).duration(animationDuration).start();
+        if (isInteractive) {
+            animation.progress(progress);
+        } else {
+            animation.start();
+        }
     }
 }
+
