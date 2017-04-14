@@ -27,9 +27,9 @@ public class CoordinatesUtils {
         }
 
         int width = indicator.getWidth();
-        int radiusPx = indicator.getRadiusPx();
-        int strokePx = indicator.getStrokePx();
-        int paddingPx = indicator.getPaddingPx();
+        int radiusPx = indicator.getRadius();
+        int strokePx = indicator.getStroke();
+        int paddingPx = indicator.getPadding();
         int count = indicator.getCount();
 
         Orientation orientation = indicator.getOrientation();
@@ -66,9 +66,9 @@ public class CoordinatesUtils {
         }
 
         int width = indicator.getWidth();
-        int radiusPx = indicator.getRadiusPx();
-        int strokePx = indicator.getStrokePx();
-        int paddingPx = indicator.getPaddingPx();
+        int radiusPx = indicator.getRadius();
+        int strokePx = indicator.getStroke();
+        int paddingPx = indicator.getPadding();
         int count = indicator.getCount();
 
         Orientation orientation = indicator.getOrientation();

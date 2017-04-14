@@ -5,21 +5,27 @@ import com.rd.animation.type.AnimationType;
 
 public class Indicator {
 
+    public static final int DEFAULT_COUNT = -1;
+    public static final int MIN_COUNT = 1;
+
     private int height;
     private int width;
 
-    private int radiusPx;
-    private int paddingPx;
+    private int radius;
+    private int padding;
 
-    private int strokePx; //For "Fill" animation only
-    private int scaleFactor; //For "Scale" animation only
+    private int stroke; //For "Fill" animation only
+    private float scaleFactor; //For "Scale" animation only
 
     private int unselectedColor;
     private int selectedColor;
 
     private boolean interactiveAnimation;
+    private boolean autoVisibility;
+    private boolean dynamicCount;
+
     private long animationDuration;
-    private int count;
+    private int count = DEFAULT_COUNT;
 
     private int selectedPosition;
     private int selectingPosition;
@@ -27,6 +33,7 @@ public class Indicator {
 
     private Orientation orientation;
     private AnimationType animationType;
+    private RtlMode rtlMode;
 
     public int getHeight() {
         return height;
@@ -44,35 +51,35 @@ public class Indicator {
         this.width = width;
     }
 
-    public int getRadiusPx() {
-        return radiusPx;
+    public int getRadius() {
+        return radius;
     }
 
-    public void setRadiusPx(int radiusPx) {
-        this.radiusPx = radiusPx;
+    public void setRadius(int radius) {
+        this.radius = radius;
     }
 
-    public int getPaddingPx() {
-        return paddingPx;
+    public int getPadding() {
+        return padding;
     }
 
-    public void setPaddingPx(int paddingPx) {
-        this.paddingPx = paddingPx;
+    public void setPadding(int padding) {
+        this.padding = padding;
     }
 
-    public int getStrokePx() {
-        return strokePx;
+    public int getStroke() {
+        return stroke;
     }
 
-    public void setStrokePx(int strokePx) {
-        this.strokePx = strokePx;
+    public void setStroke(int stroke) {
+        this.stroke = stroke;
     }
 
-    public int getScaleFactor() {
+    public float getScaleFactor() {
         return scaleFactor;
     }
 
-    public void setScaleFactor(int scaleFactor) {
+    public void setScaleFactor(float scaleFactor) {
         this.scaleFactor = scaleFactor;
     }
 
@@ -98,6 +105,22 @@ public class Indicator {
 
     public void setInteractiveAnimation(boolean interactiveAnimation) {
         this.interactiveAnimation = interactiveAnimation;
+    }
+
+    public boolean isAutoVisibility() {
+        return autoVisibility;
+    }
+
+    public void setAutoVisibility(boolean autoVisibility) {
+        this.autoVisibility = autoVisibility;
+    }
+
+    public boolean isDynamicCount() {
+        return dynamicCount;
+    }
+
+    public void setDynamicCount(boolean dynamicCount) {
+        this.dynamicCount = dynamicCount;
     }
 
     public long getAnimationDuration() {
@@ -162,5 +185,17 @@ public class Indicator {
 
     public void setAnimationType(AnimationType animationType) {
         this.animationType = animationType;
+    }
+
+    @NonNull
+    public RtlMode getRtlMode() {
+        if (rtlMode == null) {
+            rtlMode = RtlMode.Off;
+        }
+        return rtlMode;
+    }
+
+    public void setRtlMode(RtlMode rtlMode) {
+        this.rtlMode = rtlMode;
     }
 }

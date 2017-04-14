@@ -28,8 +28,14 @@ public class AnimationManager implements ValueController.UpdateListener {
         }
     }
 
+    public void end() {
+        if (animationController != null) {
+            animationController.end();
+        }
+    }
+
     @Override
     public void onValueUpdated(@NonNull Value value) {
-        drawManager.draw(value);
+//        drawManager.draw(value);
     }
 }

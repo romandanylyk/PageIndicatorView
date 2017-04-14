@@ -3,14 +3,13 @@ package com.rd.animation.controller;
 import android.support.annotation.NonNull;
 import com.rd.animation.type.AnimationType;
 import com.rd.animation.type.BaseAnimation;
-import com.rd.animation.type.DropAnimation;
-import com.rd.animation.type.WormAnimation;
 import com.rd.draw.data.Indicator;
 import com.rd.utils.CoordinatesUtils;
 
 public class AnimationController {
 
     private ValueController valueController;
+    private BaseAnimation runningAnimation;
     private Indicator indicator;
 
     private float progress;
@@ -31,6 +30,12 @@ public class AnimationController {
         this.isInteractive = false;
         this.progress = 0;
         animate();
+    }
+
+    public void end() {
+        if (runningAnimation != null) {
+            runningAnimation.end();
+        }
     }
 
     private void animate() {
@@ -88,13 +93,15 @@ public class AnimationController {
         } else {
             animation.start();
         }
+
+        runningAnimation = animation;
     }
 
     private void scaleAnimation() {
         int selectedColor = indicator.getSelectedColor();
         int unselectedColor = indicator.getUnselectedColor();
-        int radiusPx = indicator.getRadiusPx();
-        int scaleFactor = indicator.getScaleFactor();
+        int radiusPx = indicator.getRadius();
+        float scaleFactor = indicator.getScaleFactor();
         long animationDuration = indicator.getAnimationDuration();
 
         BaseAnimation animation = valueController
@@ -107,6 +114,8 @@ public class AnimationController {
         } else {
             animation.start();
         }
+
+        runningAnimation = animation;
     }
 
     private void slideAnimation() {
@@ -127,6 +136,8 @@ public class AnimationController {
         } else {
             animation.start();
         }
+
+        runningAnimation = animation;
     }
 
     private void wormAnimation() {
@@ -137,10 +148,10 @@ public class AnimationController {
         int to = CoordinatesUtils.getCoordinate(indicator, selectedPosition);
         boolean isRightSide = selectedPosition > lastSelectedPosition;
 
-        int radiusPx = indicator.getRadiusPx();
+        int radiusPx = indicator.getRadius();
         long animationDuration = indicator.getAnimationDuration();
 
-        WormAnimation animation = valueController
+        BaseAnimation animation = valueController
                 .worm()
                 .with(from, to, radiusPx, isRightSide)
                 .duration(animationDuration);
@@ -150,13 +161,15 @@ public class AnimationController {
         } else {
             animation.start();
         }
+
+        runningAnimation = animation;
     }
 
     private void fillAnimation() {
         int selectedColor = indicator.getSelectedColor();
         int unselectedColor = indicator.getUnselectedColor();
-        int radiusPx = indicator.getRadiusPx();
-        int strokePx = indicator.getStrokePx();
+        int radiusPx = indicator.getRadius();
+        int strokePx = indicator.getStroke();
         long animationDuration = indicator.getAnimationDuration();
 
         BaseAnimation animation = valueController
@@ -169,6 +182,8 @@ public class AnimationController {
         } else {
             animation.start();
         }
+
+        runningAnimation = animation;
     }
 
     private void thinWormAnimation() {
@@ -179,10 +194,10 @@ public class AnimationController {
         int to = CoordinatesUtils.getCoordinate(indicator, selectedPosition);
         boolean isRightSide = selectedPosition > lastSelectedPosition;
 
-        int radiusPx = indicator.getRadiusPx();
+        int radiusPx = indicator.getRadius();
         long animationDuration = indicator.getAnimationDuration();
 
-        WormAnimation animation = valueController
+        BaseAnimation animation = valueController
                 .thinWorm()
                 .with(from, to, radiusPx, isRightSide)
                 .duration(animationDuration);
@@ -192,6 +207,8 @@ public class AnimationController {
         } else {
             animation.start();
         }
+
+        runningAnimation = animation;
     }
 
     private void dropAnimation() {
@@ -202,9 +219,9 @@ public class AnimationController {
         int to = CoordinatesUtils.getCoordinate(indicator, selectedPosition);
 
         long animationDuration = indicator.getAnimationDuration();
-        int radiusPx = indicator.getRadiusPx();
+        int radiusPx = indicator.getRadius();
 
-        DropAnimation animation = valueController
+        BaseAnimation animation = valueController
                 .drop()
                 .duration(animationDuration)
                 .with(from, to, to, radiusPx);
@@ -214,6 +231,8 @@ public class AnimationController {
         } else {
             animation.start();
         }
+
+        runningAnimation = animation;
     }
 
     private void swapAnimation() {
@@ -234,6 +253,8 @@ public class AnimationController {
         } else {
             animation.start();
         }
+
+        runningAnimation = animation;
     }
 }
 
