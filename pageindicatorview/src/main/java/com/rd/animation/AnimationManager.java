@@ -3,17 +3,15 @@ package com.rd.animation;
 import android.support.annotation.NonNull;
 import com.rd.animation.controller.AnimationController;
 import com.rd.animation.controller.ValueController;
-import com.rd.animation.data.Value;
-import com.rd.draw.DrawManager;
+import com.rd.draw.data.Indicator;
 
-public class AnimationManager implements ValueController.UpdateListener {
+public class AnimationManager {
 
     private AnimationController animationController;
-    private DrawManager drawManager;
 
-    public AnimationManager(@NonNull DrawManager drawManager) {
-        this.drawManager = drawManager;
-        this.animationController = new AnimationController(new ValueController(this), drawManager.indicator());
+    public AnimationManager(@NonNull Indicator indicator, @NonNull ValueController.UpdateListener listener) {
+        ValueController valueController = new ValueController(listener);
+        this.animationController = new AnimationController(valueController, indicator);
     }
 
     public void basic() {
@@ -32,10 +30,5 @@ public class AnimationManager implements ValueController.UpdateListener {
         if (animationController != null) {
             animationController.end();
         }
-    }
-
-    @Override
-    public void onValueUpdated(@NonNull Value value) {
-//        drawManager.draw(value);
     }
 }

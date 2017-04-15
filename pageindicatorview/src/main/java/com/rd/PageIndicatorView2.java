@@ -3,6 +3,7 @@ package com.rd;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.database.DataSetObserver;
+import android.graphics.Canvas;
 import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.v4.text.TextUtilsCompat;
@@ -16,7 +17,7 @@ import com.rd.draw.data.Orientation;
 import com.rd.draw.data.RtlMode;
 import com.rd.utils.DensityUtils;
 
-public class PageIndicatorView2 extends View implements ViewPager.OnPageChangeListener {
+public class PageIndicatorView2 extends View implements ViewPager.OnPageChangeListener, IndicatorManager.Listener {
 
     private IndicatorManager manager;
     private ViewPager viewPager;
@@ -47,6 +48,22 @@ public class PageIndicatorView2 extends View implements ViewPager.OnPageChangeLi
     protected void onDetachedFromWindow() {
         unRegisterSetObserver();
         super.onDetachedFromWindow();
+    }
+
+    @SuppressWarnings("UnnecessaryLocalVariable")
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        manager.draw(canvas);
+    }
+
+    @Override
+    public void onIndicatorUpdated() {
+        invalidate();
     }
 
     @Override
@@ -456,7 +473,7 @@ public class PageIndicatorView2 extends View implements ViewPager.OnPageChangeLi
     }
 
     private void init(@Nullable AttributeSet attrs) {
-        manager = new IndicatorManager();
+        manager = new IndicatorManager(this);
     }
 
     private void registerSetObserver() {
