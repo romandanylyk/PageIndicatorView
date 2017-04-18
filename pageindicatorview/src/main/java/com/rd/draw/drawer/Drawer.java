@@ -18,6 +18,8 @@ public class Drawer {
 
     public Drawer(@NonNull Indicator indicator) {
         Paint paint = new Paint();
+        paint.setStyle(Paint.Style.FILL);
+        paint.setAntiAlias(true);
 
         basicDrawer = new BasicDrawer(paint, indicator);
         colorDrawer = new ColorDrawer(paint, indicator);

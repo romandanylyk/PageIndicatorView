@@ -4,16 +4,19 @@ import android.graphics.Canvas;
 import android.support.annotation.NonNull;
 import com.rd.animation.data.Value;
 import com.rd.draw.controller.DrawController;
+import com.rd.draw.controller.MeasureController;
 import com.rd.draw.data.Indicator;
 
 public class DrawManager {
 
     private Indicator indicator;
-    private DrawController controller;
+    private DrawController drawController;
+    private MeasureController measureController;
 
     public DrawManager() {
         this.indicator = new Indicator();
-        this.controller = new DrawController(indicator);
+        this.drawController = new DrawController(indicator);
+        this.measureController = new MeasureController();
     }
 
     @NonNull
@@ -26,10 +29,18 @@ public class DrawManager {
     }
 
     public void updateValue(@NonNull Value value) {
-        controller.updateValue(value);
+        drawController.updateValue(value);
     }
 
     public void draw(@NonNull Canvas canvas) {
-        controller.draw(canvas);
+        drawController.draw(canvas);
+    }
+
+    public int measureViewWidth(int widthMeasureSpec) {
+        return measureController.measureViewWidth(indicator, widthMeasureSpec);
+    }
+
+    public int measureViewHeight(int heightMeasureSpec) {
+        return measureController.measureViewHeight(indicator, heightMeasureSpec);
     }
 }

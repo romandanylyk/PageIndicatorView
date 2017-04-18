@@ -12,7 +12,11 @@ public class BasicDrawer extends BaseDrawer {
 
     BasicDrawer(@NonNull Paint paint, @NonNull Indicator indicator) {
         super(paint, indicator);
+
         strokePaint = new Paint();
+        strokePaint.setStyle(Paint.Style.STROKE);
+        strokePaint.setAntiAlias(true);
+        strokePaint.setStrokeWidth(indicator.getStroke());
     }
 
     public void draw(

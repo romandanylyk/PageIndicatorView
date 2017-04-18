@@ -1,6 +1,5 @@
 package com.rd;
 
-import android.graphics.Canvas;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.rd.animation.AnimationManager;
@@ -33,8 +32,8 @@ public class IndicatorManager implements ValueController.UpdateListener {
         return drawManager.indicator();
     }
 
-    public void draw(@NonNull Canvas canvas) {
-        drawManager.draw(canvas);
+    public DrawManager drawer() {
+        return drawManager;
     }
 
     @Override
