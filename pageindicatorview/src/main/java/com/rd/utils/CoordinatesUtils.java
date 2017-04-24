@@ -38,7 +38,7 @@ public class CoordinatesUtils {
         if (orientation == Orientation.HORIZONTAL) {
             int x = 0;
             for (int i = 0; i < count; i++) {
-                x += radiusPx + strokePx;
+                x += radiusPx;
 
                 if (position == i) {
                     return x;
@@ -74,28 +74,33 @@ public class CoordinatesUtils {
         Orientation orientation = indicator.getOrientation();
         AnimationType animationType = indicator.getAnimationType();
 
-        if (orientation == Orientation.HORIZONTAL) {
-            int y = width / 2;
+        int y = 0;
+        y += radiusPx;
+        return y;
 
-            if (animationType == AnimationType.DROP) {
-                y += radiusPx;
-            }
-
-            return y;
-
-        } else {
-            int y = 0;
-
-            for (int i = 0; i < count; i++) {
-                y += radiusPx + strokePx;
-
-                if (position == i)
-                    return y;
-
-                y += radiusPx + paddingPx;
-            }
-
-            return y;
-        }
+//        if (orientation == Orientation.HORIZONTAL) {
+//            int y = 0;
+//
+//            for (int i = 0; i < count; i++) {
+//                y += radiusPx;
+//
+//                if (position == i) {
+//                    return y;
+//                }
+//
+//                y += radiusPx + paddingPx;
+//            }
+//
+//            return y;
+//
+//        } else {
+//            int y = width / 2;
+//
+//            if (animationType == AnimationType.DROP) {
+//                y += radiusPx;
+//            }
+//
+//            return y;
+//        }
     }
 }

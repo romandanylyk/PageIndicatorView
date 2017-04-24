@@ -49,10 +49,10 @@ public class DrawController {
         boolean isSelectedItem = selectedItem | selectingItem;
         drawer.setup(position, coordinateX, coordinateY);
 
-        if (isSelectedItem) {
+        if (value != null && isSelectedItem) {
             drawWithAnimation(canvas);
         } else {
-            drawer.drawBasic(canvas);
+            drawer.drawBasic(canvas, isSelectedItem);
         }
     }
 
@@ -60,7 +60,7 @@ public class DrawController {
         AnimationType animationType = indicator.getAnimationType();
         switch (animationType) {
             case NONE:
-                drawer.drawBasic(canvas);
+                drawer.drawBasic(canvas, true);
                 break;
 
             case COLOR:

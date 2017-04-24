@@ -22,6 +22,7 @@ public class BasicDrawer extends BaseDrawer {
     public void draw(
             @NonNull Canvas canvas,
             int position,
+            boolean isSelectedItem,
             int coordinateX,
             int coordinateY) {
 
@@ -34,7 +35,7 @@ public class BasicDrawer extends BaseDrawer {
         int selectedPosition = indicator.getSelectedPosition();
         AnimationType animationType = indicator.getAnimationType();
 
-        if (animationType == AnimationType.SCALE) {
+        if (animationType == AnimationType.SCALE && !isSelectedItem) {
             radius *= scaleFactor;
         }
 

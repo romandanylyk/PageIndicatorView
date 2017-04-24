@@ -76,7 +76,7 @@ public class SwapAnimation extends BaseAnimation<ValueAnimator> {
         value.setWidth(coordinate);
 
         if (listener != null) {
-            listener.onSwapAnimationUpdated(value);
+            listener.onValueUpdated(value);
         }
     }
 

@@ -77,7 +77,7 @@ public class SlideAnimation extends BaseAnimation<ValueAnimator> {
         value.setWidth(width);
 
         if (listener != null) {
-            listener.onSlideAnimationUpdated(value);
+            listener.onValueUpdated(value);
         }
     }
 

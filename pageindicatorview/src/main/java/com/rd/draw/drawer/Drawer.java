@@ -32,9 +32,9 @@ public class Drawer {
         this.coordinateY = coordinateY;
     }
 
-    public void drawBasic(@NonNull Canvas canvas) {
+    public void drawBasic(@NonNull Canvas canvas, boolean isSelectedItem) {
         if (colorDrawer != null) {
-            basicDrawer.draw(canvas, position, coordinateX, coordinateY);
+            basicDrawer.draw(canvas, position, isSelectedItem, coordinateX, coordinateY);
         }
     }
 

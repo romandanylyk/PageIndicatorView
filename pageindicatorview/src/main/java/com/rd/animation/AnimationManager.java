@@ -10,8 +10,7 @@ public class AnimationManager {
     private AnimationController animationController;
 
     public AnimationManager(@NonNull Indicator indicator, @NonNull ValueController.UpdateListener listener) {
-        ValueController valueController = new ValueController(listener);
-        this.animationController = new AnimationController(valueController, indicator);
+        this.animationController = new AnimationController(indicator, listener);
     }
 
     public void basic() {

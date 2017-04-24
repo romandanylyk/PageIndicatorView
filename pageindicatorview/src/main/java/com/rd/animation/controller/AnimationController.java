@@ -9,14 +9,17 @@ import com.rd.utils.CoordinatesUtils;
 public class AnimationController {
 
     private ValueController valueController;
+    private ValueController.UpdateListener listener;
+
     private BaseAnimation runningAnimation;
     private Indicator indicator;
 
     private float progress;
     private boolean isInteractive;
 
-    public AnimationController(@NonNull ValueController valueController, @NonNull Indicator indicator) {
-        this.valueController = valueController;
+    public AnimationController(@NonNull Indicator indicator, @NonNull ValueController.UpdateListener listener) {
+        this.valueController = new ValueController(listener);
+        this.listener = listener;
         this.indicator = indicator;
     }
 
@@ -42,6 +45,7 @@ public class AnimationController {
         AnimationType animationType = indicator.getAnimationType();
         switch (animationType) {
             case NONE:
+                listener.onValueUpdated(null);
                 break;
 
             case COLOR:

@@ -79,7 +79,7 @@ public class ScaleAnimation extends ColorAnimation {
         value.setRadiusReverse(radiusReverse);
 
         if (listener != null) {
-            listener.onScaleAnimationUpdated(value);
+            listener.onValueUpdated(value);
         }
     }
 

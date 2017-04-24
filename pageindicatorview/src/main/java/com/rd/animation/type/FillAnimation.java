@@ -140,7 +140,7 @@ public class FillAnimation extends ColorAnimation {
         value.setStrokeReverse(strokeReverse);
 
         if (listener != null) {
-            listener.onFillAnimationUpdated(value);
+            listener.onValueUpdated(value);
         }
     }
 

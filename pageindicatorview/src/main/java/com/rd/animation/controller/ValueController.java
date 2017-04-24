@@ -19,7 +19,7 @@ public class ValueController {
     private UpdateListener updateListener;
 
     public interface UpdateListener {
-        void onValueUpdated(@NonNull Value value);
+        void onValueUpdated(@Nullable Value value);
     }
 
     public ValueController(@Nullable UpdateListener listener) {

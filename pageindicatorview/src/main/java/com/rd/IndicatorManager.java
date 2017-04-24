@@ -1,6 +1,5 @@
 package com.rd;
 
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.rd.animation.AnimationManager;
 import com.rd.animation.controller.ValueController;
@@ -37,8 +36,11 @@ public class IndicatorManager implements ValueController.UpdateListener {
     }
 
     @Override
-    public void onValueUpdated(@NonNull Value value) {
-        drawManager.updateValue(value);
+    public void onValueUpdated(@Nullable Value value) {
+        if (value != null) {
+            drawManager.updateValue(value);
+        }
+
         if (listener != null) {
             listener.onIndicatorUpdated();
         }

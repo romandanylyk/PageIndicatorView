@@ -70,7 +70,7 @@ public class ThinWormAnimation extends WormAnimation {
                 onAnimateUpdated(animation);
 
                 if (listener != null) {
-                    listener.onThinWormAnimationUpdated(value);
+                    listener.onValueUpdated(value);
                 }
             }
         });

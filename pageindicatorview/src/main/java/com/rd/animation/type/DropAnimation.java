@@ -136,7 +136,7 @@ public class DropAnimation extends BaseAnimation<AnimatorSet> {
         }
 
         if (listener != null) {
-            listener.onDropAnimationUpdated(value);
+            listener.onValueUpdated(value);
         }
     }
 

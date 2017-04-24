@@ -58,16 +58,12 @@ public class MeasureController {
         int count = indicator.getCount();
         int radius = indicator.getRadius();
         int stroke = indicator.getStroke();
-        int padding = indicator.getPadding();
 
-        int circleDiameterPx = radius * 2;
         int desiredHeight = 0;
 
         if (count != 0) {
-            int diameterSum = circleDiameterPx * count;
-            int strokeSum = (stroke * 2) * count;
-            int paddingSum = padding * (count - 1);
-            desiredHeight = diameterSum + strokeSum + paddingSum;
+            int circleDiameter = radius * 2;
+            desiredHeight = circleDiameter + stroke;
         }
 
         int height;
