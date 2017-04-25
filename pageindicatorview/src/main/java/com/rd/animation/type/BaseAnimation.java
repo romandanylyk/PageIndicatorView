@@ -36,7 +36,6 @@ public abstract class BaseAnimation<T extends Animator> {
 
     public void start() {
         if (animator != null && !animator.isRunning()) {
-            animator.end();
             animator.start();
         }
     }

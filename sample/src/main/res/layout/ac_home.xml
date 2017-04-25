@@ -23,6 +23,7 @@
         attrs:piv_animationType="scale"
         attrs:piv_count="4"
         attrs:piv_padding="12dp"
+        attrs:piv_interactiveAnimation="true"
         attrs:piv_radius="8dp" />
 
 </RelativeLayout>

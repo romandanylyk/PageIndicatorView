@@ -45,7 +45,7 @@ public class DrawController {
         int lastSelectedPosition = indicator.getLastSelectedPosition();
 
         boolean selectedItem = !interactiveAnimation && (position == selectedPosition || position == lastSelectedPosition);
-        boolean selectingItem = interactiveAnimation && (position == selectingPosition || position == selectedPosition);
+        boolean selectingItem = interactiveAnimation && (position == selectedPosition || position == selectingPosition);
         boolean isSelectedItem = selectedItem | selectingItem;
         drawer.setup(position, coordinateX, coordinateY);
 

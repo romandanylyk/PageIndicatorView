@@ -14,6 +14,8 @@ import android.support.v4.text.TextUtilsCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.util.Pair;
 import android.view.View;
 import com.rd.animation.type.*;
 import com.rd.draw.data.Indicator;
@@ -88,38 +90,12 @@ public class PageIndicatorView2 extends View implements ViewPager.OnPageChangeLi
 
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
+        selectInteractiveIndicator(position, positionOffset);
     }
 
     @Override
     public void onPageSelected(int position) {
         selectIndicator(position);
-    }
-
-    private void selectIndicator(int position) {
-        Indicator indicator = manager.indicator();
-        int count = indicator.getCount();
-
-        if (viewPager != null && viewPager.getAdapter() != null) {
-            int pageCount = viewPager.getAdapter().getCount();
-
-            if (pageCount < count) {
-                return;
-            }
-        }
-
-        AnimationType animationType = indicator.getAnimationType();
-        boolean interactiveAnimation = indicator.isInteractiveAnimation();
-        boolean canSelectIndicator = isViewMeasured() && (!interactiveAnimation || animationType == AnimationType.NONE);
-
-
-        if (canSelectIndicator) {
-            if (isRtl()) {
-                position = (count - 1) - position;
-            }
-
-            setSelection(position);
-        }
     }
 
     @Override
@@ -496,9 +472,10 @@ public class PageIndicatorView2 extends View implements ViewPager.OnPageChangeLi
      * @param progress          float value of progress.
      */
     public void setProgress(int selectingPosition, float progress) {
-        if (manager.indicator().isInteractiveAnimation()) {
+        Indicator indicator = manager.indicator();
+        if (indicator.isInteractiveAnimation()) {
 
-            int count = manager.indicator().getCount();
+            int count = indicator.getCount();
             if (count <= 0 || selectingPosition < 0) {
                 selectingPosition = 0;
 
@@ -513,7 +490,12 @@ public class PageIndicatorView2 extends View implements ViewPager.OnPageChangeLi
                 progress = 1;
             }
 
-            manager.indicator().setSelectingPosition(selectingPosition);
+            if (progress == 1) {
+                indicator.setLastSelectedPosition(indicator.getSelectedPosition());
+                indicator.setSelectedPosition(selectingPosition);
+            }
+
+            indicator.setSelectingPosition(selectingPosition);
             manager.animate().interactive(progress);
         }
     }
@@ -713,6 +695,94 @@ public class PageIndicatorView2 extends View implements ViewPager.OnPageChangeLi
         } else {
             return manager.indicator().getCount();
         }
+    }
+
+    private void selectIndicator(int position) {
+        Indicator indicator = manager.indicator();
+        int count = indicator.getCount();
+
+        AnimationType animationType = indicator.getAnimationType();
+        boolean interactiveAnimation = indicator.isInteractiveAnimation();
+        boolean canSelectIndicator = isViewMeasured() && (!interactiveAnimation || animationType == AnimationType.NONE);
+
+        if (canSelectIndicator) {
+            if (isRtl()) {
+                position = (count - 1) - position;
+            }
+
+            setSelection(position);
+        }
+    }
+
+    private void selectInteractiveIndicator(int position, float positionOffset) {
+        Log.e("TEST", String.valueOf(position));
+
+        Indicator indicator = manager.indicator();
+        AnimationType animationType = indicator.getAnimationType();
+        boolean interactiveAnimation = indicator.isInteractiveAnimation();
+        boolean canSelectIndicator = isViewMeasured() && interactiveAnimation && animationType != AnimationType.NONE;
+
+        if (!canSelectIndicator) {
+            return;
+        }
+
+        Pair<Integer, Float> progressPair = getProgress(position, positionOffset);
+        int selectingPosition = progressPair.first;
+        float selectingProgress = progressPair.second;
+        setProgress(selectingPosition, selectingProgress);
+    }
+
+    private Pair<Integer, Float> getProgress(int position, float positionOffset) {
+        Indicator indicator = manager.indicator();
+        int count = indicator.getCount();
+        int selectedPosition = indicator.getSelectedPosition();
+
+        if (isRtl()) {
+            position = (count - 1) - position;
+        }
+
+
+        if (position < 0) {
+            position = 0;
+
+        } else if (position > count - 1) {
+            position = count - 1;
+        }
+
+//        boolean isRightOverScrolled = position > selectedPosition;
+//        boolean isLeftOverScrolled;
+//
+//        if (isRtl()) {
+//            isLeftOverScrolled = position - 1 < selectedPosition;
+//        } else {
+//            isLeftOverScrolled = position + 1 < selectedPosition;
+//        }
+//
+///        if (isRightOverScrolled || isLeftOverScrolled) {
+//            selectedPosition = position;
+//        }
+
+        boolean slideToRightSide = selectedPosition == position && positionOffset != 0;
+        int selectingPosition;
+        float selectingProgress;
+
+        if (slideToRightSide) {
+            selectingPosition = isRtl() ? position - 1 : position + 1;
+            selectingProgress = positionOffset;
+
+        } else {
+            selectingPosition = position;
+            selectingProgress = 1 - positionOffset;
+        }
+
+        if (selectingProgress > 1) {
+            selectingProgress = 1;
+
+        } else if (selectingProgress < 0) {
+            selectingProgress = 0;
+        }
+
+        return new Pair<>(selectingPosition, selectingProgress);
     }
 
     private boolean isRtl() {

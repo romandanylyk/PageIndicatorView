@@ -16,6 +16,7 @@ public class AnimationController {
 
     private float progress;
     private boolean isInteractive;
+    private int lastSelectingPosition;
 
     public AnimationController(@NonNull Indicator indicator, @NonNull ValueController.UpdateListener listener) {
         this.valueController = new ValueController(listener);
@@ -26,6 +27,13 @@ public class AnimationController {
     public void interactive(float progress) {
         this.isInteractive = true;
         this.progress = progress;
+        int selectingPosition = indicator.getSelectingPosition();
+
+//        if (lastSelectingPosition != selectingPosition && progress > 0 && progress < 1) {
+//            end();
+//        }
+//
+//        lastSelectingPosition = selectingPosition;
         animate();
     }
 

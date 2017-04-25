@@ -15,6 +15,7 @@ public class AnimationManager {
 
     public void basic() {
         if (animationController != null) {
+            animationController.end();
             animationController.basic();
         }
     }
