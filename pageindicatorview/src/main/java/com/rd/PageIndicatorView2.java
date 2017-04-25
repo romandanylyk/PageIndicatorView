@@ -749,18 +749,19 @@ public class PageIndicatorView2 extends View implements ViewPager.OnPageChangeLi
             position = count - 1;
         }
 
-//        boolean isRightOverScrolled = position > selectedPosition;
-//        boolean isLeftOverScrolled;
-//
-//        if (isRtl()) {
-//            isLeftOverScrolled = position - 1 < selectedPosition;
-//        } else {
-//            isLeftOverScrolled = position + 1 < selectedPosition;
-//        }
-//
-///        if (isRightOverScrolled || isLeftOverScrolled) {
-//            selectedPosition = position;
-//        }
+        boolean isRightOverScrolled = position > selectedPosition;
+        boolean isLeftOverScrolled;
+
+        if (isRtl()) {
+            isLeftOverScrolled = position - 1 < selectedPosition;
+        } else {
+            isLeftOverScrolled = position + 1 < selectedPosition;
+        }
+
+        if (isRightOverScrolled || isLeftOverScrolled) {
+            selectedPosition = position;
+            indicator.setSelectedPosition(selectedPosition);
+        }
 
         boolean slideToRightSide = selectedPosition == position && positionOffset != 0;
         int selectingPosition;
