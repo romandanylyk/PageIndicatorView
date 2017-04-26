@@ -14,7 +14,6 @@ import android.support.v4.text.TextUtilsCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import com.rd.animation.type.*;
@@ -23,6 +22,7 @@ import com.rd.draw.data.Orientation;
 import com.rd.draw.data.RtlMode;
 import com.rd.pageindicatorview.R;
 import com.rd.utils.AttributeUtils;
+import com.rd.utils.CoordinatesUtils;
 import com.rd.utils.DensityUtils;
 import com.rd.utils.IdUtils;
 
@@ -75,6 +75,9 @@ public class PageIndicatorView2 extends View implements ViewPager.OnPageChangeLi
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int width = manager.drawer().measureViewWidth(widthMeasureSpec);
         int height = manager.drawer().measureViewHeight(heightMeasureSpec);
+
+        manager.indicator().setWidth(width);
+        manager.indicator().setHeight(height);
         setMeasuredDimension(width, height);
     }
 
@@ -715,8 +718,6 @@ public class PageIndicatorView2 extends View implements ViewPager.OnPageChangeLi
     }
 
     private void selectInteractiveIndicator(int position, float positionOffset) {
-        Log.e("TEST", String.valueOf(position));
-
         Indicator indicator = manager.indicator();
         AnimationType animationType = indicator.getAnimationType();
         boolean interactiveAnimation = indicator.isInteractiveAnimation();
@@ -726,64 +727,10 @@ public class PageIndicatorView2 extends View implements ViewPager.OnPageChangeLi
             return;
         }
 
-        Pair<Integer, Float> progressPair = getProgress(position, positionOffset);
+        Pair<Integer, Float> progressPair = CoordinatesUtils.getProgress(indicator, position, positionOffset, isRtl());
         int selectingPosition = progressPair.first;
         float selectingProgress = progressPair.second;
         setProgress(selectingPosition, selectingProgress);
-    }
-
-    private Pair<Integer, Float> getProgress(int position, float positionOffset) {
-        Indicator indicator = manager.indicator();
-        int count = indicator.getCount();
-        int selectedPosition = indicator.getSelectedPosition();
-
-        if (isRtl()) {
-            position = (count - 1) - position;
-        }
-
-
-        if (position < 0) {
-            position = 0;
-
-        } else if (position > count - 1) {
-            position = count - 1;
-        }
-
-        boolean isRightOverScrolled = position > selectedPosition;
-        boolean isLeftOverScrolled;
-
-        if (isRtl()) {
-            isLeftOverScrolled = position - 1 < selectedPosition;
-        } else {
-            isLeftOverScrolled = position + 1 < selectedPosition;
-        }
-
-        if (isRightOverScrolled || isLeftOverScrolled) {
-            selectedPosition = position;
-            indicator.setSelectedPosition(selectedPosition);
-        }
-
-        boolean slideToRightSide = selectedPosition == position && positionOffset != 0;
-        int selectingPosition;
-        float selectingProgress;
-
-        if (slideToRightSide) {
-            selectingPosition = isRtl() ? position - 1 : position + 1;
-            selectingProgress = positionOffset;
-
-        } else {
-            selectingPosition = position;
-            selectingProgress = 1 - positionOffset;
-        }
-
-        if (selectingProgress > 1) {
-            selectingProgress = 1;
-
-        } else if (selectingProgress < 0) {
-            selectingProgress = 0;
-        }
-
-        return new Pair<>(selectingPosition, selectingProgress);
     }
 
     private boolean isRtl() {

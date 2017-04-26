@@ -11,6 +11,7 @@ public class Drawer {
     private BasicDrawer basicDrawer;
     private ColorDrawer colorDrawer;
     private ScaleDrawer scaleDrawer;
+    private WormDrawer wormDrawer;
 
     private int position;
     private int coordinateX;
@@ -24,6 +25,7 @@ public class Drawer {
         basicDrawer = new BasicDrawer(paint, indicator);
         colorDrawer = new ColorDrawer(paint, indicator);
         scaleDrawer = new ScaleDrawer(paint, indicator);
+        wormDrawer = new WormDrawer(paint, indicator);
     }
 
     public void setup(int position, int coordinateX, int coordinateY) {
@@ -47,6 +49,12 @@ public class Drawer {
     public void drawScale(@NonNull Canvas canvas, @NonNull Value value) {
         if (scaleDrawer != null) {
             scaleDrawer.draw(canvas, value, position, coordinateX, coordinateY);
+        }
+    }
+
+    public void drawWorm(@NonNull Canvas canvas, @NonNull Value value) {
+        if (wormDrawer != null) {
+            wormDrawer.draw(canvas, value, position, coordinateX, coordinateY);
         }
     }
 }

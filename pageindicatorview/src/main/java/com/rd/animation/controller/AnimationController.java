@@ -16,7 +16,6 @@ public class AnimationController {
 
     private float progress;
     private boolean isInteractive;
-    private int lastSelectingPosition;
 
     public AnimationController(@NonNull Indicator indicator, @NonNull ValueController.UpdateListener listener) {
         this.valueController = new ValueController(listener);
@@ -27,13 +26,6 @@ public class AnimationController {
     public void interactive(float progress) {
         this.isInteractive = true;
         this.progress = progress;
-        int selectingPosition = indicator.getSelectingPosition();
-
-//        if (lastSelectingPosition != selectingPosition && progress > 0 && progress < 1) {
-//            end();
-//        }
-//
-//        lastSelectingPosition = selectingPosition;
         animate();
     }
 
@@ -130,17 +122,20 @@ public class AnimationController {
         runningAnimation = animation;
     }
 
-    private void slideAnimation() {
-        int lastSelectedPosition = indicator.getLastSelectedPosition();
-        int selectedPosition = indicator.getSelectedPosition();
+    private void wormAnimation() {
+        int fromPosition = indicator.isInteractiveAnimation() ? indicator.getSelectingPosition() : indicator.getSelectedPosition();
+        int toPosition = indicator.isInteractiveAnimation() ? indicator.getSelectedPosition() : indicator.getLastSelectedPosition();
 
-        int from = CoordinatesUtils.getCoordinate(indicator, lastSelectedPosition);
-        int to = CoordinatesUtils.getCoordinate(indicator, selectedPosition);
+        int from = CoordinatesUtils.getCoordinate(indicator, toPosition);
+        int to = CoordinatesUtils.getCoordinate(indicator, fromPosition);
+        boolean isRightSide = fromPosition > toPosition;
+
+        int radiusPx = indicator.getRadius();
         long animationDuration = indicator.getAnimationDuration();
 
         BaseAnimation animation = valueController
-                .slide()
-                .with(from, to)
+                .worm()
+                .with(from, to, radiusPx, isRightSide)
                 .duration(animationDuration);
 
         if (isInteractive) {
@@ -152,20 +147,17 @@ public class AnimationController {
         runningAnimation = animation;
     }
 
-    private void wormAnimation() {
+    private void slideAnimation() {
         int lastSelectedPosition = indicator.getLastSelectedPosition();
         int selectedPosition = indicator.getSelectedPosition();
 
         int from = CoordinatesUtils.getCoordinate(indicator, lastSelectedPosition);
         int to = CoordinatesUtils.getCoordinate(indicator, selectedPosition);
-        boolean isRightSide = selectedPosition > lastSelectedPosition;
-
-        int radiusPx = indicator.getRadius();
         long animationDuration = indicator.getAnimationDuration();
 
         BaseAnimation animation = valueController
-                .worm()
-                .with(from, to, radiusPx, isRightSide)
+                .slide()
+                .with(from, to)
                 .duration(animationDuration);
 
         if (isInteractive) {

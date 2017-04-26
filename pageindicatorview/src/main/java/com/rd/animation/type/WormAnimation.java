@@ -4,14 +4,12 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import com.rd.animation.controller.ValueController;
 import com.rd.animation.data.type.WormAnimationValue;
 
 public class WormAnimation extends BaseAnimation<AnimatorSet> {
-
-    private WormAnimationValue value;
 
     int widthStart;
     int widthEnd;
@@ -20,6 +18,8 @@ public class WormAnimation extends BaseAnimation<AnimatorSet> {
 
     int rectLeftEdge;
     int rectRightEdge;
+
+    private WormAnimationValue value;
 
     public WormAnimation(@NonNull ValueController.UpdateListener listener) {
         super(listener);
@@ -54,63 +54,52 @@ public class WormAnimation extends BaseAnimation<AnimatorSet> {
             rectLeftEdge = widthStart - radius;
             rectRightEdge = widthStart + radius;
 
-            AnimationValues values = createAnimationValues(isRightSide);
+            RectValues values = createRectValues(isRightSide);
             long duration = animationDuration / 2;
 
-//            ValueAnimator straightAnimator = createWormAnimator(values.fromX, values.toX, duration, false);
-//            ValueAnimator reverseAnimator = createWormAnimator(values.reverseFromX, values.reverseToX, duration, true);
-//
-//            animator.playSequentially(straightAnimator, reverseAnimator);
+            ValueAnimator straightAnimator = createWormAnimator(values.fromX, values.toX, duration, false);
+            ValueAnimator reverseAnimator = createWormAnimator(values.reverseFromX, values.reverseToX, duration, true);
+            animator.playSequentially(straightAnimator, reverseAnimator);
         }
         return this;
     }
 
     @Override
     public WormAnimation progress(float progress) {
-        if (animator != null) {
-            long playTimeLeft = (long) (progress * animationDuration);
+        if (animator == null) {
+            return this;
+        }
 
-            for (Animator anim : animator.getChildAnimations()) {
-                ValueAnimator animator = (ValueAnimator) anim;
-                long animDuration = animator.getDuration();
+        long progressDuration = (long) (progress * animationDuration);
+        for (Animator anim : animator.getChildAnimations()) {
+            ValueAnimator animator = (ValueAnimator) anim;
+            long duration = animator.getDuration();
+            long setDuration = progressDuration;
 
-                if (playTimeLeft < 0) {
-                    playTimeLeft = 0;
-                }
-
-                long currPlayTime = playTimeLeft;
-                if (currPlayTime >= animDuration) {
-                    currPlayTime = animDuration;
-                }
-
-                if (animator.getValues() != null && animator.getValues().length > 0) {
-                    animator.setCurrentPlayTime(currPlayTime);
-                }
-                playTimeLeft -= currPlayTime;
+            if (setDuration > duration) {
+                setDuration = duration;
             }
+
+            animator.setCurrentPlayTime(setDuration);
+            progressDuration -= setDuration;
         }
 
         return this;
     }
 
-    ValueAnimator createWormAnimator(
+    private ValueAnimator createWormAnimator(
             int fromX,
             int toX,
             long duration,
-            final boolean isReverse,
-            @Nullable ValueAnimator.AnimatorUpdateListener listener) {
+            final boolean isReverse) {
 
         ValueAnimator anim = ValueAnimator.ofInt(fromX, toX);
         anim.setInterpolator(new AccelerateDecelerateInterpolator());
         anim.setDuration(duration);
         anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-//            @Override
+            @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 onAnimateUpdated(animation, isReverse);
-
-//                if (listener != null) {
-//                    listener.onWormAnimationUpdated(value);
-//                }
             }
         });
 
@@ -120,19 +109,23 @@ public class WormAnimation extends BaseAnimation<AnimatorSet> {
     private void onAnimateUpdated(@NonNull ValueAnimator animation, final boolean isReverse) {
         int rectEdge = (int) animation.getAnimatedValue();
 
-        if (!isReverse) {
-            if (isRightSide) {
+        if (isRightSide) {
+            if (!isReverse) {
                 value.setRectRightEdge(rectEdge);
             } else {
                 value.setRectLeftEdge(rectEdge);
             }
 
         } else {
-            if (isRightSide) {
+            if (!isReverse) {
                 value.setRectLeftEdge(rectEdge);
             } else {
                 value.setRectRightEdge(rectEdge);
             }
+        }
+
+        if (listener != null) {
+            listener.onValueUpdated(value);
         }
     }
 
@@ -158,7 +151,7 @@ public class WormAnimation extends BaseAnimation<AnimatorSet> {
     }
 
     @NonNull
-    AnimationValues createAnimationValues(boolean isRightSide) {
+    private RectValues createRectValues(boolean isRightSide) {
         int fromX;
         int toX;
 
@@ -180,10 +173,10 @@ public class WormAnimation extends BaseAnimation<AnimatorSet> {
             reverseToX = widthEnd + radius;
         }
 
-        return new AnimationValues(fromX, toX, reverseFromX, reverseToX);
+        return new RectValues(fromX, toX, reverseFromX, reverseToX);
     }
 
-    class AnimationValues {
+    private class RectValues {
 
         final int fromX;
         final int toX;
@@ -191,7 +184,7 @@ public class WormAnimation extends BaseAnimation<AnimatorSet> {
         final int reverseFromX;
         final int reverseToX;
 
-        AnimationValues(int fromX, int toX, int reverseFromX, int reverseToX) {
+        RectValues(int fromX, int toX, int reverseFromX, int reverseToX) {
             this.fromX = fromX;
             this.toX = toX;
 

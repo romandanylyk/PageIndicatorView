@@ -70,14 +70,16 @@ public class DrawController {
             case SCALE:
                 drawer.drawScale(canvas, value);
                 break;
-//
+
+            case WORM:
+                drawer.drawWorm(canvas, value);
+                break;
+
 //            case SLIDE:
 //                drawWithSlideAnimation(canvas, position, coordinateX, coordinateY);
 //                break;
 //
-//            case WORM:
-//                drawWithWormAnimation(canvas, coordinateX, coordinateY);
-//                break;
+
 //
 //            case FILL:
 //                drawWithFillAnimation(canvas, position, coordinateX, coordinateY);
