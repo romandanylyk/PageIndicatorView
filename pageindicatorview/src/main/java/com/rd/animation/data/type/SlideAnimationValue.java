@@ -4,13 +4,13 @@ import com.rd.animation.data.Value;
 
 public class SlideAnimationValue implements Value {
 
-    private int width;
+    private int coordinate;
 
-    public int getWidth() {
-        return width;
+    public int getCoordinate() {
+        return coordinate;
     }
 
-    public void setWidth(int width) {
-        this.width = width;
+    public void setCoordinate(int coordinate) {
+        this.coordinate = coordinate;
     }
 }

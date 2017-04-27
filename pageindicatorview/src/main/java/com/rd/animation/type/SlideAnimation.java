@@ -4,18 +4,19 @@ import android.animation.IntEvaluator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.animation.DecelerateInterpolator;
 import com.rd.animation.controller.ValueController;
 import com.rd.animation.data.type.SlideAnimationValue;
 
 public class SlideAnimation extends BaseAnimation<ValueAnimator> {
 
-    private static final String ANIMATION_X_COORDINATE = "ANIMATION_COORDINATE";
+    private static final String ANIMATION_COORDINATE = "ANIMATION_COORDINATE";
     private static final int COORDINATE_NONE = -1;
 
     private SlideAnimationValue value;
-    private int widthStart = COORDINATE_NONE;
-    private int widthEnd = COORDINATE_NONE;
+    private int coordinateStart = COORDINATE_NONE;
+    private int coordinateEnd = COORDINATE_NONE;
 
     public SlideAnimation(@NonNull ValueController.UpdateListener listener) {
         super(listener);
@@ -52,11 +53,11 @@ public class SlideAnimation extends BaseAnimation<ValueAnimator> {
     }
 
     @NonNull
-    public SlideAnimation with(int widthStart, int widthEnd) {
-        if (animator != null && hasChanges(widthStart, widthEnd)) {
+    public SlideAnimation with(int coordinateStart, int coordinateEnd) {
+        if (animator != null && hasChanges(coordinateStart, coordinateEnd)) {
 
-            this.widthStart = widthStart;
-            this.widthEnd = widthEnd;
+            this.coordinateStart = coordinateStart;
+            this.coordinateEnd = coordinateEnd;
 
             PropertyValuesHolder holder = createSlidePropertyHolder();
             animator.setValues(holder);
@@ -66,28 +67,29 @@ public class SlideAnimation extends BaseAnimation<ValueAnimator> {
     }
 
     private PropertyValuesHolder createSlidePropertyHolder() {
-        PropertyValuesHolder holder = PropertyValuesHolder.ofInt(ANIMATION_X_COORDINATE, widthStart, widthEnd);
+        PropertyValuesHolder holder = PropertyValuesHolder.ofInt(ANIMATION_COORDINATE, coordinateStart, coordinateEnd);
         holder.setEvaluator(new IntEvaluator());
 
         return holder;
     }
 
     private void onAnimateUpdated(@NonNull ValueAnimator animation) {
-        int width = (int) animation.getAnimatedValue(ANIMATION_X_COORDINATE);
-        value.setWidth(width);
+        int coordinate = (int) animation.getAnimatedValue(ANIMATION_COORDINATE);
+        value.setCoordinate(coordinate);
 
+        Log.e("TEST", String.valueOf(coordinate));
         if (listener != null) {
             listener.onValueUpdated(value);
         }
     }
 
     @SuppressWarnings("RedundantIfStatement")
-    private boolean hasChanges(int widthStart, int widthEnd) {
-        if (this.widthStart != widthStart) {
+    private boolean hasChanges(int coordinateStart, int coordinateEnd) {
+        if (this.coordinateStart != coordinateStart) {
             return true;
         }
 
-        if (this.widthEnd != widthEnd) {
+        if (this.coordinateEnd != coordinateEnd) {
             return true;
         }
 

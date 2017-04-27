@@ -13,6 +13,7 @@ public class Drawer {
     private ColorDrawer colorDrawer;
     private ScaleDrawer scaleDrawer;
     private WormDrawer wormDrawer;
+    private SlideDrawer slideDrawer;
     private FillDrawer fillDrawer;
 
     private int position;
@@ -28,6 +29,7 @@ public class Drawer {
         colorDrawer = new ColorDrawer(paint, indicator);
         scaleDrawer = new ScaleDrawer(paint, indicator);
         wormDrawer = new WormDrawer(paint, indicator);
+        slideDrawer = new SlideDrawer(paint, indicator);
         fillDrawer = new FillDrawer(paint, indicator);
     }
 
@@ -58,6 +60,12 @@ public class Drawer {
     public void drawWorm(@NonNull Canvas canvas, @NonNull Value value) {
         if (wormDrawer != null) {
             wormDrawer.draw(canvas, value, coordinateX, coordinateY);
+        }
+    }
+
+    public void drawSlide(@NonNull Canvas canvas, @NonNull Value value) {
+        if (slideDrawer != null) {
+            slideDrawer.draw(canvas, value, coordinateX, coordinateY);
         }
     }
 
