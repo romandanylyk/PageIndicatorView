@@ -123,12 +123,12 @@ public class AnimationController {
     }
 
     private void wormAnimation() {
-        int fromPosition = indicator.isInteractiveAnimation() ? indicator.getSelectingPosition() : indicator.getSelectedPosition();
-        int toPosition = indicator.isInteractiveAnimation() ? indicator.getSelectedPosition() : indicator.getLastSelectedPosition();
+        int fromPosition = indicator.isInteractiveAnimation() ? indicator.getSelectedPosition() : indicator.getLastSelectedPosition();
+        int toPosition = indicator.isInteractiveAnimation() ? indicator.getSelectingPosition() : indicator.getSelectedPosition();
 
-        int from = CoordinatesUtils.getCoordinate(indicator, toPosition);
-        int to = CoordinatesUtils.getCoordinate(indicator, fromPosition);
-        boolean isRightSide = fromPosition > toPosition;
+        int from = CoordinatesUtils.getCoordinate(indicator, fromPosition);
+        int to = CoordinatesUtils.getCoordinate(indicator, toPosition);
+        boolean isRightSide = toPosition > fromPosition;
 
         int radiusPx = indicator.getRadius();
         long animationDuration = indicator.getAnimationDuration();
@@ -191,12 +191,12 @@ public class AnimationController {
     }
 
     private void thinWormAnimation() {
-        int lastSelectedPosition = indicator.getLastSelectedPosition();
-        int selectedPosition = indicator.getSelectedPosition();
+        int fromPosition = indicator.isInteractiveAnimation() ? indicator.getSelectedPosition() : indicator.getLastSelectedPosition();
+        int toPosition = indicator.isInteractiveAnimation() ? indicator.getSelectingPosition() : indicator.getSelectedPosition();
 
-        int from = CoordinatesUtils.getCoordinate(indicator, lastSelectedPosition);
-        int to = CoordinatesUtils.getCoordinate(indicator, selectedPosition);
-        boolean isRightSide = selectedPosition > lastSelectedPosition;
+        int from = CoordinatesUtils.getCoordinate(indicator, fromPosition);
+        int to = CoordinatesUtils.getCoordinate(indicator, toPosition);
+        boolean isRightSide = toPosition > fromPosition;
 
         int radiusPx = indicator.getRadius();
         long animationDuration = indicator.getAnimationDuration();

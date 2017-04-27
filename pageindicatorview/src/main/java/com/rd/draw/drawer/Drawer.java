@@ -15,6 +15,7 @@ public class Drawer {
     private WormDrawer wormDrawer;
     private SlideDrawer slideDrawer;
     private FillDrawer fillDrawer;
+    private ThinWormDrawer thinWormDrawer;
 
     private int position;
     private int coordinateX;
@@ -31,6 +32,7 @@ public class Drawer {
         wormDrawer = new WormDrawer(paint, indicator);
         slideDrawer = new SlideDrawer(paint, indicator);
         fillDrawer = new FillDrawer(paint, indicator);
+        thinWormDrawer = new ThinWormDrawer(paint, indicator);
     }
 
     public void setup(int position, int coordinateX, int coordinateY) {
@@ -74,4 +76,11 @@ public class Drawer {
             fillDrawer.draw(canvas, value, position, coordinateX, coordinateY);
         }
     }
+
+    public void drawThinWorm(@NonNull Canvas canvas, @NonNull Value value) {
+        if (thinWormDrawer != null) {
+            thinWormDrawer.draw(canvas, value, coordinateX, coordinateY);
+        }
+    }
+
 }

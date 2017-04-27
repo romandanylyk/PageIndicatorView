@@ -4,15 +4,15 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import com.rd.animation.controller.ValueController;
 import com.rd.animation.data.type.WormAnimationValue;
 
 public class WormAnimation extends BaseAnimation<AnimatorSet> {
 
-    int widthStart;
-    int widthEnd;
+    int coordinateStart;
+    int coordinateEnd;
+
     int radius;
     boolean isRightSide;
 
@@ -41,24 +41,24 @@ public class WormAnimation extends BaseAnimation<AnimatorSet> {
         return this;
     }
 
-    public WormAnimation with(int widthStart, int widthEnd, int radius, boolean isRightSide) {
-        if (hasChanges(widthStart, widthEnd, radius, isRightSide)) {
+    public WormAnimation with(int coordinateStart, int coordinateEnd, int radius, boolean isRightSide) {
+        if (hasChanges(coordinateStart, coordinateEnd, radius, isRightSide)) {
             animator = createAnimator();
 
-            this.widthStart = widthStart;
-            this.widthEnd = widthEnd;
+            this.coordinateStart = coordinateStart;
+            this.coordinateEnd = coordinateEnd;
 
             this.radius = radius;
             this.isRightSide = isRightSide;
 
-            rectLeftEdge = widthStart - radius;
-            rectRightEdge = widthStart + radius;
+            rectLeftEdge = coordinateStart - radius;
+            rectRightEdge = coordinateStart + radius;
 
             RectValues values = createRectValues(isRightSide);
             long duration = animationDuration / 2;
 
-            ValueAnimator straightAnimator = createWormAnimator(values.fromX, values.toX, duration, false);
-            ValueAnimator reverseAnimator = createWormAnimator(values.reverseFromX, values.reverseToX, duration, true);
+            ValueAnimator straightAnimator = createWormAnimator(values.fromX, values.toX, duration, false, value);
+            ValueAnimator reverseAnimator = createWormAnimator(values.reverseFromX, values.reverseToX, duration, true, value);
             animator.playSequentially(straightAnimator, reverseAnimator);
         }
         return this;
@@ -87,26 +87,27 @@ public class WormAnimation extends BaseAnimation<AnimatorSet> {
         return this;
     }
 
-    private ValueAnimator createWormAnimator(
-            int fromX,
-            int toX,
+    ValueAnimator createWormAnimator(
+            int fromValue,
+            int toValue,
             long duration,
-            final boolean isReverse) {
+            final boolean isReverse,
+            final WormAnimationValue value) {
 
-        ValueAnimator anim = ValueAnimator.ofInt(fromX, toX);
+        ValueAnimator anim = ValueAnimator.ofInt(fromValue, toValue);
         anim.setInterpolator(new AccelerateDecelerateInterpolator());
         anim.setDuration(duration);
         anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                onAnimateUpdated(animation, isReverse);
+                onAnimateUpdated(value, animation, isReverse);
             }
         });
 
         return anim;
     }
 
-    private void onAnimateUpdated(@NonNull ValueAnimator animation, final boolean isReverse) {
+    private void onAnimateUpdated(@NonNull WormAnimationValue value, @NonNull ValueAnimator animation, final boolean isReverse) {
         int rectEdge = (int) animation.getAnimatedValue();
 
         if (isRightSide) {
@@ -130,12 +131,12 @@ public class WormAnimation extends BaseAnimation<AnimatorSet> {
     }
 
     @SuppressWarnings("RedundantIfStatement")
-    boolean hasChanges(int fromValue, int toValue, int radius, boolean isRightSide) {
-        if (this.widthStart != fromValue) {
+    boolean hasChanges(int coordinateStart, int coordinateEnd, int radius, boolean isRightSide) {
+        if (this.coordinateStart != coordinateStart) {
             return true;
         }
 
-        if (this.widthEnd != toValue) {
+        if (this.coordinateEnd != coordinateEnd) {
             return true;
         }
 
@@ -151,7 +152,7 @@ public class WormAnimation extends BaseAnimation<AnimatorSet> {
     }
 
     @NonNull
-    private RectValues createRectValues(boolean isRightSide) {
+    RectValues createRectValues(boolean isRightSide) {
         int fromX;
         int toX;
 
@@ -159,24 +160,24 @@ public class WormAnimation extends BaseAnimation<AnimatorSet> {
         int reverseToX;
 
         if (isRightSide) {
-            fromX = widthStart + radius;
-            toX = widthEnd + radius;
+            fromX = coordinateStart + radius;
+            toX = coordinateEnd + radius;
 
-            reverseFromX = widthStart - radius;
-            reverseToX = widthEnd - radius;
+            reverseFromX = coordinateStart - radius;
+            reverseToX = coordinateEnd - radius;
 
         } else {
-            fromX = widthStart - radius;
-            toX = widthEnd - radius;
+            fromX = coordinateStart - radius;
+            toX = coordinateEnd - radius;
 
-            reverseFromX = widthStart + radius;
-            reverseToX = widthEnd + radius;
+            reverseFromX = coordinateStart + radius;
+            reverseToX = coordinateEnd + radius;
         }
 
         return new RectValues(fromX, toX, reverseFromX, reverseToX);
     }
 
-    private class RectValues {
+    class RectValues {
 
         final int fromX;
         final int toX;

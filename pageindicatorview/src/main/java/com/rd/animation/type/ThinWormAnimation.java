@@ -8,12 +8,10 @@ import com.rd.animation.data.type.ThinWormAnimationValue;
 
 public class ThinWormAnimation extends WormAnimation {
 
-    private static final float PERCENTAGE_SIZE_DURATION_DELAY = 0.7f;
-    private static final float PERCENTAGE_REVERSE_HEIGHT_DELAY = 0.65f;
-    private static final float PERCENTAGE_HEIGHT_DURATION = 0.25f;
+    private static final float SIZE_FACTOR = 0.7f;
+    private static final float HEIGHT_FACTOR = 0.5f;
 
     private ThinWormAnimationValue value;
-    private int height;
 
     public ThinWormAnimation(@NonNull ValueController.UpdateListener listener) {
         super(listener);
@@ -27,34 +25,34 @@ public class ThinWormAnimation extends WormAnimation {
     }
 
     @Override
-    public WormAnimation with(int widthStart, int widthEnd, int radius, boolean isRightSide) {
-        if (hasChanges(widthStart, widthEnd, radius, isRightSide)) {
+    public WormAnimation with(int coordinateStart, int coordinateEnd, int radius, boolean isRightSide) {
+        if (hasChanges(coordinateStart, coordinateEnd, radius, isRightSide)) {
             animator = createAnimator();
 
-            this.widthStart = widthStart;
-            this.widthEnd = widthEnd;
+            this.coordinateStart = coordinateStart;
+            this.coordinateEnd = coordinateEnd;
 
             this.radius = radius;
-            this.height = radius * 2;
             this.isRightSide = isRightSide;
 
-            rectLeftEdge = widthStart - radius;
-            rectRightEdge = widthStart + radius;
+            int height = radius * 2;
+            rectLeftEdge = coordinateStart - radius;
+            rectRightEdge = coordinateStart + radius;
 
-            long straightSizeDuration = (long) (animationDuration * PERCENTAGE_SIZE_DURATION_DELAY);
+            RectValues values = createRectValues(isRightSide);
+            long straightSizeDuration = (long) (animationDuration * SIZE_FACTOR);
             long reverseSizeDuration = animationDuration;
 
             long straightHeightDelay = 0;
-            long reverseHeightDelay = (long) (animationDuration * PERCENTAGE_REVERSE_HEIGHT_DELAY);
+            long reverseHeightDelay = (long) (animationDuration * HEIGHT_FACTOR);
 
-//            AnimationValues values = createAnimationValues(isRightSide);
-//            ValueAnimator straightAnimator = createWormAnimator(values.fromX, values.toX, straightSizeDuration, false);
-//            ValueAnimator straightHeightAnimator = createHeightAnimator(height, height / 2, straightHeightDelay);
-//
-//            ValueAnimator reverseAnimator = createWormAnimator(values.reverseFromX, values.reverseToX, reverseSizeDuration, true);
-//            ValueAnimator reverseHeightAnimator = createHeightAnimator(height / 2, height, reverseHeightDelay);
-//
-//            animator.playTogether(straightAnimator, reverseAnimator, straightHeightAnimator, reverseHeightAnimator);
+            ValueAnimator straightAnimator = createWormAnimator(values.fromX, values.toX, straightSizeDuration, false, value);
+            ValueAnimator straightHeightAnimator = createHeightAnimator(height, radius, straightHeightDelay);
+
+            ValueAnimator reverseAnimator = createWormAnimator(values.reverseFromX, values.reverseToX, reverseSizeDuration, true, value);
+            ValueAnimator reverseHeightAnimator = createHeightAnimator(radius, height, reverseHeightDelay);
+
+            animator.playTogether(straightAnimator, reverseAnimator, straightHeightAnimator, reverseHeightAnimator);
         }
         return this;
     }
@@ -62,16 +60,12 @@ public class ThinWormAnimation extends WormAnimation {
     private ValueAnimator createHeightAnimator(int fromHeight, int toHeight, long startDelay) {
         ValueAnimator anim = ValueAnimator.ofInt(fromHeight, toHeight);
         anim.setInterpolator(new AccelerateDecelerateInterpolator());
-        anim.setDuration((long) (animationDuration * PERCENTAGE_HEIGHT_DURATION));
+        anim.setDuration((long) (animationDuration * HEIGHT_FACTOR));
         anim.setStartDelay(startDelay);
         anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 onAnimateUpdated(animation);
-
-                if (listener != null) {
-                    listener.onValueUpdated(value);
-                }
             }
         });
 
@@ -79,8 +73,11 @@ public class ThinWormAnimation extends WormAnimation {
     }
 
     private void onAnimateUpdated(@NonNull ValueAnimator animation) {
-        height = (int) animation.getAnimatedValue();
-        value.setHeight(height);
+        value.setHeight((int) animation.getAnimatedValue());
+
+        if (listener != null) {
+            listener.onValueUpdated(value);
+        }
     }
 
     @Override
@@ -88,7 +85,7 @@ public class ThinWormAnimation extends WormAnimation {
         if (animator != null) {
             long duration = (long) (progress * animationDuration);
             int size = animator.getChildAnimations().size();
-            long minus = (long) (animationDuration * PERCENTAGE_REVERSE_HEIGHT_DELAY);
+            long minus = (long) (animationDuration * HEIGHT_FACTOR);
 
             for (int i = 0; i < size; i++) {
                 ValueAnimator anim = (ValueAnimator) animator.getChildAnimations().get(i);

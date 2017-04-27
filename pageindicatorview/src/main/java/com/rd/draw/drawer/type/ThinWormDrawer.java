@@ -2,19 +2,15 @@ package com.rd.draw.drawer.type;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.RectF;
 import android.support.annotation.NonNull;
 import com.rd.animation.data.Value;
-import com.rd.animation.data.type.WormAnimationValue;
+import com.rd.animation.data.type.ThinWormAnimationValue;
 import com.rd.draw.data.Indicator;
 
-public class WormDrawer extends BaseDrawer {
+public class ThinWormDrawer extends WormDrawer {
 
-    public RectF rect;
-
-    public WormDrawer(@NonNull Paint paint, @NonNull Indicator indicator) {
+    public ThinWormDrawer(@NonNull Paint paint, @NonNull Indicator indicator) {
         super(paint, indicator);
-        rect = new RectF();
     }
 
     public void draw(
@@ -23,13 +19,14 @@ public class WormDrawer extends BaseDrawer {
             int coordinateX,
             int coordinateY) {
 
-        if (!(value instanceof WormAnimationValue)) {
+        if (!(value instanceof ThinWormAnimationValue)) {
             return;
         }
 
-        WormAnimationValue v = (WormAnimationValue) value;
+        ThinWormAnimationValue v = (ThinWormAnimationValue) value;
         int rectLeftEdge = v.getRectLeftEdge();
         int rectRightEdge = v.getRectRightEdge();
+        int height = v.getHeight() / 2;
 
         int radius = indicator.getRadius();
         int unselectedColor = indicator.getUnselectedColor();
@@ -37,8 +34,8 @@ public class WormDrawer extends BaseDrawer {
 
         rect.left = rectLeftEdge;
         rect.right = rectRightEdge;
-        rect.top = coordinateY - radius;
-        rect.bottom = coordinateY + radius;
+        rect.top = coordinateY - height;
+        rect.bottom = coordinateY + height;
 
         paint.setColor(unselectedColor);
         canvas.drawCircle(coordinateX, coordinateY, radius, paint);
