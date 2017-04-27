@@ -75,14 +75,12 @@ public class DrawController {
                 drawer.drawWorm(canvas, value);
                 break;
 
+            case FILL:
+                drawer.drawFill(canvas, value);
+                break;
+
 //            case SLIDE:
 //                drawWithSlideAnimation(canvas, position, coordinateX, coordinateY);
-//                break;
-//
-
-//
-//            case FILL:
-//                drawWithFillAnimation(canvas, position, coordinateX, coordinateY);
 //                break;
 //
 //            case THIN_WORM:

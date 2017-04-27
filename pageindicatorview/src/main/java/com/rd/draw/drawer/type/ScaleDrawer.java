@@ -1,4 +1,4 @@
-package com.rd.draw.drawer;
+package com.rd.draw.drawer.type;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -7,9 +7,9 @@ import com.rd.animation.data.Value;
 import com.rd.animation.data.type.ScaleAnimationValue;
 import com.rd.draw.data.Indicator;
 
-class ScaleDrawer extends BaseDrawer {
+public class ScaleDrawer extends BaseDrawer {
 
-    ScaleDrawer(@NonNull Paint paint, @NonNull Indicator indicator) {
+    public ScaleDrawer(@NonNull Paint paint, @NonNull Indicator indicator) {
         super(paint, indicator);
     }
 

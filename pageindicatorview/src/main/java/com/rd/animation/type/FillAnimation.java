@@ -4,6 +4,7 @@ import android.animation.IntEvaluator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.animation.DecelerateInterpolator;
 import com.rd.animation.controller.ValueController;
 import com.rd.animation.data.type.FillAnimationValue;
@@ -139,6 +140,7 @@ public class FillAnimation extends ColorAnimation {
         value.setStroke(stroke);
         value.setStrokeReverse(strokeReverse);
 
+        Log.e("TEST", "STROKE " + stroke + " RADIUS " + radius);
         if (listener != null) {
             listener.onValueUpdated(value);
         }

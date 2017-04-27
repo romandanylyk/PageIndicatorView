@@ -1,4 +1,4 @@
-package com.rd.draw.drawer;
+package com.rd.draw.drawer.type;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -10,7 +10,7 @@ public class BasicDrawer extends BaseDrawer {
 
     private Paint strokePaint;
 
-    BasicDrawer(@NonNull Paint paint, @NonNull Indicator indicator) {
+    public BasicDrawer(@NonNull Paint paint, @NonNull Indicator indicator) {
         super(paint, indicator);
 
         strokePaint = new Paint();

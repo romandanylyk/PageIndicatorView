@@ -1,4 +1,4 @@
-package com.rd.draw.drawer;
+package com.rd.draw.drawer.type;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -12,7 +12,7 @@ public class WormDrawer extends BaseDrawer {
 
     private RectF rect;
 
-    WormDrawer(@NonNull Paint paint, @NonNull Indicator indicator) {
+    public WormDrawer(@NonNull Paint paint, @NonNull Indicator indicator) {
         super(paint, indicator);
         rect = new RectF();
     }
@@ -20,7 +20,6 @@ public class WormDrawer extends BaseDrawer {
     public void draw(
             @NonNull Canvas canvas,
             @NonNull Value value,
-            int position,
             int coordinateX,
             int coordinateY) {
 

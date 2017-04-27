@@ -1,4 +1,4 @@
-package com.rd.draw.drawer;
+package com.rd.draw.drawer.type;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -7,13 +7,13 @@ import com.rd.animation.data.Value;
 import com.rd.animation.data.type.ColorAnimationValue;
 import com.rd.draw.data.Indicator;
 
-class ColorDrawer extends BaseDrawer {
+public class ColorDrawer extends BaseDrawer {
 
-    ColorDrawer(@NonNull Paint paint, @NonNull Indicator indicator) {
+    public ColorDrawer(@NonNull Paint paint, @NonNull Indicator indicator) {
         super(paint, indicator);
     }
 
-    void draw(@NonNull Canvas canvas,
+    public void draw(@NonNull Canvas canvas,
               @NonNull Value value,
               int position,
               int coordinateX,

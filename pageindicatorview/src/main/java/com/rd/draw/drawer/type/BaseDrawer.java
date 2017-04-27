@@ -1,4 +1,4 @@
-package com.rd.draw.drawer;
+package com.rd.draw.drawer.type;
 
 import android.graphics.Paint;
 import android.support.annotation.NonNull;

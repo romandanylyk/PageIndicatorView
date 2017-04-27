@@ -40,13 +40,13 @@ public class CoordinatesUtils {
         if (orientation == Orientation.HORIZONTAL) {
             int x = 0;
             for (int i = 0; i < count; i++) {
-                x += radiusPx;
+                x += radiusPx + (strokePx / 2);
 
                 if (position == i) {
                     return x;
                 }
 
-                x += radiusPx + paddingPx;
+                x += radiusPx + paddingPx + (strokePx / 2);
             }
 
             return x;

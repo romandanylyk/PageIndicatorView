@@ -22,7 +22,7 @@ public class MeasureController {
 
         if (count > 0) {
             int diameterSum = circleDiameterPx * count;
-            int strokeSum = (stroke * 2) * count;
+            int strokeSum = stroke * count;
             int paddingSum = padding * (count - 1);
             desiredWidth = diameterSum + strokeSum + paddingSum;
         }

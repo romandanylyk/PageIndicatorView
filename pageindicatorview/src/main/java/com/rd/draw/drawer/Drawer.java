@@ -5,6 +5,7 @@ import android.graphics.Paint;
 import android.support.annotation.NonNull;
 import com.rd.animation.data.Value;
 import com.rd.draw.data.Indicator;
+import com.rd.draw.drawer.type.*;
 
 public class Drawer {
 
@@ -12,6 +13,7 @@ public class Drawer {
     private ColorDrawer colorDrawer;
     private ScaleDrawer scaleDrawer;
     private WormDrawer wormDrawer;
+    private FillDrawer fillDrawer;
 
     private int position;
     private int coordinateX;
@@ -26,6 +28,7 @@ public class Drawer {
         colorDrawer = new ColorDrawer(paint, indicator);
         scaleDrawer = new ScaleDrawer(paint, indicator);
         wormDrawer = new WormDrawer(paint, indicator);
+        fillDrawer = new FillDrawer(paint, indicator);
     }
 
     public void setup(int position, int coordinateX, int coordinateY) {
@@ -54,7 +57,13 @@ public class Drawer {
 
     public void drawWorm(@NonNull Canvas canvas, @NonNull Value value) {
         if (wormDrawer != null) {
-            wormDrawer.draw(canvas, value, position, coordinateX, coordinateY);
+            wormDrawer.draw(canvas, value, coordinateX, coordinateY);
+        }
+    }
+
+    public void drawFill(@NonNull Canvas canvas, @NonNull Value value) {
+        if (fillDrawer != null) {
+            fillDrawer.draw(canvas, value, position, coordinateX, coordinateY);
         }
     }
 }
