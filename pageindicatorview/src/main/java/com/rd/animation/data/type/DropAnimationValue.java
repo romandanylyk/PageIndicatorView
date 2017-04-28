@@ -4,24 +4,24 @@ import com.rd.animation.data.Value;
 
 public class DropAnimationValue implements Value {
 
-    private int width;
-    private int height;
+    private int coordinateX;
+    private int coordinateY;
     private int radius;
 
-    public int getWidth() {
-        return width;
+    public int getCoordinateX() {
+        return coordinateX;
     }
 
-    public void setWidth(int width) {
-        this.width = width;
+    public void setCoordinateX(int coordinateX) {
+        this.coordinateX = coordinateX;
     }
 
-    public int getHeight() {
-        return height;
+    public int getCoordinateY() {
+        return coordinateY;
     }
 
-    public void setHeight(int height) {
-        this.height = height;
+    public void setCoordinateY(int coordinateY) {
+        this.coordinateY = coordinateY;
     }
 
     public int getRadius() {

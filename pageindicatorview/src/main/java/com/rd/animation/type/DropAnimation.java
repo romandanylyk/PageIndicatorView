@@ -4,19 +4,21 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import com.rd.animation.controller.ValueController;
 import com.rd.animation.data.type.DropAnimationValue;
 
 public class DropAnimation extends BaseAnimation<AnimatorSet> {
 
-    private DropAnimationValue value;
-    private enum AnimationType {Width, Height, Radius}
-
-    private int widthStart;
-    private int widthEnd;
+    private int coordinateStart;
+    private int coordinateEnd;
     private int center;
     private int radius;
+
+    private enum AnimationType {Width, Height, Radius}
+
+    private DropAnimationValue value;
 
     public DropAnimation(@NonNull ValueController.UpdateListener listener) {
         super(listener);
@@ -74,31 +76,33 @@ public class DropAnimation extends BaseAnimation<AnimatorSet> {
     }
 
     @SuppressWarnings("UnnecessaryLocalVariable")
-    public DropAnimation with(int widthStart, int widthEnd, int center, int radius) {
-        if (hasChanges(widthStart, widthEnd, center, radius)) {
+    public DropAnimation with(int coordinateStart, int coordinateEnd, int center, int radius) {
+        if (hasChanges(coordinateStart, coordinateEnd, center, radius)) {
             animator = createAnimator();
 
-            this.widthStart = widthStart;
-            this.widthEnd = widthEnd;
-
-            this.center = center;
+            this.coordinateStart = coordinateStart;
+            this.coordinateEnd = coordinateEnd;
             this.radius = radius;
 
-            int heightFromValue = center;
-            int heightToValue = center / 3;
+            int heightFromValue = center + radius;
+            int heightToValue = center - radius;
 
             int fromRadius = radius;
             int toRadius = (int) (radius / 1.5);
             long halfDuration = animationDuration / 2;
 
-            ValueAnimator widthAnimator = createValueAnimation(widthStart, widthEnd, animationDuration, AnimationType.Width);
+            ValueAnimator widthAnimator = createValueAnimation(coordinateStart, coordinateEnd, animationDuration, AnimationType.Width);
             ValueAnimator heightForwardAnimator = createValueAnimation(heightFromValue, heightToValue, halfDuration, AnimationType.Height);
-            ValueAnimator heightBackwardAnimator = createValueAnimation(heightToValue, heightFromValue, halfDuration, AnimationType.Height);
-
             ValueAnimator radiusForwardAnimator = createValueAnimation(fromRadius, toRadius, halfDuration, AnimationType.Radius);
+
+            ValueAnimator heightBackwardAnimator = createValueAnimation(heightToValue, heightFromValue, halfDuration, AnimationType.Height);
             ValueAnimator radiusBackwardAnimator = createValueAnimation(toRadius, fromRadius, halfDuration, AnimationType.Radius);
 
-            animator.play(heightForwardAnimator).with(radiusForwardAnimator).with(widthAnimator).before(heightBackwardAnimator).before(radiusBackwardAnimator);
+            animator.play(heightForwardAnimator)
+                    .with(radiusForwardAnimator)
+                    .with(widthAnimator)
+                    .before(heightBackwardAnimator)
+                    .before(radiusBackwardAnimator);
         }
 
         return this;
@@ -123,11 +127,11 @@ public class DropAnimation extends BaseAnimation<AnimatorSet> {
 
         switch (type) {
             case Width:
-                value.setWidth(frameValue);
+                value.setCoordinateX(frameValue);
                 break;
 
             case Height:
-                value.setWidth(frameValue);
+                value.setCoordinateY(frameValue);
                 break;
 
             case Radius:
@@ -135,18 +139,19 @@ public class DropAnimation extends BaseAnimation<AnimatorSet> {
                 break;
         }
 
+        Log.e("TEST", "X: " + value.getCoordinateX());
         if (listener != null) {
             listener.onValueUpdated(value);
         }
     }
 
     @SuppressWarnings("RedundantIfStatement")
-    private boolean hasChanges(int widthStart, int widthEnd, int center, int radius) {
-        if (this.widthStart != widthStart) {
+    private boolean hasChanges(int coordinateStart, int coordinateEnd, int center, int radius) {
+        if (this.coordinateStart != coordinateStart) {
             return true;
         }
 
-        if (this.widthEnd != widthEnd) {
+        if (this.coordinateEnd != coordinateEnd) {
             return true;
         }
 

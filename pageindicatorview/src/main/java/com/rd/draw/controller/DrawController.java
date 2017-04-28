@@ -87,10 +87,10 @@ public class DrawController {
                 drawer.drawThinWorm(canvas, value);
                 break;
 
-//            case DROP:
-//                drawWithDropAnimation(canvas, coordinateX, coordinateY);
-//                break;
-//
+            case DROP:
+                drawer.drawDrop(canvas, value);
+                break;
+//¬
 //            case SWAP:
 //                if (orientation == Orientation.HORIZONTAL)
 //                    drawWithSwapAnimation(canvas, position, coordinateX, coordinateY);

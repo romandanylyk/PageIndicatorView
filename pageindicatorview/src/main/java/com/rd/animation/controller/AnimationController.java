@@ -216,11 +216,12 @@ public class AnimationController {
     }
 
     private void dropAnimation() {
-        int lastSelectedPosition = indicator.getLastSelectedPosition();
-        int selectedPosition = indicator.getSelectedPosition();
+        int fromPosition = indicator.isInteractiveAnimation() ? indicator.getSelectedPosition() : indicator.getLastSelectedPosition();
+        int toPosition = indicator.isInteractiveAnimation() ? indicator.getSelectingPosition() : indicator.getSelectedPosition();
 
-        int from = CoordinatesUtils.getCoordinate(indicator, lastSelectedPosition);
-        int to = CoordinatesUtils.getCoordinate(indicator, selectedPosition);
+        int from = CoordinatesUtils.getCoordinate(indicator, fromPosition);
+        int to = CoordinatesUtils.getCoordinate(indicator, toPosition);
+        int center = indicator.getHeight() / 2;
 
         long animationDuration = indicator.getAnimationDuration();
         int radiusPx = indicator.getRadius();
@@ -228,7 +229,7 @@ public class AnimationController {
         BaseAnimation animation = valueController
                 .drop()
                 .duration(animationDuration)
-                .with(from, to, to, radiusPx);
+                .with(from, to, center, radiusPx);
 
         if (isInteractive) {
             animation.progress(progress);

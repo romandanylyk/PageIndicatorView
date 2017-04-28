@@ -2,7 +2,6 @@ package com.rd.animation.type;
 
 import android.animation.ValueAnimator;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import com.rd.animation.controller.ValueController;
 import com.rd.animation.data.type.ThinWormAnimationValue;
@@ -81,8 +80,6 @@ public class ThinWormAnimation extends WormAnimation {
 
     @Override
     public ThinWormAnimation progress(float progress) {
-        Log.e("TEST", String.valueOf(progress));
-
         if (animator != null) {
             long progressDuration = (long) (progress * animationDuration);
             int size = animator.getChildAnimations().size();
