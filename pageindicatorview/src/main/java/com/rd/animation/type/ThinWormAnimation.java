@@ -2,14 +2,12 @@ package com.rd.animation.type;
 
 import android.animation.ValueAnimator;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import com.rd.animation.controller.ValueController;
 import com.rd.animation.data.type.ThinWormAnimationValue;
 
 public class ThinWormAnimation extends WormAnimation {
-
-    private static final float SIZE_FACTOR = 0.7f;
-    private static final float HEIGHT_FACTOR = 0.5f;
 
     private ThinWormAnimationValue value;
 
@@ -40,28 +38,29 @@ public class ThinWormAnimation extends WormAnimation {
             rectRightEdge = coordinateStart + radius;
 
             RectValues values = createRectValues(isRightSide);
-            long straightSizeDuration = (long) (animationDuration * SIZE_FACTOR);
-            long reverseSizeDuration = animationDuration;
+            long sizeDuration = (long) (animationDuration * 0.8);
+            long reverseDelay = (long) (animationDuration * 0.2);
 
-            long straightHeightDelay = 0;
-            long reverseHeightDelay = (long) (animationDuration * HEIGHT_FACTOR);
+            long heightDuration = (long) (animationDuration * 0.5);
+            long reverseHeightDelay = (long) (animationDuration * 0.5);
 
-            ValueAnimator straightAnimator = createWormAnimator(values.fromX, values.toX, straightSizeDuration, false, value);
-            ValueAnimator straightHeightAnimator = createHeightAnimator(height, radius, straightHeightDelay);
+            ValueAnimator straightAnimator = createWormAnimator(values.fromX, values.toX, sizeDuration, false, value);
+            ValueAnimator reverseAnimator = createWormAnimator(values.reverseFromX, values.reverseToX, sizeDuration, true, value);
+            reverseAnimator.setStartDelay(reverseDelay);
 
-            ValueAnimator reverseAnimator = createWormAnimator(values.reverseFromX, values.reverseToX, reverseSizeDuration, true, value);
-            ValueAnimator reverseHeightAnimator = createHeightAnimator(radius, height, reverseHeightDelay);
+            ValueAnimator straightHeightAnimator = createHeightAnimator(height, radius, heightDuration);
+            ValueAnimator reverseHeightAnimator = createHeightAnimator(radius, height, heightDuration);
+            reverseHeightAnimator.setStartDelay(reverseHeightDelay);
 
             animator.playTogether(straightAnimator, reverseAnimator, straightHeightAnimator, reverseHeightAnimator);
         }
         return this;
     }
 
-    private ValueAnimator createHeightAnimator(int fromHeight, int toHeight, long startDelay) {
+    private ValueAnimator createHeightAnimator(int fromHeight, int toHeight, long duration) {
         ValueAnimator anim = ValueAnimator.ofInt(fromHeight, toHeight);
         anim.setInterpolator(new AccelerateDecelerateInterpolator());
-        anim.setDuration((long) (animationDuration * HEIGHT_FACTOR));
-        anim.setStartDelay(startDelay);
+        anim.setDuration(duration);
         anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
@@ -82,29 +81,31 @@ public class ThinWormAnimation extends WormAnimation {
 
     @Override
     public ThinWormAnimation progress(float progress) {
+        Log.e("TEST", String.valueOf(progress));
+
         if (animator != null) {
-            long duration = (long) (progress * animationDuration);
+            long progressDuration = (long) (progress * animationDuration);
             int size = animator.getChildAnimations().size();
-            long minus = (long) (animationDuration * HEIGHT_FACTOR);
 
             for (int i = 0; i < size; i++) {
                 ValueAnimator anim = (ValueAnimator) animator.getChildAnimations().get(i);
 
-                if (i == 3) {
-                    if (duration < minus) {
-                        break;
-                    } else {
-                        duration -= minus;
-                    }
+                long setDuration = progressDuration - anim.getStartDelay();
+                long duration = anim.getDuration();
+
+                if (setDuration > duration) {
+                    setDuration = duration;
+
+                } else if (setDuration < 0) {
+                    setDuration = 0;
                 }
 
-                long currPlayTime = duration;
-                if (currPlayTime >= anim.getDuration()) {
-                    currPlayTime = anim.getDuration();
+                if (i == size - 1 && setDuration <= 0) {
+                    continue;
                 }
 
                 if (anim.getValues() != null && anim.getValues().length > 0) {
-                    anim.setCurrentPlayTime(currPlayTime);
+                    anim.setCurrentPlayTime(setDuration);
                 }
             }
         }
