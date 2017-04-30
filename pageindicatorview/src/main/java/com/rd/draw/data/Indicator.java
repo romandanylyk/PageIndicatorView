@@ -9,6 +9,9 @@ public class Indicator {
     public static final int MIN_COUNT = 1;
     public static final int COUNT_NONE = -1;
 
+    public static final int DEFAULT_RADIUS_DP = 6;
+    public static final int DEFAULT_PADDING_DP = 8;
+
     private int height;
     private int width;
 
@@ -31,6 +34,8 @@ public class Indicator {
     private int selectedPosition;
     private int selectingPosition;
     private int lastSelectedPosition;
+
+    private int viewPagerId;
 
     private Orientation orientation;
     private AnimationType animationType;
@@ -198,5 +203,13 @@ public class Indicator {
 
     public void setRtlMode(RtlMode rtlMode) {
         this.rtlMode = rtlMode;
+    }
+
+    public int getViewPagerId() {
+        return viewPagerId;
+    }
+
+    public void setViewPagerId(int viewPagerId) {
+        this.viewPagerId = viewPagerId;
     }
 }

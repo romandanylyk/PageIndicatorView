@@ -3,12 +3,9 @@ package com.rd;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.database.DataSetObserver;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.os.Build;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.text.TextUtilsCompat;
 import android.support.v4.view.ViewCompat;
@@ -20,22 +17,15 @@ import com.rd.animation.type.*;
 import com.rd.draw.data.Indicator;
 import com.rd.draw.data.Orientation;
 import com.rd.draw.data.RtlMode;
-import com.rd.pageindicatorview.R;
-import com.rd.utils.AttributeUtils;
 import com.rd.utils.CoordinatesUtils;
 import com.rd.utils.DensityUtils;
 import com.rd.utils.IdUtils;
 
 public class PageIndicatorView2 extends View implements ViewPager.OnPageChangeListener, IndicatorManager.Listener {
 
-    private static final int DEFAULT_RADIUS_DP = 6;
-    private static final int DEFAULT_PADDING_DP = 8;
-
     private IndicatorManager manager;
     private DataSetObserver setObserver;
-
     private ViewPager viewPager;
-    private int viewPagerId;
 
     public PageIndicatorView2(Context context) {
         super(context);
@@ -504,9 +494,9 @@ public class PageIndicatorView2 extends View implements ViewPager.OnPageChangeLi
     }
 
     private void init(@Nullable AttributeSet attrs) {
-        manager = new IndicatorManager(this);
         setupId();
-        initAttributes(attrs);
+        manager = new IndicatorManager(this);
+        manager.drawer().initAttributes(getContext(), attrs);
     }
 
     private void setupId() {
@@ -515,118 +505,6 @@ public class PageIndicatorView2 extends View implements ViewPager.OnPageChangeLi
         }
     }
 
-    private void initAttributes(@Nullable AttributeSet attrs) {
-        TypedArray typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.PageIndicatorView2, 0, 0);
-        initCountAttribute(typedArray);
-        initColorAttribute(typedArray);
-        initAnimationAttribute(typedArray);
-        initSizeAttribute(typedArray);
-        typedArray.recycle();
-    }
-
-    private void initCountAttribute(@NonNull TypedArray typedArray) {
-        viewPagerId = typedArray.getResourceId(R.styleable.PageIndicatorView2_piv_viewPager, 0);
-
-        boolean autoVisibility = typedArray.getBoolean(R.styleable.PageIndicatorView2_piv_autoVisibility, true);
-        boolean dynamicCount = typedArray.getBoolean(R.styleable.PageIndicatorView2_piv_dynamicCount, false);
-        int count = typedArray.getInt(R.styleable.PageIndicatorView2_piv_count, Indicator.COUNT_NONE);
-
-        if (count == Indicator.COUNT_NONE) {
-            count = Indicator.DEFAULT_COUNT;
-        }
-
-        int position = typedArray.getInt(R.styleable.PageIndicatorView2_piv_select, 0);
-        if (position < 0) {
-            position = 0;
-        } else if (count > 0 && position > count - 1) {
-            position = count - 1;
-        }
-
-        Indicator indicator = manager.indicator();
-        indicator.setAutoVisibility(autoVisibility);
-        indicator.setDynamicCount(dynamicCount);
-        indicator.setCount(count);
-
-        indicator.setSelectedPosition(position);
-        indicator.setSelectingPosition(position);
-        indicator.setLastSelectedPosition(position);
-    }
-
-
-    private void initColorAttribute(@NonNull TypedArray typedArray) {
-        int unselectedColor = typedArray.getColor(R.styleable.PageIndicatorView2_piv_unselectedColor, Color.parseColor(ColorAnimation.DEFAULT_UNSELECTED_COLOR));
-        int selectedColor = typedArray.getColor(R.styleable.PageIndicatorView2_piv_selectedColor, Color.parseColor(ColorAnimation.DEFAULT_SELECTED_COLOR));
-
-        Indicator indicator = manager.indicator();
-        indicator.setUnselectedColor(unselectedColor);
-        indicator.setSelectedColor(selectedColor);
-    }
-
-    private void findViewPager() {
-        if (getContext() instanceof Activity) {
-            Activity activity = (Activity) getContext();
-            View view = activity.findViewById(viewPagerId);
-
-            if (view != null && view instanceof ViewPager) {
-                setViewPager((ViewPager) view);
-            }
-        }
-    }
-
-    private void initAnimationAttribute(@NonNull TypedArray typedArray) {
-        int animationDuration = typedArray.getInt(R.styleable.PageIndicatorView2_piv_animationDuration, BaseAnimation.DEFAULT_ANIMATION_TIME);
-        boolean interactiveAnimation = typedArray.getBoolean(R.styleable.PageIndicatorView2_piv_interactiveAnimation, false);
-
-        int animIndex = typedArray.getInt(R.styleable.PageIndicatorView2_piv_animationType, AnimationType.NONE.ordinal());
-        AnimationType animationType = AttributeUtils.getAnimationType(animIndex);
-
-        int rtlIndex = typedArray.getInt(R.styleable.PageIndicatorView2_piv_rtl_mode, RtlMode.Off.ordinal());
-        RtlMode rtlMode = AttributeUtils.getRtlMode(rtlIndex);
-
-        Indicator indicator = manager.indicator();
-        indicator.setAnimationDuration(animationDuration);
-        indicator.setInteractiveAnimation(interactiveAnimation);
-        indicator.setAnimationType(animationType);
-        indicator.setRtlMode(rtlMode);
-    }
-
-    private void initSizeAttribute(@NonNull TypedArray typedArray) {
-        int orientationIndex = typedArray.getInt(R.styleable.PageIndicatorView2_piv_orientation, Orientation.HORIZONTAL.ordinal());
-        Orientation orientation;
-
-        if (orientationIndex == 0) {
-            orientation = Orientation.HORIZONTAL;
-        } else {
-            orientation = Orientation.VERTICAL;
-        }
-
-        int radius = (int) typedArray.getDimension(R.styleable.PageIndicatorView2_piv_radius, DensityUtils.dpToPx(DEFAULT_RADIUS_DP));
-        int padding = (int) typedArray.getDimension(R.styleable.PageIndicatorView2_piv_padding, DensityUtils.dpToPx(DEFAULT_PADDING_DP));
-
-        float scaleFactor = typedArray.getFloat(R.styleable.PageIndicatorView2_piv_scaleFactor, ScaleAnimation.DEFAULT_SCALE_FACTOR);
-        if (scaleFactor < ScaleAnimation.MIN_SCALE_FACTOR) {
-            scaleFactor = ScaleAnimation.MIN_SCALE_FACTOR;
-
-        } else if (scaleFactor > ScaleAnimation.MAX_SCALE_FACTOR) {
-            scaleFactor = ScaleAnimation.MAX_SCALE_FACTOR;
-        }
-
-        int stroke = (int) typedArray.getDimension(R.styleable.PageIndicatorView2_piv_strokeWidth, DensityUtils.dpToPx(FillAnimation.DEFAULT_STROKE_DP));
-        if (stroke > radius) {
-            stroke = radius;
-        }
-
-        Indicator indicator = manager.indicator();
-        if (indicator.getAnimationType() != AnimationType.FILL) {
-            stroke = 0;
-        }
-
-        indicator.setRadius(radius);
-        indicator.setOrientation(orientation);
-        indicator.setPadding(padding);
-        indicator.setScaleFactor(scaleFactor);
-        indicator.setStroke(stroke);
-    }
 
     private void registerSetObserver() {
         if (setObserver != null || viewPager == null || viewPager.getAdapter() == null) {
@@ -750,5 +628,17 @@ public class PageIndicatorView2 extends View implements ViewPager.OnPageChangeLi
 
     private boolean isViewMeasured() {
         return getMeasuredHeight() != 0 || getMeasuredWidth() != 0;
+    }
+
+    private void findViewPager() {
+        if (getContext() instanceof Activity) {
+            Activity activity = (Activity) getContext();
+            int viewPagerId = manager.indicator().getViewPagerId();
+
+            View view = activity.findViewById(viewPagerId);
+            if (view != null && view instanceof ViewPager) {
+                setViewPager((ViewPager) view);
+            }
+        }
     }
 }
