@@ -11,11 +11,13 @@ import com.rd.animation.data.type.SwapAnimationValue;
 public class SwapAnimation extends BaseAnimation<ValueAnimator> {
 
     private static final String ANIMATION_COORDINATE = "ANIMATION_COORDINATE";
+    private static final String ANIMATION_COORDINATE_REVERSE = "ANIMATION_COORDINATE_REVERSE";
     private static final int COORDINATE_NONE = -1;
 
+    private int coordinateStart = COORDINATE_NONE;
+    private int coordinateEnd = COORDINATE_NONE;
+
     private SwapAnimationValue value;
-    private int widthStart = COORDINATE_NONE;
-    private int widthEnd = COORDINATE_NONE;
 
     public SwapAnimation(@NonNull ValueController.UpdateListener listener) {
         super(listener);
@@ -52,20 +54,21 @@ public class SwapAnimation extends BaseAnimation<ValueAnimator> {
     }
 
     @NonNull
-    public SwapAnimation with(int widthStart, int widthEnd) {
-        if (animator != null && hasChanges(widthStart, widthEnd)) {
-            this.widthStart = widthStart;
-            this.widthEnd = widthEnd;
+    public SwapAnimation with(int coordinateStart, int coordinateEnd) {
+        if (animator != null && hasChanges(coordinateStart, coordinateEnd)) {
+            this.coordinateStart = coordinateStart;
+            this.coordinateEnd = coordinateEnd;
 
-            PropertyValuesHolder holder = createColorPropertyHolder();
-            animator.setValues(holder);
+            PropertyValuesHolder holder = createColorPropertyHolder(ANIMATION_COORDINATE, coordinateStart, coordinateEnd);
+            PropertyValuesHolder holderReverse = createColorPropertyHolder(ANIMATION_COORDINATE_REVERSE, coordinateEnd, coordinateStart);
+            animator.setValues(holder, holderReverse);
         }
 
         return this;
     }
 
-    private PropertyValuesHolder createColorPropertyHolder() {
-        PropertyValuesHolder holder = PropertyValuesHolder.ofInt(ANIMATION_COORDINATE, widthStart, widthEnd);
+    private PropertyValuesHolder createColorPropertyHolder(String propertyName, int startValue, int endValue) {
+        PropertyValuesHolder holder = PropertyValuesHolder.ofInt(propertyName, startValue, endValue);
         holder.setEvaluator(new IntEvaluator());
 
         return holder;
@@ -73,7 +76,10 @@ public class SwapAnimation extends BaseAnimation<ValueAnimator> {
 
     private void onAnimateUpdated(@NonNull ValueAnimator animation) {
         int coordinate = (int) animation.getAnimatedValue(ANIMATION_COORDINATE);
-        value.setWidth(coordinate);
+        int coordinateReverse = (int) animation.getAnimatedValue(ANIMATION_COORDINATE_REVERSE);
+
+        value.setCoordinate(coordinate);
+        value.setCoordinateReverse(coordinateReverse);
 
         if (listener != null) {
             listener.onValueUpdated(value);
@@ -81,12 +87,12 @@ public class SwapAnimation extends BaseAnimation<ValueAnimator> {
     }
 
     @SuppressWarnings("RedundantIfStatement")
-    private boolean hasChanges(int widthStart, int widthEnd) {
-        if (this.widthStart != widthStart) {
+    private boolean hasChanges(int coordinateStart, int coordinateEnd) {
+        if (this.coordinateStart != coordinateStart) {
             return true;
         }
 
-        if (this.widthEnd != widthEnd) {
+        if (this.coordinateEnd != coordinateEnd) {
             return true;
         }
 

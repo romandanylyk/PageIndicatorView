@@ -90,13 +90,10 @@ public class DrawController {
             case DROP:
                 drawer.drawDrop(canvas, value);
                 break;
-//¬
-//            case SWAP:
-//                if (orientation == Orientation.HORIZONTAL)
-//                    drawWithSwapAnimation(canvas, position, coordinateX, coordinateY);
-//                else
-//                    drawWithSwapAnimationVertically(canvas, position, coordinateX, coordinateY);
-//                break;
+
+            case SWAP:
+                drawer.drawSwap(canvas, value);
+                break;
         }
     }
 }

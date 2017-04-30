@@ -4,13 +4,22 @@ import com.rd.animation.data.Value;
 
 public class SwapAnimationValue implements Value {
 
-    private int width;
+    private int coordinate;
+    private int coordinateReverse;
 
-    public int getWidth() {
-        return width;
+    public int getCoordinate() {
+        return coordinate;
     }
 
-    public void setWidth(int width) {
-        this.width = width;
+    public void setCoordinate(int coordinate) {
+        this.coordinate = coordinate;
+    }
+
+    public int getCoordinateReverse() {
+        return coordinateReverse;
+    }
+
+    public void setCoordinateReverse(int coordinateReverse) {
+        this.coordinateReverse = coordinateReverse;
     }
 }

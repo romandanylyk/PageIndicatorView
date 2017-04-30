@@ -241,11 +241,11 @@ public class AnimationController {
     }
 
     private void swapAnimation() {
-        int lastSelectedPosition = indicator.getLastSelectedPosition();
-        int selectedPosition = indicator.getSelectedPosition();
+        int fromPosition = indicator.isInteractiveAnimation() ? indicator.getSelectedPosition() : indicator.getLastSelectedPosition();
+        int toPosition = indicator.isInteractiveAnimation() ? indicator.getSelectingPosition() : indicator.getSelectedPosition();
 
-        int from = CoordinatesUtils.getCoordinate(indicator, lastSelectedPosition);
-        int to = CoordinatesUtils.getCoordinate(indicator, selectedPosition);
+        int from = CoordinatesUtils.getCoordinate(indicator, fromPosition);
+        int to = CoordinatesUtils.getCoordinate(indicator, toPosition);
         long animationDuration = indicator.getAnimationDuration();
 
         BaseAnimation animation = valueController
