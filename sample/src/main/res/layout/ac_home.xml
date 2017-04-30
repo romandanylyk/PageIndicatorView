@@ -14,17 +14,15 @@
         android:layout_height="match_parent" />
 
     <com.rd.PageIndicatorView2
-        android:id="@+id/pageindicatorview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="50dp"
-        attrs:piv_animationType="swap"
-        attrs:piv_strokeWidth="1dp"
-        attrs:piv_count="4"
-        attrs:piv_padding="12dp"
+        android:layout_marginBottom="48dp"
+        attrs:piv_animationType="thinWorm"
         attrs:piv_interactiveAnimation="true"
-        attrs:piv_radius="8dp" />
+        attrs:piv_padding="12dp"
+        attrs:piv_radius="8dp"
+        attrs:piv_viewPager="@id/viewPager" />
 
 </RelativeLayout>

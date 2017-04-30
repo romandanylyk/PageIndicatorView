@@ -6,6 +6,7 @@ import android.content.Context;
 import android.database.DataSetObserver;
 import android.graphics.Canvas;
 import android.os.Build;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.text.TextUtilsCompat;
 import android.support.v4.view.ViewCompat;
@@ -16,6 +17,7 @@ import android.view.View;
 import com.rd.animation.type.*;
 import com.rd.draw.data.Indicator;
 import com.rd.draw.data.Orientation;
+import com.rd.draw.data.PositionSavedState;
 import com.rd.draw.data.RtlMode;
 import com.rd.utils.CoordinatesUtils;
 import com.rd.utils.DensityUtils;
@@ -58,6 +60,32 @@ public class PageIndicatorView2 extends View implements ViewPager.OnPageChangeLi
     protected void onDetachedFromWindow() {
         unRegisterSetObserver();
         super.onDetachedFromWindow();
+    }
+
+    @Override
+    public Parcelable onSaveInstanceState() {
+        Indicator indicator = manager.indicator();
+        PositionSavedState positionSavedState = new PositionSavedState(super.onSaveInstanceState());
+        positionSavedState.setSelectedPosition(indicator.getSelectedPosition());
+        positionSavedState.setSelectingPosition(indicator.getSelectingPosition());
+        positionSavedState.setLastSelectedPosition(indicator.getLastSelectedPosition());
+
+        return positionSavedState;
+    }
+
+    @Override
+    public void onRestoreInstanceState(Parcelable state) {
+        if (state instanceof PositionSavedState) {
+            Indicator indicator = manager.indicator();
+            PositionSavedState positionSavedState = (PositionSavedState) state;
+            indicator.setSelectedPosition(positionSavedState.getSelectedPosition());
+            indicator.setSelectingPosition(positionSavedState.getSelectingPosition());
+            indicator.setLastSelectedPosition(positionSavedState.getLastSelectedPosition());
+            super.onRestoreInstanceState(positionSavedState.getSuperState());
+
+        } else {
+            super.onRestoreInstanceState(state);
+        }
     }
 
     @SuppressWarnings("UnnecessaryLocalVariable")

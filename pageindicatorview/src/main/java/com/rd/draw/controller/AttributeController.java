@@ -67,8 +67,11 @@ public class AttributeController {
     }
 
     private void initAnimationAttribute(@NonNull TypedArray typedArray) {
-        int animationDuration = typedArray.getInt(R.styleable.PageIndicatorView2_piv_animationDuration, BaseAnimation.DEFAULT_ANIMATION_TIME);
         boolean interactiveAnimation = typedArray.getBoolean(R.styleable.PageIndicatorView2_piv_interactiveAnimation, false);
+        int animationDuration = typedArray.getInt(R.styleable.PageIndicatorView2_piv_animationDuration, BaseAnimation.DEFAULT_ANIMATION_TIME);
+        if (animationDuration < 0) {
+            animationDuration = 0;
+        }
 
         int animIndex = typedArray.getInt(R.styleable.PageIndicatorView2_piv_animationType, AnimationType.NONE.ordinal());
         AnimationType animationType = getAnimationType(animIndex);
@@ -93,7 +96,14 @@ public class AttributeController {
         }
 
         int radius = (int) typedArray.getDimension(R.styleable.PageIndicatorView2_piv_radius, DensityUtils.dpToPx(Indicator.DEFAULT_RADIUS_DP));
+        if (radius < 0) {
+            radius = 0;
+        }
+
         int padding = (int) typedArray.getDimension(R.styleable.PageIndicatorView2_piv_padding, DensityUtils.dpToPx(Indicator.DEFAULT_PADDING_DP));
+        if (padding < 0) {
+            padding = 0;
+        }
 
         float scaleFactor = typedArray.getFloat(R.styleable.PageIndicatorView2_piv_scaleFactor, ScaleAnimation.DEFAULT_SCALE_FACTOR);
         if (scaleFactor < ScaleAnimation.MIN_SCALE_FACTOR) {
