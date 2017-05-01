@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Pair;
 import com.rd.animation.data.Value;
 import com.rd.draw.controller.AttributeController;
 import com.rd.draw.controller.DrawController;
@@ -42,12 +43,8 @@ public class DrawManager {
         drawController.draw(canvas);
     }
 
-    public int measureViewWidth(int widthMeasureSpec) {
-        return measureController.measureViewWidth(indicator, widthMeasureSpec);
-    }
-
-    public int measureViewHeight(int heightMeasureSpec) {
-        return measureController.measureViewHeight(indicator, heightMeasureSpec);
+    public Pair<Integer, Integer> measureViewSize(int widthMeasureSpec, int heightMeasureSpec) {
+        return measureController.measureViewSize(indicator, widthMeasureSpec, heightMeasureSpec);
     }
 
     public void initAttributes(@NonNull Context context, @Nullable AttributeSet attrs) {

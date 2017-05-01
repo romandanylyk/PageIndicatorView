@@ -112,16 +112,16 @@ public class WormAnimation extends BaseAnimation<AnimatorSet> {
 
         if (isRightSide) {
             if (!isReverse) {
-                value.setRectRightEdge(rectEdge);
+                value.setRectRight(rectEdge);
             } else {
-                value.setRectLeftEdge(rectEdge);
+                value.setRectStart(rectEdge);
             }
 
         } else {
             if (!isReverse) {
-                value.setRectLeftEdge(rectEdge);
+                value.setRectStart(rectEdge);
             } else {
-                value.setRectRightEdge(rectEdge);
+                value.setRectRight(rectEdge);
             }
         }
 

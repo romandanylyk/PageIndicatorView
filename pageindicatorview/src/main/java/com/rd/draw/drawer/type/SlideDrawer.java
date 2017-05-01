@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import com.rd.animation.data.Value;
 import com.rd.animation.data.type.SlideAnimationValue;
 import com.rd.draw.data.Indicator;
+import com.rd.draw.data.Orientation;
 
 public class SlideDrawer extends BaseDrawer {
 
@@ -26,13 +27,17 @@ public class SlideDrawer extends BaseDrawer {
         SlideAnimationValue v = (SlideAnimationValue) value;
         int coordinate = v.getCoordinate();
         int unselectedColor = indicator.getUnselectedColor();
-        int selectedColor = indicator.getSelectedColor();;
+        int selectedColor = indicator.getSelectedColor();
         int radius = indicator.getRadius();
 
         paint.setColor(unselectedColor);
         canvas.drawCircle(coordinateX, coordinateY, radius, paint);
 
         paint.setColor(selectedColor);
-        canvas.drawCircle(coordinate, coordinateY, radius, paint);
+        if (indicator.getOrientation() == Orientation.HORIZONTAL) {
+            canvas.drawCircle(coordinate, coordinateY, radius, paint);
+        } else {
+            canvas.drawCircle(coordinateX, coordinate, radius, paint);
+        }
     }
 }

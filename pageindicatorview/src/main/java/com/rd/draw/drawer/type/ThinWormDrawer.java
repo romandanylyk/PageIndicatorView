@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import com.rd.animation.data.Value;
 import com.rd.animation.data.type.ThinWormAnimationValue;
 import com.rd.draw.data.Indicator;
+import com.rd.draw.data.Orientation;
 
 public class ThinWormDrawer extends WormDrawer {
 
@@ -24,18 +25,26 @@ public class ThinWormDrawer extends WormDrawer {
         }
 
         ThinWormAnimationValue v = (ThinWormAnimationValue) value;
-        int rectLeftEdge = v.getRectLeftEdge();
-        int rectRightEdge = v.getRectRightEdge();
+        int rectStart = v.getRectStart();
+        int rectEnd = v.getRectEnd();
         int height = v.getHeight() / 2;
 
         int radius = indicator.getRadius();
         int unselectedColor = indicator.getUnselectedColor();
         int selectedColor = indicator.getSelectedColor();
 
-        rect.left = rectLeftEdge;
-        rect.right = rectRightEdge;
-        rect.top = coordinateY - height;
-        rect.bottom = coordinateY + height;
+        if (indicator.getOrientation() == Orientation.HORIZONTAL) {
+            rect.left = rectStart;
+            rect.right = rectEnd;
+            rect.top = coordinateY - height;
+            rect.bottom = coordinateY + height;
+
+        } else {
+            rect.left = coordinateX - height;
+            rect.right = coordinateX + height;
+            rect.top = rectStart;
+            rect.bottom = rectEnd;
+        }
 
         paint.setColor(unselectedColor);
         canvas.drawCircle(coordinateX, coordinateY, radius, paint);

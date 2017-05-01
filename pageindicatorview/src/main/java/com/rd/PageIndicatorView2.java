@@ -88,15 +88,10 @@ public class PageIndicatorView2 extends View implements ViewPager.OnPageChangeLi
         }
     }
 
-    @SuppressWarnings("UnnecessaryLocalVariable")
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int width = manager.drawer().measureViewWidth(widthMeasureSpec);
-        int height = manager.drawer().measureViewHeight(heightMeasureSpec);
-
-        manager.indicator().setWidth(width);
-        manager.indicator().setHeight(height);
-        setMeasuredDimension(width, height);
+        Pair<Integer, Integer> pair = manager.drawer().measureViewSize(widthMeasureSpec, heightMeasureSpec);
+        setMeasuredDimension(pair.first, pair.second);
     }
 
     @Override
@@ -120,9 +115,7 @@ public class PageIndicatorView2 extends View implements ViewPager.OnPageChangeLi
     }
 
     @Override
-    public void onPageScrollStateChanged(int state) {
-
-    }
+    public void onPageScrollStateChanged(int state) {/*empty*/}
 
     /**
      * Set static number of circle indicators to be displayed.

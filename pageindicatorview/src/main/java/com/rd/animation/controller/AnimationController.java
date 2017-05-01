@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import com.rd.animation.type.AnimationType;
 import com.rd.animation.type.BaseAnimation;
 import com.rd.draw.data.Indicator;
+import com.rd.draw.data.Orientation;
 import com.rd.utils.CoordinatesUtils;
 
 public class AnimationController {
@@ -221,7 +222,13 @@ public class AnimationController {
 
         int from = CoordinatesUtils.getCoordinate(indicator, fromPosition);
         int to = CoordinatesUtils.getCoordinate(indicator, toPosition);
-        int center = indicator.getHeight() / 2;
+
+        int center;
+        if (indicator.getOrientation() == Orientation.HORIZONTAL) {
+            center = indicator.getHeight() / 2;
+        } else {
+            center = indicator.getWidth() / 2;
+        }
 
         long animationDuration = indicator.getAnimationDuration();
         int radiusPx = indicator.getRadius();

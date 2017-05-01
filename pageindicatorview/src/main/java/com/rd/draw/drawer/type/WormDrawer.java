@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import com.rd.animation.data.Value;
 import com.rd.animation.data.type.WormAnimationValue;
 import com.rd.draw.data.Indicator;
+import com.rd.draw.data.Orientation;
 
 public class WormDrawer extends BaseDrawer {
 
@@ -28,17 +29,25 @@ public class WormDrawer extends BaseDrawer {
         }
 
         WormAnimationValue v = (WormAnimationValue) value;
-        int rectLeftEdge = v.getRectLeftEdge();
-        int rectRightEdge = v.getRectRightEdge();
+        int rectStart = v.getRectStart();
+        int rectEnd = v.getRectEnd();
 
         int radius = indicator.getRadius();
         int unselectedColor = indicator.getUnselectedColor();
         int selectedColor = indicator.getSelectedColor();
 
-        rect.left = rectLeftEdge;
-        rect.right = rectRightEdge;
-        rect.top = coordinateY - radius;
-        rect.bottom = coordinateY + radius;
+        if (indicator.getOrientation() == Orientation.HORIZONTAL) {
+            rect.left = rectStart;
+            rect.right = rectEnd;
+            rect.top = coordinateY - radius;
+            rect.bottom = coordinateY + radius;
+
+        } else {
+            rect.left = coordinateX - radius;
+            rect.right = coordinateX + radius;
+            rect.top = rectStart;
+            rect.bottom = rectEnd;
+        }
 
         paint.setColor(unselectedColor);
         canvas.drawCircle(coordinateX, coordinateY, radius, paint);

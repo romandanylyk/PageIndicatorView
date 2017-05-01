@@ -4,7 +4,6 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import com.rd.animation.controller.ValueController;
 import com.rd.animation.data.type.DropAnimationValue;
@@ -82,6 +81,7 @@ public class DropAnimation extends BaseAnimation<AnimatorSet> {
 
             this.coordinateStart = coordinateStart;
             this.coordinateEnd = coordinateEnd;
+            this.center = center;
             this.radius = radius;
 
             int heightFromValue = center + radius;
@@ -127,11 +127,11 @@ public class DropAnimation extends BaseAnimation<AnimatorSet> {
 
         switch (type) {
             case Width:
-                value.setCoordinateX(frameValue);
+                value.setWidth(frameValue);
                 break;
 
             case Height:
-                value.setCoordinateY(frameValue);
+                value.setHeight(frameValue);
                 break;
 
             case Radius:
@@ -139,7 +139,6 @@ public class DropAnimation extends BaseAnimation<AnimatorSet> {
                 break;
         }
 
-        Log.e("TEST", "X: " + value.getCoordinateX());
         if (listener != null) {
             listener.onValueUpdated(value);
         }

@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import com.rd.animation.data.Value;
 import com.rd.animation.data.type.SwapAnimationValue;
 import com.rd.draw.data.Indicator;
+import com.rd.draw.data.Orientation;
 
 public class SwapDrawer extends BaseDrawer {
 
@@ -17,6 +18,7 @@ public class SwapDrawer extends BaseDrawer {
             @NonNull Canvas canvas,
             @NonNull Value value,
             int position,
+            int coordinateX,
             int coordinateY) {
 
         if (!(value instanceof SwapAnimationValue)) {
@@ -57,6 +59,10 @@ public class SwapDrawer extends BaseDrawer {
         }
 
         paint.setColor(color);
-        canvas.drawCircle(coordinate, coordinateY, radius, paint);
+        if (indicator.getOrientation() == Orientation.HORIZONTAL) {
+            canvas.drawCircle(coordinate, coordinateY, radius, paint);
+        } else {
+            canvas.drawCircle(coordinateX, coordinate, radius, paint);
+        }
     }
 }

@@ -4,8 +4,7 @@ import android.animation.IntEvaluator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.support.annotation.NonNull;
-import android.util.Log;
-import android.view.animation.DecelerateInterpolator;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import com.rd.animation.controller.ValueController;
 import com.rd.animation.data.type.SlideAnimationValue;
 
@@ -28,7 +27,7 @@ public class SlideAnimation extends BaseAnimation<ValueAnimator> {
     public ValueAnimator createAnimator() {
         ValueAnimator animator = new ValueAnimator();
         animator.setDuration(BaseAnimation.DEFAULT_ANIMATION_TIME);
-        animator.setInterpolator(new DecelerateInterpolator());
+        animator.setInterpolator(new AccelerateDecelerateInterpolator());
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
@@ -77,7 +76,6 @@ public class SlideAnimation extends BaseAnimation<ValueAnimator> {
         int coordinate = (int) animation.getAnimatedValue(ANIMATION_COORDINATE);
         value.setCoordinate(coordinate);
 
-        Log.e("TEST", String.valueOf(coordinate));
         if (listener != null) {
             listener.onValueUpdated(value);
         }

@@ -95,7 +95,7 @@ public class Drawer {
 
     public void drawSwap(@NonNull Canvas canvas, @NonNull Value value) {
         if (swapDrawer != null) {
-            swapDrawer.draw(canvas, value, position, coordinateY);
+            swapDrawer.draw(canvas, value, position, coordinateX, coordinateY);
         }
     }
 }

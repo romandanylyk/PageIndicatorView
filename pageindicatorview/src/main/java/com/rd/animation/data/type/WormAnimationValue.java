@@ -4,22 +4,22 @@ import com.rd.animation.data.Value;
 
 public class WormAnimationValue implements Value {
 
-    private int rectLeftEdge;
-    private int rectRightEdge;
+    private int rectStart;
+    private int rectRight;
 
-    public int getRectLeftEdge() {
-        return rectLeftEdge;
+    public int getRectStart() {
+        return rectStart;
     }
 
-    public void setRectLeftEdge(int rectLeftEdge) {
-        this.rectLeftEdge = rectLeftEdge;
+    public void setRectStart(int rectStartEdge) {
+        this.rectStart = rectStartEdge;
     }
 
-    public int getRectRightEdge() {
-        return rectRightEdge;
+    public int getRectEnd() {
+        return rectRight;
     }
 
-    public void setRectRightEdge(int rectRightEdge) {
-        this.rectRightEdge = rectRightEdge;
+    public void setRectRight(int rectRight) {
+        this.rectRight = rectRight;
     }
 }

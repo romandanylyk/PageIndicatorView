@@ -34,10 +34,7 @@ public class CoordinatesUtils {
         int paddingPx = indicator.getPadding();
         int count = indicator.getCount();
 
-        Orientation orientation = indicator.getOrientation();
-        AnimationType animationType = indicator.getAnimationType();
-
-        if (orientation == Orientation.HORIZONTAL) {
+        if (indicator.getOrientation() == Orientation.HORIZONTAL) {
             int x = 0;
             for (int i = 0; i < count; i++) {
                 x += radiusPx + (strokePx / 2);
@@ -54,8 +51,8 @@ public class CoordinatesUtils {
         } else {
             int x = width / 2;
 
-            if (animationType == AnimationType.DROP) {
-                x += radiusPx + strokePx;
+            if (indicator.getAnimationType() == AnimationType.DROP) {
+                x += radiusPx;
             }
 
             return x;
@@ -73,13 +70,10 @@ public class CoordinatesUtils {
         int paddingPx = indicator.getPadding();
         int count = indicator.getCount();
 
-        Orientation orientation = indicator.getOrientation();
-        AnimationType animationType = indicator.getAnimationType();
-
-        if (orientation == Orientation.HORIZONTAL) {
+        if (indicator.getOrientation() == Orientation.HORIZONTAL) {
             int y = height / 2;
 
-            if (animationType == AnimationType.DROP) {
+            if (indicator.getAnimationType() == AnimationType.DROP) {
                 y += radiusPx;
             }
 
