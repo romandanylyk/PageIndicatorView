@@ -28,35 +28,15 @@ public class CoordinatesUtils {
             return 0;
         }
 
-        int width = indicator.getWidth();
-        int radiusPx = indicator.getRadius();
-        int strokePx = indicator.getStroke();
-        int paddingPx = indicator.getPadding();
-        int count = indicator.getCount();
-
+        int coordinate;
         if (indicator.getOrientation() == Orientation.HORIZONTAL) {
-            int x = 0;
-            for (int i = 0; i < count; i++) {
-                x += radiusPx + (strokePx / 2);
-
-                if (position == i) {
-                    return x;
-                }
-
-                x += radiusPx + paddingPx + (strokePx / 2);
-            }
-
-            return x;
-
+            coordinate = getHorizontalCoordinate(indicator, position);
         } else {
-            int x = width / 2;
-
-            if (indicator.getAnimationType() == AnimationType.DROP) {
-                x += radiusPx;
-            }
-
-            return x;
+            coordinate = getVerticalCoordinate(indicator);
         }
+
+        coordinate += indicator.getPaddingLeft();
+        return coordinate;
     }
 
     public static int getYCoordinate(@Nullable Indicator indicator, int position) {
@@ -64,35 +44,46 @@ public class CoordinatesUtils {
             return 0;
         }
 
-        int height = indicator.getHeight();
-        int radiusPx = indicator.getRadius();
-        int strokePx = indicator.getStroke();
-        int paddingPx = indicator.getPadding();
-        int count = indicator.getCount();
-
+        int coordinate;
         if (indicator.getOrientation() == Orientation.HORIZONTAL) {
-            int y = height / 2;
-
-            if (indicator.getAnimationType() == AnimationType.DROP) {
-                y += radiusPx;
-            }
-
-            return y;
-
+            coordinate = getVerticalCoordinate(indicator);
         } else {
-            int y = 0;
-            for (int i = 0; i < count; i++) {
-                y += radiusPx + strokePx;
+            coordinate = getHorizontalCoordinate(indicator, position);
+        }
 
-                if (position == i) {
-                    return y;
-                }
+        coordinate += indicator.getPaddingTop();
+        return coordinate;
+    }
 
-                y += radiusPx + paddingPx;
+    private static int getHorizontalCoordinate(@NonNull Indicator indicator, int position) {
+        int count = indicator.getCount();
+        int radius = indicator.getRadius();
+        int stroke = indicator.getStroke();
+        int padding = indicator.getPadding();
+
+        int coordinate = 0;
+        for (int i = 0; i < count; i++) {
+            coordinate += radius + (stroke / 2);
+
+            if (position == i) {
+                return coordinate;
             }
 
-            return y;
+            coordinate += radius + padding + (stroke / 2);
         }
+
+        return coordinate;
+    }
+
+    private static int getVerticalCoordinate(@NonNull Indicator indicator) {
+        int radius = indicator.getRadius();
+        int coordinate = radius;
+
+        if (indicator.getAnimationType() == AnimationType.DROP) {
+            coordinate += radius;
+        }
+
+        return coordinate;
     }
 
     public static Pair<Integer, Float> getProgress(@NonNull Indicator indicator, int position, float positionOffset, boolean isRtl) {

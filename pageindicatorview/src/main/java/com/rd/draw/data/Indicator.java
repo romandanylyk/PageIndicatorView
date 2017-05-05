@@ -14,9 +14,13 @@ public class Indicator {
 
     private int height;
     private int width;
-
     private int radius;
+
     private int padding;
+    private int paddingLeft;
+    private int paddingTop;
+    private int paddingRight;
+    private int paddingBottom;
 
     private int stroke; //For "Fill" animation only
     private float scaleFactor; //For "Scale" animation only
@@ -71,6 +75,38 @@ public class Indicator {
 
     public void setPadding(int padding) {
         this.padding = padding;
+    }
+
+    public int getPaddingLeft() {
+        return paddingLeft;
+    }
+
+    public void setPaddingLeft(int paddingLeft) {
+        this.paddingLeft = paddingLeft;
+    }
+
+    public int getPaddingTop() {
+        return paddingTop;
+    }
+
+    public void setPaddingTop(int paddingTop) {
+        this.paddingTop = paddingTop;
+    }
+
+    public int getPaddingRight() {
+        return paddingRight;
+    }
+
+    public void setPaddingRight(int paddingRight) {
+        this.paddingRight = paddingRight;
+    }
+
+    public int getPaddingBottom() {
+        return paddingBottom;
+    }
+
+    public void setPaddingBottom(int paddingBottom) {
+        this.paddingBottom = paddingBottom;
     }
 
     public int getStroke() {

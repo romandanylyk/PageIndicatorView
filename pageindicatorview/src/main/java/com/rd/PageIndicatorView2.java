@@ -516,8 +516,7 @@ public class PageIndicatorView2 extends View implements ViewPager.OnPageChangeLi
 
     private void init(@Nullable AttributeSet attrs) {
         setupId();
-        manager = new IndicatorManager(this);
-        manager.drawer().initAttributes(getContext(), attrs);
+        initIndicatorManager(attrs);
     }
 
     private void setupId() {
@@ -526,6 +525,16 @@ public class PageIndicatorView2 extends View implements ViewPager.OnPageChangeLi
         }
     }
 
+    private void initIndicatorManager(@Nullable AttributeSet attrs) {
+        manager = new IndicatorManager(this);
+        manager.drawer().initAttributes(getContext(), attrs);
+
+        Indicator indicator = manager.indicator();
+        indicator.setPaddingLeft(getPaddingLeft());
+        indicator.setPaddingTop(getPaddingTop());
+        indicator.setPaddingRight(getPaddingRight());
+        indicator.setPaddingBottom(getPaddingBottom());
+    }
 
     private void registerSetObserver() {
         if (setObserver != null || viewPager == null || viewPager.getAdapter() == null) {

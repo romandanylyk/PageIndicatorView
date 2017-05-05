@@ -19,28 +19,39 @@ public class MeasureController {
         int count = indicator.getCount();
         int radius = indicator.getRadius();
         int stroke = indicator.getStroke();
+
         int padding = indicator.getPadding();
-        Orientation orientation = indicator.getOrientation();
+        int paddingLeft = indicator.getPaddingLeft();
+        int paddingTop = indicator.getPaddingTop();
+        int paddingRight = indicator.getPaddingRight();
+        int paddingBottom = indicator.getPaddingBottom();
 
         int circleDiameterPx = radius * 2;
         int desiredWidth = 0;
         int desiredHeight = 0;
 
-        if (orientation == Orientation.HORIZONTAL) {
-            desiredHeight = circleDiameterPx + stroke;
-        } else {
-            desiredWidth = circleDiameterPx + stroke;
-        }
+        int width;
+        int height;
 
+        Orientation orientation = indicator.getOrientation();
         if (count != 0) {
             int diameterSum = circleDiameterPx * count;
             int strokeSum = (stroke * 2) * count;
+
             int paddingSum = padding * (count - 1);
+            int horizontalPadding = paddingLeft + paddingRight;
+            int verticalPadding = paddingTop + paddingBottom;
+
+            int w = diameterSum + strokeSum + paddingSum;
+            int h = circleDiameterPx + stroke;
 
             if (orientation == Orientation.HORIZONTAL) {
-                desiredWidth = diameterSum + strokeSum + paddingSum;
+                desiredWidth = w + horizontalPadding;
+                desiredHeight = h + verticalPadding;
+
             } else {
-                desiredHeight = diameterSum + strokeSum + paddingSum;
+                desiredWidth = h + horizontalPadding;
+                desiredHeight = w + verticalPadding;
             }
         }
 
@@ -51,9 +62,6 @@ public class MeasureController {
                 desiredWidth *= 2;
             }
         }
-
-        int width;
-        int height;
 
         if (widthMode == View.MeasureSpec.EXACTLY) {
             width = widthSize;
