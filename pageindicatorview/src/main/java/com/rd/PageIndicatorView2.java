@@ -347,7 +347,7 @@ public class PageIndicatorView2 extends View implements ViewPager.OnPageChangeLi
      * Set orientation for indicator, one of HORIZONTAL or VERTICAL.
      * Default is HORIZONTAL.
      *
-     * @param orientation an orientation to display page indicators..
+     * @param orientation an orientation to display page indicators.
      */
     public void setOrientation(@Nullable Orientation orientation) {
         if (orientation != null) {
@@ -390,7 +390,9 @@ public class PageIndicatorView2 extends View implements ViewPager.OnPageChangeLi
     }
 
     /**
-     * Set boolean value to perform interactive animation while selecting new indicator.
+     * Interactive animation will animate indicator smoothly
+     * from position to position based on user's current swipe progress.
+     * (Won't affect on anything unless {@link #setViewPager(ViewPager)} is specified).
      *
      * @param isInteractive value of animation to be interactive or not.
      */
@@ -412,6 +414,7 @@ public class PageIndicatorView2 extends View implements ViewPager.OnPageChangeLi
 
         viewPager = pager;
         viewPager.addOnPageChangeListener(this);
+        manager.indicator().setViewPagerId(viewPager.getId());
 
         setDynamicCount(manager.indicator().isDynamicCount());
         int count = getViewPagerCount();
@@ -453,17 +456,28 @@ public class PageIndicatorView2 extends View implements ViewPager.OnPageChangeLi
     /**
      * Set specific circle indicator position to be selected. If position < or > total count,
      * accordingly first or last circle indicator will be selected.
+     * (Won't affect on anything unless {@link #setInteractiveAnimation(boolean isInteractive)} is false).
      *
      * @param position position of indicator to select.
      */
     public void setSelection(int position) {
         Indicator indicator = manager.indicator();
+        if (indicator.isInteractiveAnimation()) {
+            return;
+        }
+
+        int selectedPosition = indicator.getSelectedPosition();
         int count = indicator.getCount();
+        int lastPosition = count - 1;
+
         if (position < 0) {
             position = 0;
+        } else if (position > lastPosition) {
+            position = lastPosition;
+        }
 
-        } else if (position > count - 1) {
-            position = count - 1;
+        if (selectedPosition == position) {
+            return;
         }
 
         indicator.setLastSelectedPosition(indicator.getSelectedPosition());
@@ -480,38 +494,39 @@ public class PageIndicatorView2 extends View implements ViewPager.OnPageChangeLi
 
     /**
      * Set progress value in range [0 - 1] to specify state of animation while selecting new circle indicator.
-     * (Won't affect on anything unless {@link #setInteractiveAnimation(boolean isInteractive)} is false).
+     * (Won't affect on anything unless {@link #setInteractiveAnimation(boolean isInteractive)} is true).
      *
      * @param selectingPosition selecting position with specific progress value.
      * @param progress          float value of progress.
      */
     public void setProgress(int selectingPosition, float progress) {
         Indicator indicator = manager.indicator();
-        if (indicator.isInteractiveAnimation()) {
-
-            int count = indicator.getCount();
-            if (count <= 0 || selectingPosition < 0) {
-                selectingPosition = 0;
-
-            } else if (selectingPosition > count - 1) {
-                selectingPosition = count - 1;
-            }
-
-            if (progress < 0) {
-                progress = 0;
-
-            } else if (progress > 1) {
-                progress = 1;
-            }
-
-            if (progress == 1) {
-                indicator.setLastSelectedPosition(indicator.getSelectedPosition());
-                indicator.setSelectedPosition(selectingPosition);
-            }
-
-            indicator.setSelectingPosition(selectingPosition);
-            manager.animate().interactive(progress);
+        if (!indicator.isInteractiveAnimation()) {
+            return;
         }
+
+        int count = indicator.getCount();
+        if (count <= 0 || selectingPosition < 0) {
+            selectingPosition = 0;
+
+        } else if (selectingPosition > count - 1) {
+            selectingPosition = count - 1;
+        }
+
+        if (progress < 0) {
+            progress = 0;
+
+        } else if (progress > 1) {
+            progress = 1;
+        }
+
+        if (progress == 1) {
+            indicator.setLastSelectedPosition(indicator.getSelectedPosition());
+            indicator.setSelectedPosition(selectingPosition);
+        }
+
+        indicator.setSelectingPosition(selectingPosition);
+        manager.animate().interactive(progress);
     }
 
     private void init(@Nullable AttributeSet attrs) {

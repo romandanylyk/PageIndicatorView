@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.view.View;
 import com.rd.animation.type.*;
 import com.rd.draw.data.Indicator;
 import com.rd.draw.data.Orientation;
@@ -31,7 +32,7 @@ public class AttributeController {
     }
 
     private void initCountAttribute(@NonNull TypedArray typedArray) {
-        int viewPagerId = typedArray.getResourceId(R.styleable.PageIndicatorView2_piv_viewPager, 0);
+        int viewPagerId = typedArray.getResourceId(R.styleable.PageIndicatorView2_piv_viewPager, View.NO_ID);
         boolean autoVisibility = typedArray.getBoolean(R.styleable.PageIndicatorView2_piv_autoVisibility, true);
         boolean dynamicCount = typedArray.getBoolean(R.styleable.PageIndicatorView2_piv_dynamicCount, false);
         int count = typedArray.getInt(R.styleable.PageIndicatorView2_piv_count, Indicator.COUNT_NONE);

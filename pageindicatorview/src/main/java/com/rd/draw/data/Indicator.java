@@ -1,6 +1,7 @@
 package com.rd.draw.data;
 
 import android.support.annotation.NonNull;
+import android.view.View;
 import com.rd.animation.type.AnimationType;
 
 public class Indicator {
@@ -39,7 +40,7 @@ public class Indicator {
     private int selectingPosition;
     private int lastSelectedPosition;
 
-    private int viewPagerId;
+    private int viewPagerId = View.NO_ID;
 
     private Orientation orientation;
     private AnimationType animationType;
@@ -142,7 +143,7 @@ public class Indicator {
     }
 
     public boolean isInteractiveAnimation() {
-        return interactiveAnimation;
+        return interactiveAnimation && viewPagerId != View.NO_ID;
     }
 
     public void setInteractiveAnimation(boolean interactiveAnimation) {
