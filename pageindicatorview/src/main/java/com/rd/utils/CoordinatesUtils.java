@@ -80,7 +80,7 @@ public class CoordinatesUtils {
         int coordinate = radius;
 
         if (indicator.getAnimationType() == AnimationType.DROP) {
-            coordinate += radius;
+            coordinate += radius * 2;
         }
 
         return coordinate;

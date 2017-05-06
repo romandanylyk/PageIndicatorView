@@ -37,10 +37,7 @@ public class IndicatorManager implements ValueController.UpdateListener {
 
     @Override
     public void onValueUpdated(@Nullable Value value) {
-        if (value != null) {
-            drawManager.updateValue(value);
-        }
-
+        drawManager.updateValue(value);
         if (listener != null) {
             listener.onIndicatorUpdated();
         }

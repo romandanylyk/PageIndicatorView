@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:attrs="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,21 +9,28 @@
     android:orientation="horizontal"
     tools:context="com.rd.pageindicatorview.home.HomeActivity">
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        style="@style/BaseToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        app:title="@string/home"
+        app:titleTextAppearance="@style/ToolbarTextAppearance" />
+
     <android.support.v4.view.ViewPager
         android:id="@+id/viewPager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar" />
 
     <com.rd.PageIndicatorView2
+        android:id="@+id/pageIndicatorView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="48dp"
-        attrs:piv_animationType="thinWorm"
-        attrs:piv_interactiveAnimation="true"
         attrs:piv_padding="12dp"
-        attrs:piv_radius="8dp"
-        attrs:piv_viewPager="@id/viewPager" />
+        attrs:piv_radius="8dp" />
 
 </RelativeLayout>

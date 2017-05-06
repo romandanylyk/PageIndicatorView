@@ -382,11 +382,14 @@ public class PageIndicatorView2 extends View implements ViewPager.OnPageChangeLi
      * @param type type of animation, one of {@link AnimationType}
      */
     public void setAnimationType(@Nullable AnimationType type) {
+        manager.onValueUpdated(null);
+
         if (type != null) {
             manager.indicator().setAnimationType(type);
         } else {
             manager.indicator().setAnimationType(AnimationType.NONE);
         }
+        invalidate();
     }
 
     /**
@@ -446,11 +449,31 @@ public class PageIndicatorView2 extends View implements ViewPager.OnPageChangeLi
      * @param mode instance of {@link RtlMode}
      */
     public void setRtlMode(@Nullable RtlMode mode) {
+        Indicator indicator = manager.indicator();
         if (mode == null) {
-            manager.indicator().setRtlMode(RtlMode.Off);
+            indicator.setRtlMode(RtlMode.Off);
         } else {
-            manager.indicator().setRtlMode(mode);
+            indicator.setRtlMode(mode);
         }
+
+        if (viewPager == null) {
+            return;
+        }
+
+        int selectedPosition = indicator.getSelectedPosition();
+        int position = selectedPosition;
+
+        if (isRtl()) {
+            position = (indicator.getCount() - 1) - selectedPosition;
+
+        } else if (viewPager != null) {
+            position = viewPager.getCurrentItem();
+        }
+
+        indicator.setSelectedPosition(position);
+        indicator.setSelectingPosition(position);
+        indicator.setLastSelectedPosition(position);
+        invalidate();
     }
 
     /**

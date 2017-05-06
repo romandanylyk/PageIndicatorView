@@ -35,7 +35,7 @@ public class DrawManager {
         return indicator;
     }
 
-    public void updateValue(@NonNull Value value) {
+    public void updateValue(@Nullable Value value) {
         drawController.updateValue(value);
     }
 

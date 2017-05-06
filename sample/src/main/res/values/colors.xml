@@ -1,12 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimaryDark">#3366ba</color>
-    <color name="colorPrimary">#3b76d7</color>
-    <color name="colorAccent">#3b76d7</color>
 
-    <color name="google_red">#EA4235</color>
-    <color name="google_blue">#4286F5</color>
-    <color name="google_yellow">#F8BC04</color>
-    <color name="google_green">#34AA52</color>
+    <color name="transparent">#00000000</color>
+
+    <color name="black">#000000</color>
+    <item name="black_10_transparent" type="color">#1A000000</item>
+
+    <color name="white">#ffffff</color>
+
+    <color name="gray_50">#FAFAFA</color>
+    <color name="gray_100">#F5F5F5</color>
+    <color name="gray_200">#EEEEEE</color>
+    <color name="gray_300">#E0E0E0</color>
+    <color name="gray_400">#BDBDBD</color>
+    <color name="gray_500">#9E9E9E</color>
+    <color name="gray_600">#757575</color>
+    <color name="gray_700">#616161</color>
+    <color name="gray_800">#424242</color>
+    <color name="gray_900">#212121</color>
+
+    <color name="blue_50">#E3F2FD</color>
+    <color name="blue_100">#BBDEFB</color>
+    <color name="blue_200">#90CAF9</color>
+    <color name="blue_300">#64B5F6</color>
+    <color name="blue_400">#42A5F5</color>
+    <color name="blue_500">#2196F3</color>
+    <color name="blue_600">#1E88E5</color>
+    <color name="blue_700">#1976D2</color>
+    <color name="blue_800">#1565C0</color>
+    <color name="blue_900">#0D47A1</color>
+
+    <color name="red_50">#FFEBEE</color>
+    <color name="red_100">#FFCDD2</color>
+    <color name="red_200">#EF9A9A</color>
+    <color name="red_300">#E57373</color>
+    <color name="red_400">#EF5350</color>
+    <color name="red_500">#F44336</color>
+    <color name="red_600">#E53935</color>
+    <color name="red_700">#D32F2F</color>
+    <color name="red_800">#C62828</color>
+    <color name="red_900">#B71C1C</color>
+
+    <color name="green_50">#DBE6DA</color>
+    <color name="green_100">#BAD7B7</color>
+    <color name="green_200">#99C495</color>
+    <color name="green_300">#7AB273</color>
+    <color name="green_400">#66A55C</color>
+    <color name="green_500">#549948</color>
+    <color name="green_600">#4A8840</color>
+    <color name="green_700">#3F7736</color>
+    <color name="green_800">#35662D</color>
+    <color name="green_900">#35662D</color>
+
+    <color name="google_red">#ea5a4f</color>
+    <color name="google_blue">#6099f5</color>
+    <color name="google_yellow">#edc855</color>
+    <color name="google_green">#5cb171</color>
 
 </resources>

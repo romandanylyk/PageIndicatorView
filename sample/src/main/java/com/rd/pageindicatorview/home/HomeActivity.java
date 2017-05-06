@@ -1,32 +1,75 @@
 package com.rd.pageindicatorview.home;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import com.rd.PageIndicatorView2;
+import com.rd.pageindicatorview.base.BaseActivity;
+import com.rd.pageindicatorview.customize.CustomizeActivity;
+import com.rd.pageindicatorview.data.Customization;
 import com.rd.pageindicatorview.sample.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class HomeActivity extends AppCompatActivity {
+public class HomeActivity extends BaseActivity {
+
+    private PageIndicatorView2 pageIndicatorView;
+    private Customization customization;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ac_home);
+        customization = new Customization();
+
+        initToolbar();
         initViews();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        boolean customization = requestCode == CustomizeActivity.EXTRAS_CUSTOMIZATION_REQUEST_CODE && resultCode == RESULT_OK;
+        if (customization && intent != null) {
+            this.customization = intent.getParcelableExtra(CustomizeActivity.EXTRAS_CUSTOMIZATION);
+            updateIndicator();
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_customize, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.actionCustomize:
+                CustomizeActivity.start(this, customization);
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @SuppressWarnings("ConstantConditions")
     private void initViews() {
+
         HomeAdapter adapter = new HomeAdapter();
         adapter.setData(createPageList());
 
         ViewPager pager = (ViewPager) findViewById(R.id.viewPager);
         pager.setAdapter(adapter);
+
+        pageIndicatorView = (PageIndicatorView2) findViewById(R.id.pageIndicatorView);
+        pageIndicatorView.setViewPager(pager);
     }
 
     @NonNull
@@ -46,5 +89,17 @@ public class HomeActivity extends AppCompatActivity {
         view.setBackgroundColor(getResources().getColor(color));
 
         return view;
+    }
+
+    private void updateIndicator() {
+        if (customization == null) {
+            return;
+        }
+
+        pageIndicatorView.setAnimationType(customization.getAnimationType());
+        pageIndicatorView.setOrientation(customization.getOrientation());
+        pageIndicatorView.setRtlMode(customization.getRtlMode());
+        pageIndicatorView.setInteractiveAnimation(customization.isInteractiveAnimation());
+        pageIndicatorView.setAutoVisibility(customization.isAutoVisibility());
     }
 }

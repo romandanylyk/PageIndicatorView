@@ -2,6 +2,7 @@ package com.rd.draw.controller;
 
 import android.graphics.Canvas;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.rd.animation.data.Value;
 import com.rd.animation.type.AnimationType;
 import com.rd.draw.data.Indicator;
@@ -19,7 +20,7 @@ public class DrawController {
         this.drawer = new Drawer(indicator);
     }
 
-    public void updateValue(@NonNull Value value) {
+    public void updateValue(@Nullable Value value) {
         this.value = value;
     }
 

@@ -1185,8 +1185,6 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
                 return AnimationType.DROP;
             case 8:
                 return AnimationType.SWAP;
-            case 9:
-                return AnimationType.DRAG_WORM;
         }
 
         return AnimationType.NONE;
