@@ -39,19 +39,16 @@ public class MeasureController {
             int strokeSum = (stroke * 2) * count;
 
             int paddingSum = padding * (count - 1);
-            int horizontalPadding = paddingLeft + paddingRight;
-            int verticalPadding = paddingTop + paddingBottom;
-
             int w = diameterSum + strokeSum + paddingSum;
             int h = circleDiameterPx + stroke;
 
             if (orientation == Orientation.HORIZONTAL) {
-                desiredWidth = w + horizontalPadding;
-                desiredHeight = h + verticalPadding;
+                desiredWidth = w;
+                desiredHeight = h;
 
             } else {
-                desiredWidth = h + horizontalPadding;
-                desiredHeight = w + verticalPadding;
+                desiredWidth = h;
+                desiredHeight = w;
             }
         }
 
@@ -61,6 +58,18 @@ public class MeasureController {
             } else {
                 desiredWidth *= 2;
             }
+        }
+
+        int horizontalPadding = paddingLeft + paddingRight;
+        int verticalPadding = paddingTop + paddingBottom;
+
+        if (orientation == Orientation.HORIZONTAL) {
+            desiredWidth += horizontalPadding;
+            desiredHeight += verticalPadding;
+
+        } else {
+            desiredWidth += horizontalPadding;
+            desiredHeight += verticalPadding;
         }
 
         if (widthMode == View.MeasureSpec.EXACTLY) {

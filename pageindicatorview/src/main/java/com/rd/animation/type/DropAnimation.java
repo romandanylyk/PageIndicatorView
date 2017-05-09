@@ -10,9 +10,10 @@ import com.rd.animation.data.type.DropAnimationValue;
 
 public class DropAnimation extends BaseAnimation<AnimatorSet> {
 
-    private int coordinateStart;
-    private int coordinateEnd;
-    private int center;
+    private int widthStart;
+    private int widthEnd;
+    private int heightStart;
+    private int heightEnd;
     private int radius;
 
     private enum AnimationType {Width, Height, Radius}
@@ -75,27 +76,25 @@ public class DropAnimation extends BaseAnimation<AnimatorSet> {
     }
 
     @SuppressWarnings("UnnecessaryLocalVariable")
-    public DropAnimation with(int coordinateStart, int coordinateEnd, int center, int radius) {
-        if (hasChanges(coordinateStart, coordinateEnd, center, radius)) {
+    public DropAnimation with(int widthStart, int widthEnd, int heightStart, int heightEnd, int radius) {
+        if (hasChanges(widthStart, widthEnd, heightStart, heightEnd, radius)) {
             animator = createAnimator();
 
-            this.coordinateStart = coordinateStart;
-            this.coordinateEnd = coordinateEnd;
-            this.center = center;
+            this.widthStart = widthStart;
+            this.widthEnd = widthEnd;
+            this.heightStart = heightStart;
+            this.heightEnd = heightEnd;
             this.radius = radius;
-
-            int heightFromValue = center + radius;
-            int heightToValue = center - radius;
 
             int fromRadius = radius;
             int toRadius = (int) (radius / 1.5);
             long halfDuration = animationDuration / 2;
 
-            ValueAnimator widthAnimator = createValueAnimation(coordinateStart, coordinateEnd, animationDuration, AnimationType.Width);
-            ValueAnimator heightForwardAnimator = createValueAnimation(heightFromValue, heightToValue, halfDuration, AnimationType.Height);
+            ValueAnimator widthAnimator = createValueAnimation(widthStart, widthEnd, animationDuration, AnimationType.Width);
+            ValueAnimator heightForwardAnimator = createValueAnimation(heightStart, heightEnd, halfDuration, AnimationType.Height);
             ValueAnimator radiusForwardAnimator = createValueAnimation(fromRadius, toRadius, halfDuration, AnimationType.Radius);
 
-            ValueAnimator heightBackwardAnimator = createValueAnimation(heightToValue, heightFromValue, halfDuration, AnimationType.Height);
+            ValueAnimator heightBackwardAnimator = createValueAnimation(heightEnd, heightStart, halfDuration, AnimationType.Height);
             ValueAnimator radiusBackwardAnimator = createValueAnimation(toRadius, fromRadius, halfDuration, AnimationType.Radius);
 
             animator.play(heightForwardAnimator)
@@ -145,16 +144,20 @@ public class DropAnimation extends BaseAnimation<AnimatorSet> {
     }
 
     @SuppressWarnings("RedundantIfStatement")
-    private boolean hasChanges(int coordinateStart, int coordinateEnd, int center, int radius) {
-        if (this.coordinateStart != coordinateStart) {
+    private boolean hasChanges(int widthStart, int widthEnd, int heightStart, int heightEnd, int radius) {
+        if (this.widthStart != widthStart) {
             return true;
         }
 
-        if (this.coordinateEnd != coordinateEnd) {
+        if (this.widthEnd != widthEnd) {
             return true;
         }
 
-        if (this.center != center) {
+        if (this.heightStart != heightStart) {
+            return true;
+        }
+
+        if (this.heightEnd != heightEnd) {
             return true;
         }
 

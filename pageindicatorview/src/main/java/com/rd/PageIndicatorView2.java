@@ -140,7 +140,7 @@ public class PageIndicatorView2 extends View implements ViewPager.OnPageChangeLi
 
     /**
      * Dynamic count will automatically update number of circle indicators
-     * if {@link ViewPager} page count updated on run-time. If new count will be bigger than current count,
+     * if {@link ViewPager} page count updates on run-time. If new count will be bigger than current count,
      * selected circle will stay as it is, otherwise it will be set to last one.
      * Note: works if {@link ViewPager} set and already have it's adapter. See {@link #setViewPager(ViewPager)}.
      *
@@ -485,7 +485,7 @@ public class PageIndicatorView2 extends View implements ViewPager.OnPageChangeLi
      */
     public void setSelection(int position) {
         Indicator indicator = manager.indicator();
-        if (indicator.isInteractiveAnimation()) {
+        if (indicator.isInteractiveAnimation() && indicator.getAnimationType() != AnimationType.NONE) {
             return;
         }
 

@@ -62,7 +62,7 @@ public class HomeActivity extends BaseActivity {
     @SuppressWarnings("ConstantConditions")
     private void initViews() {
 
-        HomeAdapter adapter = new HomeAdapter();
+        final HomeAdapter adapter = new HomeAdapter();
         adapter.setData(createPageList());
 
         ViewPager pager = (ViewPager) findViewById(R.id.viewPager);

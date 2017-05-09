@@ -220,23 +220,23 @@ public class AnimationController {
         int fromPosition = indicator.isInteractiveAnimation() ? indicator.getSelectedPosition() : indicator.getLastSelectedPosition();
         int toPosition = indicator.isInteractiveAnimation() ? indicator.getSelectingPosition() : indicator.getSelectedPosition();
 
-        int from = CoordinatesUtils.getCoordinate(indicator, fromPosition);
-        int to = CoordinatesUtils.getCoordinate(indicator, toPosition);
+        int widthFrom = CoordinatesUtils.getCoordinate(indicator, fromPosition);
+        int widthTo = CoordinatesUtils.getCoordinate(indicator, toPosition);
 
-        int center;
-        if (indicator.getOrientation() == Orientation.HORIZONTAL) {
-            center = indicator.getHeight() / 2;
-        } else {
-            center = indicator.getWidth() / 2;
-        }
+        int paddingTop = indicator.getPaddingTop();
+        int paddingLeft = indicator.getPaddingLeft();
+        int padding = indicator.getOrientation() == Orientation.HORIZONTAL ? paddingTop : paddingLeft;
+
+        int radius = indicator.getRadius();
+        int heightFrom = radius * 3 + padding;
+        int heightTo = radius + padding;
 
         long animationDuration = indicator.getAnimationDuration();
-        int radiusPx = indicator.getRadius();
 
         BaseAnimation animation = valueController
                 .drop()
                 .duration(animationDuration)
-                .with(from, to, center, radiusPx);
+                .with(widthFrom, widthTo, heightFrom, heightTo, radius);
 
         if (isInteractive) {
             animation.progress(progress);

@@ -12,8 +12,8 @@ public class Customization implements Parcelable {
     private Orientation orientation = Orientation.HORIZONTAL;
     private RtlMode rtlMode = RtlMode.Off;
 
-    private boolean interactiveAnimation;
-    private boolean autoVisibility;
+    private boolean interactiveAnimation = false;
+    private boolean autoVisibility = true;
 
     public AnimationType getAnimationType() {
         return animationType;

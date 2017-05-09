@@ -72,15 +72,21 @@ public class CoordinatesUtils {
             coordinate += radius + padding + (stroke / 2);
         }
 
+        if (indicator.getAnimationType() == AnimationType.DROP) {
+            coordinate += radius * 2;
+        }
+
         return coordinate;
     }
 
     private static int getVerticalCoordinate(@NonNull Indicator indicator) {
         int radius = indicator.getRadius();
-        int coordinate = radius;
+        int coordinate;
 
         if (indicator.getAnimationType() == AnimationType.DROP) {
-            coordinate += radius * 2;
+            coordinate = radius * 3;
+        } else {
+            coordinate = radius;
         }
 
         return coordinate;
