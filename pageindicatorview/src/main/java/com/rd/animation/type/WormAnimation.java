@@ -54,11 +54,14 @@ public class WormAnimation extends BaseAnimation<AnimatorSet> {
             rectLeftEdge = coordinateStart - radius;
             rectRightEdge = coordinateStart + radius;
 
-            RectValues values = createRectValues(isRightSide);
+            value.setRectStart(rectLeftEdge);
+            value.setRectEnd(rectRightEdge);
+
+            RectValues rect = createRectValues(isRightSide);
             long duration = animationDuration / 2;
 
-            ValueAnimator straightAnimator = createWormAnimator(values.fromX, values.toX, duration, false, value);
-            ValueAnimator reverseAnimator = createWormAnimator(values.reverseFromX, values.reverseToX, duration, true, value);
+            ValueAnimator straightAnimator = createWormAnimator(rect.fromX, rect.toX, duration, false, value);
+            ValueAnimator reverseAnimator = createWormAnimator(rect.reverseFromX, rect.reverseToX, duration, true, value);
             animator.playSequentially(straightAnimator, reverseAnimator);
         }
         return this;
@@ -112,7 +115,7 @@ public class WormAnimation extends BaseAnimation<AnimatorSet> {
 
         if (isRightSide) {
             if (!isReverse) {
-                value.setRectRight(rectEdge);
+                value.setRectEnd(rectEdge);
             } else {
                 value.setRectStart(rectEdge);
             }
@@ -121,7 +124,7 @@ public class WormAnimation extends BaseAnimation<AnimatorSet> {
             if (!isReverse) {
                 value.setRectStart(rectEdge);
             } else {
-                value.setRectRight(rectEdge);
+                value.setRectEnd(rectEdge);
             }
         }
 

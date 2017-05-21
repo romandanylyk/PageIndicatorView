@@ -36,15 +36,19 @@ public class ThinWormAnimation extends WormAnimation {
             rectLeftEdge = coordinateStart - radius;
             rectRightEdge = coordinateStart + radius;
 
-            RectValues values = createRectValues(isRightSide);
+            value.setRectStart(rectLeftEdge);
+            value.setRectEnd(rectRightEdge);
+            value.setHeight(height);
+
+            RectValues rec = createRectValues(isRightSide);
             long sizeDuration = (long) (animationDuration * 0.8);
             long reverseDelay = (long) (animationDuration * 0.2);
 
             long heightDuration = (long) (animationDuration * 0.5);
             long reverseHeightDelay = (long) (animationDuration * 0.5);
 
-            ValueAnimator straightAnimator = createWormAnimator(values.fromX, values.toX, sizeDuration, false, value);
-            ValueAnimator reverseAnimator = createWormAnimator(values.reverseFromX, values.reverseToX, sizeDuration, true, value);
+            ValueAnimator straightAnimator = createWormAnimator(rec.fromX, rec.toX, sizeDuration, false, value);
+            ValueAnimator reverseAnimator = createWormAnimator(rec.reverseFromX, rec.reverseToX, sizeDuration, true, value);
             reverseAnimator.setStartDelay(reverseDelay);
 
             ValueAnimator straightHeightAnimator = createHeightAnimator(height, radius, heightDuration);

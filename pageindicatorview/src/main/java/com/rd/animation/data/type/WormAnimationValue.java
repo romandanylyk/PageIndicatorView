@@ -5,7 +5,7 @@ import com.rd.animation.data.Value;
 public class WormAnimationValue implements Value {
 
     private int rectStart;
-    private int rectRight;
+    private int rectEnd;
 
     public int getRectStart() {
         return rectStart;
@@ -16,10 +16,10 @@ public class WormAnimationValue implements Value {
     }
 
     public int getRectEnd() {
-        return rectRight;
+        return rectEnd;
     }
 
-    public void setRectRight(int rectRight) {
-        this.rectRight = rectRight;
+    public void setRectEnd(int rectEnd) {
+        this.rectEnd = rectEnd;
     }
 }
