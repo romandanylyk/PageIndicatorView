@@ -7,7 +7,7 @@ import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import com.rd.PageIndicatorView2;
+import com.rd.PageIndicatorView;
 import com.rd.pageindicatorview.base.BaseActivity;
 import com.rd.pageindicatorview.customize.CustomizeActivity;
 import com.rd.pageindicatorview.data.Customization;
@@ -19,7 +19,7 @@ import java.util.List;
 
 public class HomeActivity extends BaseActivity {
 
-    private PageIndicatorView2 pageIndicatorView;
+    private PageIndicatorView pageIndicatorView;
     private Customization customization;
 
     @Override
@@ -68,7 +68,7 @@ public class HomeActivity extends BaseActivity {
         ViewPager pager = (ViewPager) findViewById(R.id.viewPager);
         pager.setAdapter(adapter);
 
-        pageIndicatorView = (PageIndicatorView2) findViewById(R.id.pageIndicatorView);
+        pageIndicatorView = (PageIndicatorView) findViewById(R.id.pageIndicatorView);
         pageIndicatorView.setViewPager(pager);
     }
 

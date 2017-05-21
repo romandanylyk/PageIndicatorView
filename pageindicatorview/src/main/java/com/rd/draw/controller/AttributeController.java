@@ -23,7 +23,7 @@ public class AttributeController {
     }
 
     public void init(@NonNull Context context, @Nullable AttributeSet attrs) {
-        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.PageIndicatorView2, 0, 0);
+        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.PageIndicatorView, 0, 0);
         initCountAttribute(typedArray);
         initColorAttribute(typedArray);
         initAnimationAttribute(typedArray);
@@ -32,16 +32,16 @@ public class AttributeController {
     }
 
     private void initCountAttribute(@NonNull TypedArray typedArray) {
-        int viewPagerId = typedArray.getResourceId(R.styleable.PageIndicatorView2_piv_viewPager, View.NO_ID);
-        boolean autoVisibility = typedArray.getBoolean(R.styleable.PageIndicatorView2_piv_autoVisibility, true);
-        boolean dynamicCount = typedArray.getBoolean(R.styleable.PageIndicatorView2_piv_dynamicCount, false);
-        int count = typedArray.getInt(R.styleable.PageIndicatorView2_piv_count, Indicator.COUNT_NONE);
+        int viewPagerId = typedArray.getResourceId(R.styleable.PageIndicatorView_piv_viewPager, View.NO_ID);
+        boolean autoVisibility = typedArray.getBoolean(R.styleable.PageIndicatorView_piv_autoVisibility, true);
+        boolean dynamicCount = typedArray.getBoolean(R.styleable.PageIndicatorView_piv_dynamicCount, false);
+        int count = typedArray.getInt(R.styleable.PageIndicatorView_piv_count, Indicator.COUNT_NONE);
 
         if (count == Indicator.COUNT_NONE) {
             count = Indicator.DEFAULT_COUNT;
         }
 
-        int position = typedArray.getInt(R.styleable.PageIndicatorView2_piv_select, 0);
+        int position = typedArray.getInt(R.styleable.PageIndicatorView_piv_select, 0);
         if (position < 0) {
             position = 0;
         } else if (count > 0 && position > count - 1) {
@@ -60,24 +60,24 @@ public class AttributeController {
 
 
     private void initColorAttribute(@NonNull TypedArray typedArray) {
-        int unselectedColor = typedArray.getColor(R.styleable.PageIndicatorView2_piv_unselectedColor, Color.parseColor(ColorAnimation.DEFAULT_UNSELECTED_COLOR));
-        int selectedColor = typedArray.getColor(R.styleable.PageIndicatorView2_piv_selectedColor, Color.parseColor(ColorAnimation.DEFAULT_SELECTED_COLOR));
+        int unselectedColor = typedArray.getColor(R.styleable.PageIndicatorView_piv_unselectedColor, Color.parseColor(ColorAnimation.DEFAULT_UNSELECTED_COLOR));
+        int selectedColor = typedArray.getColor(R.styleable.PageIndicatorView_piv_selectedColor, Color.parseColor(ColorAnimation.DEFAULT_SELECTED_COLOR));
 
         indicator.setUnselectedColor(unselectedColor);
         indicator.setSelectedColor(selectedColor);
     }
 
     private void initAnimationAttribute(@NonNull TypedArray typedArray) {
-        boolean interactiveAnimation = typedArray.getBoolean(R.styleable.PageIndicatorView2_piv_interactiveAnimation, false);
-        int animationDuration = typedArray.getInt(R.styleable.PageIndicatorView2_piv_animationDuration, BaseAnimation.DEFAULT_ANIMATION_TIME);
+        boolean interactiveAnimation = typedArray.getBoolean(R.styleable.PageIndicatorView_piv_interactiveAnimation, false);
+        int animationDuration = typedArray.getInt(R.styleable.PageIndicatorView_piv_animationDuration, BaseAnimation.DEFAULT_ANIMATION_TIME);
         if (animationDuration < 0) {
             animationDuration = 0;
         }
 
-        int animIndex = typedArray.getInt(R.styleable.PageIndicatorView2_piv_animationType, AnimationType.NONE.ordinal());
+        int animIndex = typedArray.getInt(R.styleable.PageIndicatorView_piv_animationType, AnimationType.NONE.ordinal());
         AnimationType animationType = getAnimationType(animIndex);
 
-        int rtlIndex = typedArray.getInt(R.styleable.PageIndicatorView2_piv_rtl_mode, RtlMode.Off.ordinal());
+        int rtlIndex = typedArray.getInt(R.styleable.PageIndicatorView_piv_rtl_mode, RtlMode.Off.ordinal());
         RtlMode rtlMode = getRtlMode(rtlIndex);
 
         indicator.setAnimationDuration(animationDuration);
@@ -87,7 +87,7 @@ public class AttributeController {
     }
 
     private void initSizeAttribute(@NonNull TypedArray typedArray) {
-        int orientationIndex = typedArray.getInt(R.styleable.PageIndicatorView2_piv_orientation, Orientation.HORIZONTAL.ordinal());
+        int orientationIndex = typedArray.getInt(R.styleable.PageIndicatorView_piv_orientation, Orientation.HORIZONTAL.ordinal());
         Orientation orientation;
 
         if (orientationIndex == 0) {
@@ -96,17 +96,17 @@ public class AttributeController {
             orientation = Orientation.VERTICAL;
         }
 
-        int radius = (int) typedArray.getDimension(R.styleable.PageIndicatorView2_piv_radius, DensityUtils.dpToPx(Indicator.DEFAULT_RADIUS_DP));
+        int radius = (int) typedArray.getDimension(R.styleable.PageIndicatorView_piv_radius, DensityUtils.dpToPx(Indicator.DEFAULT_RADIUS_DP));
         if (radius < 0) {
             radius = 0;
         }
 
-        int padding = (int) typedArray.getDimension(R.styleable.PageIndicatorView2_piv_padding, DensityUtils.dpToPx(Indicator.DEFAULT_PADDING_DP));
+        int padding = (int) typedArray.getDimension(R.styleable.PageIndicatorView_piv_padding, DensityUtils.dpToPx(Indicator.DEFAULT_PADDING_DP));
         if (padding < 0) {
             padding = 0;
         }
 
-        float scaleFactor = typedArray.getFloat(R.styleable.PageIndicatorView2_piv_scaleFactor, ScaleAnimation.DEFAULT_SCALE_FACTOR);
+        float scaleFactor = typedArray.getFloat(R.styleable.PageIndicatorView_piv_scaleFactor, ScaleAnimation.DEFAULT_SCALE_FACTOR);
         if (scaleFactor < ScaleAnimation.MIN_SCALE_FACTOR) {
             scaleFactor = ScaleAnimation.MIN_SCALE_FACTOR;
 
@@ -114,7 +114,7 @@ public class AttributeController {
             scaleFactor = ScaleAnimation.MAX_SCALE_FACTOR;
         }
 
-        int stroke = (int) typedArray.getDimension(R.styleable.PageIndicatorView2_piv_strokeWidth, DensityUtils.dpToPx(FillAnimation.DEFAULT_STROKE_DP));
+        int stroke = (int) typedArray.getDimension(R.styleable.PageIndicatorView_piv_strokeWidth, DensityUtils.dpToPx(FillAnimation.DEFAULT_STROKE_DP));
         if (stroke > radius) {
             stroke = radius;
         }

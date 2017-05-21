@@ -23,7 +23,7 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/toolbar" />
 
-    <com.rd.PageIndicatorView2
+    <com.rd.PageIndicatorView
         android:id="@+id/pageIndicatorView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

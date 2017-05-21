@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <resources>
-    <declare-styleable name="PageIndicatorView2">
+    <declare-styleable name="PageIndicatorView">
         <attr name="piv_orientation">
             <enum name="horizontal" value="0" />
             <enum name="vertical" value="1" />
