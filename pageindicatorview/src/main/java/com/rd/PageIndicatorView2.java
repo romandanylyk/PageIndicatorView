@@ -264,6 +264,26 @@ public class PageIndicatorView2 extends View implements ViewPager.OnPageChangeLi
     }
 
     /**
+     * Set stroke width in px to set while {@link AnimationType#FILL} is selected.
+     * Default value is {@link FillAnimation#DEFAULT_STROKE_DP}
+     *
+     * @param strokePx stroke width in px.
+     */
+    public void setStrokeWidth(float strokePx) {
+        int radiusPx = manager.indicator().getRadius();
+
+        if (strokePx < 0) {
+            strokePx = 0;
+
+        } else if (strokePx > radiusPx) {
+            strokePx = radiusPx;
+        }
+
+        manager.indicator().setStroke((int) strokePx);
+        invalidate();
+    }
+
+    /**
      * Set stroke width in dp to set while {@link AnimationType#FILL} is selected.
      * Default value is {@link FillAnimation#DEFAULT_STROKE_DP}
      *
