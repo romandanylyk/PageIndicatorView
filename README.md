@@ -4,9 +4,9 @@
 [![API](https://img.shields.io/badge/API-14%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=14)
 
 
-`PageIndicatorView` will simplify your life while you working with Android `ViewPager` and need to indicate selected page. It's easy to setup and customize as you need with run-time preview rendering.
+`PageIndicatorView` is light library to indicate ViewPager's selected page with different animations and ability to customize it as you need.
 
-![](https://github.com/romandanylyk/PageIndicatorView/blob/master/assets/preview_anim_drop.gif?raw=true)
+![](https://media.giphy.com/media/xUPGcxa8DDtTbF76fe/giphy.gif)
 
 ### **Integration**
 To add `pageindicatorview` to your project, first make sure in root `build.gradle` you have specified the following repository:
