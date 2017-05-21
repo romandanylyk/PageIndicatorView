@@ -1,32 +1,38 @@
-package com.rd.animation;
+package com.rd.animation.type;
 
 import android.animation.ArgbEvaluator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.support.annotation.NonNull;
-import android.view.animation.DecelerateInterpolator;
+import android.support.annotation.Nullable;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import com.rd.animation.controller.ValueController;
+import com.rd.animation.data.type.ColorAnimationValue;
 
-public class ColorAnimation extends AbsAnimation<ValueAnimator> {
+public class ColorAnimation extends BaseAnimation<ValueAnimator> {
 
     public static final String DEFAULT_UNSELECTED_COLOR = "#33ffffff";
     public static final String DEFAULT_SELECTED_COLOR = "#ffffff";
 
-    private static final String ANIMATION_COLOR_REVERSE = "ANIMATION_COLOR_REVERSE";
-    private static final String ANIMATION_COLOR = "ANIMATION_COLOR";
+    static final String ANIMATION_COLOR_REVERSE = "ANIMATION_COLOR_REVERSE";
+    static final String ANIMATION_COLOR = "ANIMATION_COLOR";
 
-    protected int startColor;
-    protected int endColor;
+    private ColorAnimationValue value;
 
-    public ColorAnimation(@NonNull ValueAnimation.UpdateListener listener) {
+    int colorStart;
+    int colorEnd;
+
+    public ColorAnimation(@Nullable ValueController.UpdateListener listener) {
         super(listener);
+        value = new ColorAnimationValue();
     }
 
     @NonNull
     @Override
     public ValueAnimator createAnimator() {
         ValueAnimator animator = new ValueAnimator();
-        animator.setDuration(AbsAnimation.DEFAULT_ANIMATION_TIME);
-        animator.setInterpolator(new DecelerateInterpolator());
+        animator.setDuration(BaseAnimation.DEFAULT_ANIMATION_TIME);
+        animator.setInterpolator(new AccelerateDecelerateInterpolator());
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
@@ -51,11 +57,11 @@ public class ColorAnimation extends AbsAnimation<ValueAnimator> {
     }
 
     @NonNull
-    public ColorAnimation with(int colorStartValue, int colorEndValue) {
-        if (animator != null && hasChanges(colorStartValue, colorEndValue)) {
+    public ColorAnimation with(int colorStart, int colorEnd) {
+        if (animator != null && hasChanges(colorStart, colorEnd)) {
 
-            startColor = colorStartValue;
-            endColor = colorEndValue;
+            this.colorStart = colorStart;
+            this.colorEnd = colorEnd;
 
             PropertyValuesHolder colorHolder = createColorPropertyHolder(false);
             PropertyValuesHolder reverseColorHolder = createColorPropertyHolder(true);
@@ -66,35 +72,35 @@ public class ColorAnimation extends AbsAnimation<ValueAnimator> {
         return this;
     }
 
-    protected PropertyValuesHolder createColorPropertyHolder(boolean isReverse) {
+    PropertyValuesHolder createColorPropertyHolder(boolean isReverse) {
         String propertyName;
-        int startColorValue;
-        int endColorValue;
+        int colorStart;
+        int colorEnd;
 
         if (isReverse) {
             propertyName = ANIMATION_COLOR_REVERSE;
-            startColorValue = endColor;
-            endColorValue = startColor;
+            colorStart = this.colorEnd;
+            colorEnd = this.colorStart;
 
         } else {
             propertyName = ANIMATION_COLOR;
-            startColorValue = startColor;
-            endColorValue = endColor;
+            colorStart = this.colorStart;
+            colorEnd = this.colorEnd;
         }
 
-        PropertyValuesHolder holder = PropertyValuesHolder.ofInt(propertyName, startColorValue, endColorValue);
+        PropertyValuesHolder holder = PropertyValuesHolder.ofInt(propertyName, colorStart, colorEnd);
         holder.setEvaluator(new ArgbEvaluator());
 
         return holder;
     }
 
     @SuppressWarnings("RedundantIfStatement")
-    private boolean hasChanges(int colorStartValue, int colorEndValue) {
-        if (startColor != colorStartValue) {
+    private boolean hasChanges(int colorStart, int colorEnd) {
+        if (this.colorStart != colorStart) {
             return true;
         }
 
-        if (endColor != colorEndValue) {
+        if (this.colorEnd != colorEnd) {
             return true;
         }
 
@@ -105,8 +111,11 @@ public class ColorAnimation extends AbsAnimation<ValueAnimator> {
         int color = (int) animation.getAnimatedValue(ANIMATION_COLOR);
         int colorReverse = (int) animation.getAnimatedValue(ANIMATION_COLOR_REVERSE);
 
+        value.setColor(color);
+        value.setColorReverse(colorReverse);
+
         if (listener != null) {
-            listener.onColorAnimationUpdated(color, colorReverse);
+            listener.onValueUpdated(value);
         }
     }
 }

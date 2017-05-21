@@ -1,9 +1,19 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+    <style name="Base" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimaryDark">@color/blue_400</item>
+        <item name="colorPrimary">@color/blue_300</item>
+        <item name="colorAccent">@color/blue_300</item>
+        <item name="colorControlNormal">@color/white</item>
+    </style>
+
+    <style name="BaseToolbar">
+        <item name="android:background">?colorPrimary</item>
+        <item name="android:elevation" tools:targetApi="lollipop">4dp</item>
+    </style>
+
+    <style name="ToolbarTextAppearance" parent="@android:style/TextAppearance.Medium">>
+        <item name="android:textColor">@android:color/white</item>
     </style>
 
 </resources>

@@ -1,10 +1,12 @@
-package com.rd.animation;
+package com.rd.animation.type;
 
 import android.animation.IntEvaluator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.support.annotation.NonNull;
-import android.view.animation.DecelerateInterpolator;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import com.rd.animation.controller.ValueController;
+import com.rd.animation.data.type.ScaleAnimationValue;
 
 public class ScaleAnimation extends ColorAnimation {
 
@@ -12,25 +14,25 @@ public class ScaleAnimation extends ColorAnimation {
     public static final float MIN_SCALE_FACTOR = 0.3f;
     public static final float MAX_SCALE_FACTOR = 1;
 
-    private static final String ANIMATION_COLOR_REVERSE = "ANIMATION_COLOR_REVERSE";
-    private static final String ANIMATION_COLOR = "ANIMATION_COLOR";
-
     private static final String ANIMATION_SCALE_REVERSE = "ANIMATION_SCALE_REVERSE";
     private static final String ANIMATION_SCALE = "ANIMATION_SCALE";
 
-    private int radiusPx;
+    private int radius;
     private float scaleFactor;
 
-    public ScaleAnimation(@NonNull ValueAnimation.UpdateListener listener) {
+    private ScaleAnimationValue value;
+
+    public ScaleAnimation(@NonNull ValueController.UpdateListener listener) {
         super(listener);
+        value = new ScaleAnimationValue();
     }
 
     @NonNull
     @Override
     public ValueAnimator createAnimator() {
         ValueAnimator animator = new ValueAnimator();
-        animator.setDuration(AbsAnimation.DEFAULT_ANIMATION_TIME);
-        animator.setInterpolator(new DecelerateInterpolator());
+        animator.setDuration(BaseAnimation.DEFAULT_ANIMATION_TIME);
+        animator.setInterpolator(new AccelerateDecelerateInterpolator());
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
@@ -42,13 +44,14 @@ public class ScaleAnimation extends ColorAnimation {
     }
 
     @NonNull
-    public ScaleAnimation with(int colorStartValue, int colorEndValue, int radiusValue, float scaleFactorValue) {
-        if (animator != null && hasChanges(colorStartValue, colorEndValue, radiusValue, scaleFactorValue)) {
+    public ScaleAnimation with(int colorStart, int colorEnd, int radius, float scaleFactor) {
+        if (animator != null && hasChanges(colorStart, colorEnd, radius, scaleFactor)) {
 
-            startColor = colorStartValue;
-            endColor = colorEndValue;
-            radiusPx = radiusValue;
-            scaleFactor = scaleFactorValue;
+            this.colorStart = colorStart;
+            this.colorEnd = colorEnd;
+
+            this.radius = radius;
+            this.scaleFactor = scaleFactor;
 
             PropertyValuesHolder colorHolder = createColorPropertyHolder(false);
             PropertyValuesHolder reverseColorHolder = createColorPropertyHolder(true);
@@ -69,8 +72,14 @@ public class ScaleAnimation extends ColorAnimation {
         int radius = (int) animation.getAnimatedValue(ANIMATION_SCALE);
         int radiusReverse = (int) animation.getAnimatedValue(ANIMATION_SCALE_REVERSE);
 
+        value.setColor(color);
+        value.setColorReverse(colorReverse);
+
+        value.setRadius(radius);
+        value.setRadiusReverse(radiusReverse);
+
         if (listener != null) {
-            listener.onScaleAnimationUpdated(color, colorReverse, radius, radiusReverse);
+            listener.onValueUpdated(value);
         }
     }
 
@@ -82,12 +91,12 @@ public class ScaleAnimation extends ColorAnimation {
 
         if (isReverse) {
             propertyName = ANIMATION_SCALE_REVERSE;
-            startRadiusValue = radiusPx;
-            endRadiusValue = (int) (radiusPx * scaleFactor);
+            startRadiusValue = radius;
+            endRadiusValue = (int) (radius * scaleFactor);
         } else {
             propertyName = ANIMATION_SCALE;
-            startRadiusValue = (int) (radiusPx * scaleFactor);
-            endRadiusValue = radiusPx;
+            startRadiusValue = (int) (radius * scaleFactor);
+            endRadiusValue = radius;
         }
 
         PropertyValuesHolder holder = PropertyValuesHolder.ofInt(propertyName, startRadiusValue, endRadiusValue);
@@ -97,16 +106,16 @@ public class ScaleAnimation extends ColorAnimation {
     }
 
     @SuppressWarnings("RedundantIfStatement")
-    private boolean hasChanges(int colorStartValue, int colorEndValue, int radiusValue, float scaleFactorValue) {
-        if (startColor != colorStartValue) {
+    private boolean hasChanges(int colorStart, int colorEnd, int radiusValue, float scaleFactorValue) {
+        if (this.colorStart != colorStart) {
             return true;
         }
 
-        if (endColor != colorEndValue) {
+        if (this.colorEnd != colorEnd) {
             return true;
         }
 
-        if (radiusPx != radiusValue) {
+        if (radius != radiusValue) {
             return true;
         }
 

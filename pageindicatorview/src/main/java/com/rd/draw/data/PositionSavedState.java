@@ -1,4 +1,4 @@
-package com.rd;
+package com.rd.draw.data;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -10,7 +10,7 @@ public class PositionSavedState extends View.BaseSavedState {
     private int selectingPosition;
     private int lastSelectedPosition;
 
-    protected PositionSavedState(Parcelable superState) {
+    public PositionSavedState(Parcelable superState) {
         super(superState);
     }
 

@@ -1,18 +1,20 @@
-package com.rd.animation;
+package com.rd.animation.type;
 
 import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import com.rd.animation.controller.ValueController;
 
-public abstract class AbsAnimation<T extends Animator> {
+public abstract class BaseAnimation<T extends Animator> {
 
     public static final int DEFAULT_ANIMATION_TIME = 350;
-
     protected long animationDuration = DEFAULT_ANIMATION_TIME;
-    protected ValueAnimation.UpdateListener listener;
+
+    protected ValueController.UpdateListener listener;
     protected T animator;
 
-    public AbsAnimation(@NonNull ValueAnimation.UpdateListener listener) {
+    public BaseAnimation(@Nullable ValueController.UpdateListener listener) {
         this.listener = listener;
         animator = createAnimator();
     }
@@ -20,9 +22,9 @@ public abstract class AbsAnimation<T extends Animator> {
     @NonNull
     public abstract T createAnimator();
 
-    public abstract AbsAnimation progress(float progress);
+    public abstract BaseAnimation progress(float progress);
 
-    public AbsAnimation duration(long duration) {
+    public BaseAnimation duration(long duration) {
         animationDuration = duration;
 
         if (animator instanceof ValueAnimator) {

@@ -1,3 +1,34 @@
 <resources>
     <string name="app_name">PageIndicatorView</string>
+    <string name="interactive_animation">Interactive animation</string>
+    <string name="auto_visibility">Auto visibility</string>
+    <string name="animation_type">Animation type</string>
+    <string name="orientation">Orientation</string>
+    <string name="customize">Customize</string>
+    <string name="home">Home</string>
+    <string name="right_to_left_mode">Right to left mode</string>
+
+    <string-array name="animation_type">
+        <item>None</item>
+        <item>Color</item>
+        <item>Scale</item>
+        <item>Worm</item>
+        <item>Slide</item>
+        <item>Fill</item>
+        <item>Thin Worm</item>
+        <item>Drop</item>
+        <item>Swap</item>
+    </string-array>
+
+    <string-array name="orientation">
+        <item>Horizontal</item>
+        <item>Vertical</item>
+    </string-array>
+
+    <string-array name="rtl">
+        <item>On</item>
+        <item>Off</item>
+        <item>Auto</item>
+    </string-array>
+
 </resources>

@@ -1,33 +1,33 @@
-package com.rd.animation;
+package com.rd.animation.type;
 
 import android.animation.IntEvaluator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.support.annotation.NonNull;
-import android.view.animation.DecelerateInterpolator;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import com.rd.animation.controller.ValueController;
+import com.rd.animation.data.type.SlideAnimationValue;
 
-/**
- * Created by Andy on 2/7/17.
- */
-
-public class SwapAnimation extends AbsAnimation<ValueAnimator> {
+public class SlideAnimation extends BaseAnimation<ValueAnimator> {
 
     private static final String ANIMATION_COORDINATE = "ANIMATION_COORDINATE";
     private static final int COORDINATE_NONE = -1;
 
-    private int startCoordinate = COORDINATE_NONE;
-    private int endCoordinate = COORDINATE_NONE;
+    private SlideAnimationValue value;
+    private int coordinateStart = COORDINATE_NONE;
+    private int coordinateEnd = COORDINATE_NONE;
 
-    public SwapAnimation(@NonNull ValueAnimation.UpdateListener listener) {
+    public SlideAnimation(@NonNull ValueController.UpdateListener listener) {
         super(listener);
+        value = new SlideAnimationValue();
     }
 
     @NonNull
     @Override
     public ValueAnimator createAnimator() {
         ValueAnimator animator = new ValueAnimator();
-        animator.setDuration(AbsAnimation.DEFAULT_ANIMATION_TIME);
-        animator.setInterpolator(new DecelerateInterpolator());
+        animator.setDuration(BaseAnimation.DEFAULT_ANIMATION_TIME);
+        animator.setInterpolator(new AccelerateDecelerateInterpolator());
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
@@ -39,7 +39,7 @@ public class SwapAnimation extends AbsAnimation<ValueAnimator> {
     }
 
     @Override
-    public SwapAnimation progress(float progress) {
+    public SlideAnimation progress(float progress) {
         if (animator != null) {
             long playTime = (long) (progress * animationDuration);
 
@@ -52,20 +52,21 @@ public class SwapAnimation extends AbsAnimation<ValueAnimator> {
     }
 
     @NonNull
-    public SwapAnimation with(int startValue, int endValue) {
-        if (animator != null && hasChanges(startValue, endValue)) {
-            startCoordinate = startValue;
-            endCoordinate = endValue;
+    public SlideAnimation with(int coordinateStart, int coordinateEnd) {
+        if (animator != null && hasChanges(coordinateStart, coordinateEnd)) {
 
-            PropertyValuesHolder holder = createColorPropertyHolder();
+            this.coordinateStart = coordinateStart;
+            this.coordinateEnd = coordinateEnd;
+
+            PropertyValuesHolder holder = createSlidePropertyHolder();
             animator.setValues(holder);
         }
 
         return this;
     }
 
-    private PropertyValuesHolder createColorPropertyHolder() {
-        PropertyValuesHolder holder = PropertyValuesHolder.ofInt(ANIMATION_COORDINATE, startCoordinate, endCoordinate);
+    private PropertyValuesHolder createSlidePropertyHolder() {
+        PropertyValuesHolder holder = PropertyValuesHolder.ofInt(ANIMATION_COORDINATE, coordinateStart, coordinateEnd);
         holder.setEvaluator(new IntEvaluator());
 
         return holder;
@@ -73,19 +74,20 @@ public class SwapAnimation extends AbsAnimation<ValueAnimator> {
 
     private void onAnimateUpdated(@NonNull ValueAnimator animation) {
         int coordinate = (int) animation.getAnimatedValue(ANIMATION_COORDINATE);
+        value.setCoordinate(coordinate);
 
         if (listener != null) {
-            listener.onSwapAnimationUpdated(coordinate);
+            listener.onValueUpdated(value);
         }
     }
 
     @SuppressWarnings("RedundantIfStatement")
-    private boolean hasChanges(int startValue, int endValue) {
-        if (startCoordinate != startValue) {
+    private boolean hasChanges(int coordinateStart, int coordinateEnd) {
+        if (this.coordinateStart != coordinateStart) {
             return true;
         }
 
-        if (endCoordinate != endValue) {
+        if (this.coordinateEnd != coordinateEnd) {
             return true;
         }
 

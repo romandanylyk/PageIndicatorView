@@ -1,9 +1,11 @@
-package com.rd.animation;
+package com.rd.animation.controller;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import com.rd.animation.data.Value;
+import com.rd.animation.type.*;
 
-public class ValueAnimation {
+public class ValueController {
 
     private ColorAnimation colorAnimation;
     private ScaleAnimation scaleAnimation;
@@ -17,25 +19,10 @@ public class ValueAnimation {
     private UpdateListener updateListener;
 
     public interface UpdateListener {
-
-        void onColorAnimationUpdated(int color, int colorReverse);
-
-        void onScaleAnimationUpdated(int color, int colorReverse, int radius, int radiusReverse);
-
-        void onSlideAnimationUpdated(int value);
-
-        void onWormAnimationUpdated(int leftX, int rightX);
-
-        void onFillAnimationUpdated(int color, int colorReverse, int radius, int radiusReverse, int strokeWidth, int strokeWidthReverse);
-
-        void onThinWormAnimationUpdated(int leftX, int rightX, int height);
-
-        void onDropAnimationUpdated(int x, int y, int selectedRadius);
-
-        void onSwapAnimationUpdated(int xCoordinate);
+        void onValueUpdated(@Nullable Value value);
     }
 
-    public ValueAnimation(@Nullable UpdateListener listener) {
+    public ValueController(@Nullable UpdateListener listener) {
         updateListener = listener;
     }
 
