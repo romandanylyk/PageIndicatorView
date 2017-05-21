@@ -6,7 +6,7 @@
 
 `PageIndicatorView` is light library to indicate ViewPager's selected page with different animations and ability to customize it as you need.
 
-![](https://media.giphy.com/media/xUPGcxa8DDtTbF76fe/giphy.gif)
+![](https://raw.githubusercontent.com/romandanylyk/PageIndicatorView/master/assets/preview_anim_drop.gif)
 
 ### **Integration**
 To add `pageindicatorview` to your project, first make sure in root `build.gradle` you have specified the following repository:
