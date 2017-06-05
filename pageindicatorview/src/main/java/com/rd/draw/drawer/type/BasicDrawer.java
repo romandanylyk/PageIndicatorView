@@ -3,6 +3,7 @@ package com.rd.draw.drawer.type;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.support.annotation.NonNull;
+
 import com.rd.animation.type.AnimationType;
 import com.rd.draw.data.Indicator;
 
@@ -35,8 +36,15 @@ public class BasicDrawer extends BaseDrawer {
         int selectedPosition = indicator.getSelectedPosition();
         AnimationType animationType = indicator.getAnimationType();
 
+        int rectWidth = indicator.getRectWidth();
+        int rectHeight = indicator.getRectHeight();
+        int cornerRadius = indicator.getCornerRadius();
+
         if (animationType == AnimationType.SCALE && !isSelectedItem) {
             radius *= scaleFactor;
+            rectWidth *= scaleFactor;
+            rectHeight *= scaleFactor;
+            cornerRadius *= scaleFactor;
         }
 
         int color = unselectedColor;
@@ -53,6 +61,7 @@ public class BasicDrawer extends BaseDrawer {
         }
 
         paint.setColor(color);
-        canvas.drawCircle(coordinateX, coordinateY, radius, paint);
+
+        drawIndicator(canvas,paint,coordinateX,coordinateY);
     }
 }

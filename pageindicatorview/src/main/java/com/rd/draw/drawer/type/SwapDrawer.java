@@ -3,6 +3,7 @@ package com.rd.draw.drawer.type;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.support.annotation.NonNull;
+
 import com.rd.animation.data.Value;
 import com.rd.animation.data.type.SwapAnimationValue;
 import com.rd.draw.data.Indicator;
@@ -29,6 +30,8 @@ public class SwapDrawer extends BaseDrawer {
         int selectedColor = indicator.getSelectedColor();
         int unselectedColor = indicator.getUnselectedColor();
         int radius = indicator.getRadius();
+        int rectWidth = indicator.getRectWidth();
+        int rectHeight = indicator.getRectHeight();
 
         int selectedPosition = indicator.getSelectedPosition();
         int selectingPosition = indicator.getSelectingPosition();
@@ -59,10 +62,13 @@ public class SwapDrawer extends BaseDrawer {
         }
 
         paint.setColor(color);
-        if (indicator.getOrientation() == Orientation.HORIZONTAL) {
-            canvas.drawCircle(coordinate, coordinateY, radius, paint);
-        } else {
-            canvas.drawCircle(coordinateX, coordinate, radius, paint);
+        int swapX = coordinate;
+        int swapY = coordinateY;
+        if (indicator.getOrientation() == Orientation.VERTICAL) {
+            swapX = coordinateX;
+            swapY = coordinate;
         }
+
+       drawIndicator(canvas,paint,swapX,swapY);
     }
 }

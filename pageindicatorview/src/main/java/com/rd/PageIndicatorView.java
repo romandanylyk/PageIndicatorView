@@ -15,6 +15,7 @@ import android.util.AttributeSet;
 import android.util.Pair;
 import android.view.View;
 import com.rd.animation.type.*;
+import com.rd.draw.IndicatorShape;
 import com.rd.draw.data.Indicator;
 import com.rd.draw.data.Orientation;
 import com.rd.draw.data.PositionSavedState;
@@ -393,6 +394,24 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
      */
     public long getAnimationDuration() {
         return manager.indicator().getAnimationDuration();
+    }
+
+
+    /**
+     * Set the shape to display as an indicator.
+     * Default animation type is {@link IndicatorShape#CIRCLE}.
+     *
+     * @param shape type of shape, one of {@link IndicatorShape}
+     */
+    public void setShape(@Nullable IndicatorShape shape) {
+        manager.onValueUpdated(null);
+
+        if (shape!= null) {
+            manager.indicator().setShape(shape);
+        } else {
+            manager.indicator().setShape(IndicatorShape.CIRCLE);
+        }
+        invalidate();
     }
 
     /**

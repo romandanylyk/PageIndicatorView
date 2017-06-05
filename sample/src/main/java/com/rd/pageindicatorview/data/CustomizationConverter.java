@@ -1,6 +1,7 @@
 package com.rd.pageindicatorview.data;
 
 import com.rd.animation.type.AnimationType;
+import com.rd.draw.IndicatorShape;
 import com.rd.draw.data.Orientation;
 import com.rd.draw.data.RtlMode;
 
@@ -69,4 +70,14 @@ public class CustomizationConverter {
         }
     }
 
+    public static IndicatorShape getShape(int position) {
+        switch( position) {
+            case 0:
+                return IndicatorShape.CIRCLE;
+            case 1:
+                return IndicatorShape.RECTANGLE;
+            default:
+                return IndicatorShape.CIRCLE;
+        }
+    }
 }

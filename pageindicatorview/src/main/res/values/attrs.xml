@@ -40,6 +40,15 @@
             <enum name="off" value="1" />
             <enum name="auto" value="2" />
         </attr>
+        <attr name="piv_indicatorShape">
+            <enum name="circle" value="0"/>
+            <enum name="rectangle" value="1"/>
+        </attr>
+        <attr name="piv_rectWidth" format="dimension"/>
+        <attr name="piv_rectHeight" format="dimension"/>
+        <attr name="piv_cornerRadius" format="dimension"/>
     </declare-styleable>
+
+
 
 </resources>

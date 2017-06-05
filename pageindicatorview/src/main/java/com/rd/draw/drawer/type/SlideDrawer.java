@@ -3,6 +3,7 @@ package com.rd.draw.drawer.type;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.support.annotation.NonNull;
+
 import com.rd.animation.data.Value;
 import com.rd.animation.data.type.SlideAnimationValue;
 import com.rd.draw.data.Indicator;
@@ -28,16 +29,19 @@ public class SlideDrawer extends BaseDrawer {
         int coordinate = v.getCoordinate();
         int unselectedColor = indicator.getUnselectedColor();
         int selectedColor = indicator.getSelectedColor();
-        int radius = indicator.getRadius();
 
         paint.setColor(unselectedColor);
-        canvas.drawCircle(coordinateX, coordinateY, radius, paint);
+        drawIndicator(canvas,paint,coordinateX,coordinateY);
+
 
         paint.setColor(selectedColor);
-        if (indicator.getOrientation() == Orientation.HORIZONTAL) {
-            canvas.drawCircle(coordinate, coordinateY, radius, paint);
-        } else {
-            canvas.drawCircle(coordinateX, coordinate, radius, paint);
+        int slideX = coordinate;
+        int slideY = coordinateY;
+        if (indicator.getOrientation() == Orientation.VERTICAL) {
+            slideX = coordinateX;
+            slideY = coordinate;
         }
+
+        drawIndicator(canvas,paint,slideX,slideY);
     }
 }

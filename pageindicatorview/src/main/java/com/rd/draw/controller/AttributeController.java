@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 import com.rd.animation.type.*;
+import com.rd.draw.IndicatorShape;
 import com.rd.draw.data.Indicator;
 import com.rd.draw.data.Orientation;
 import com.rd.draw.data.RtlMode;
@@ -28,6 +29,7 @@ public class AttributeController {
         initColorAttribute(typedArray);
         initAnimationAttribute(typedArray);
         initSizeAttribute(typedArray);
+        initShapeAttribute(typedArray);
         typedArray.recycle();
     }
 
@@ -86,6 +88,11 @@ public class AttributeController {
         indicator.setRtlMode(rtlMode);
     }
 
+    private void initShapeAttribute(@NonNull TypedArray typedArray) {
+        int shapeIndex = typedArray.getInt(R.styleable.PageIndicatorView_piv_indicatorShape,IndicatorShape.CIRCLE.ordinal());
+        indicator.setShape(getIndicatorShape(shapeIndex));
+    }
+
     private void initSizeAttribute(@NonNull TypedArray typedArray) {
         int orientationIndex = typedArray.getInt(R.styleable.PageIndicatorView_piv_orientation, Orientation.HORIZONTAL.ordinal());
         Orientation orientation;
@@ -123,11 +130,29 @@ public class AttributeController {
             stroke = 0;
         }
 
+        int rectWidth = (int) typedArray.getDimension(R.styleable.PageIndicatorView_piv_rectWidth,DensityUtils.dpToPx(Indicator.DEFAULT_RECT_WIDTH_DP));
+        if( rectWidth < 0 ) {
+            rectWidth = 0;
+        }
+
+        int rectHeight = (int) typedArray.getDimension(R.styleable.PageIndicatorView_piv_rectHeight,DensityUtils.dpToPx(Indicator.DEFAULT_RECT_HEIGHT_DP));
+        if( rectHeight < 0 ) {
+            rectHeight = 0;
+        }
+
+        int cornerRadius = (int) typedArray.getDimension(R.styleable.PageIndicatorView_piv_cornerRadius,DensityUtils.dpToPx(Indicator.DEFAULT_CORNER_RADIUS_DP));
+        if( cornerRadius < 0 ) {
+            cornerRadius = 0;
+        }
+
         indicator.setRadius(radius);
         indicator.setOrientation(orientation);
         indicator.setPadding(padding);
         indicator.setScaleFactor(scaleFactor);
         indicator.setStroke(stroke);
+        indicator.setRectWidth(rectWidth);
+        indicator.setRectHeight(rectHeight);
+        indicator.setCornerRadius(cornerRadius);
     }
 
     private AnimationType getAnimationType(int index) {
@@ -150,9 +175,20 @@ public class AttributeController {
                 return AnimationType.DROP;
             case 8:
                 return AnimationType.SWAP;
+            default:
+                return AnimationType.NONE;
         }
+    }
 
-        return AnimationType.NONE;
+    private IndicatorShape getIndicatorShape(int index) {
+        switch (index) {
+            case 0:
+                return IndicatorShape.CIRCLE;
+            case 1:
+                return IndicatorShape.RECTANGLE;
+            default:
+                return IndicatorShape.CIRCLE;
+        }
     }
 
     private RtlMode getRtlMode(int index) {

@@ -8,6 +8,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.*;
+
+import com.rd.draw.IndicatorShape;
 import com.rd.pageindicatorview.base.BaseActivity;
 import com.rd.pageindicatorview.data.Customization;
 import com.rd.pageindicatorview.data.CustomizationConverter;
@@ -49,6 +51,10 @@ public class CustomizeActivity extends BaseActivity implements AdapterView.OnIte
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         switch (parent.getId()) {
+            case R.id.spinnerShape:
+                IndicatorShape shape = CustomizationConverter.getShape(position);
+                customization.setShape(shape);
+                break;
             case R.id.spinnerAnimationType:
                 customization.setAnimationType(CustomizationConverter.getAnimationType(position));
                 break;
@@ -90,6 +96,11 @@ public class CustomizeActivity extends BaseActivity implements AdapterView.OnIte
     }
 
     private void initViews() {
+        Spinner spinnerShape = (Spinner) findViewById(R.id.spinnerShape);
+        setSpinnerAdapter(spinnerShape,R.array.shape);
+        spinnerShape.setOnItemSelectedListener( this );
+        spinnerShape.setSelection(customization.getShape().ordinal());
+
         Spinner spinnerAnimationType = (Spinner) findViewById(R.id.spinnerAnimationType);
         setSpinnerAdapter(spinnerAnimationType, R.array.animation_type);
         spinnerAnimationType.setOnItemSelectedListener(this);

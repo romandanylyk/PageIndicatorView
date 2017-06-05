@@ -3,6 +3,7 @@ package com.rd.draw.drawer.type;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.support.annotation.NonNull;
+
 import com.rd.animation.data.Value;
 import com.rd.animation.data.type.DropAnimationValue;
 import com.rd.draw.data.Indicator;
@@ -30,13 +31,19 @@ public class DropDrawer extends BaseDrawer {
         float radius = indicator.getRadius();
 
         paint.setColor(unselectedColor);
-        canvas.drawCircle(coordinateX, coordinateY, radius, paint);
+        drawIndicator(canvas,paint,coordinateX,coordinateY);
 
         paint.setColor(selectedColor);
-        if (indicator.getOrientation() == Orientation.HORIZONTAL) {
-            canvas.drawCircle(v.getWidth(), v.getHeight(), v.getRadius(), paint);
-        } else {
-            canvas.drawCircle(v.getHeight(), v.getWidth(), v.getRadius(), paint);
+        int dropX = v.getWidth();
+        int dropY = v.getHeight();
+        if (indicator.getOrientation() == Orientation.VERTICAL) {
+            dropX = v.getHeight();
+            dropY = v.getWidth();
         }
+
+        drawIndicator(canvas,paint,dropX,dropY,
+                v.getRadius(),
+                indicator.getRectWidth(),
+                indicator.getRectHeight());
     }
 }
