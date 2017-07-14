@@ -62,6 +62,13 @@ public class BasicDrawer extends BaseDrawer {
 
         paint.setColor(color);
 
-        drawIndicator(canvas,paint,coordinateX,coordinateY);
+        drawIndicator(
+                canvas,
+                paint,
+                coordinateX,
+                coordinateY,
+                radius,
+                rectWidth,
+                rectHeight);
     }
 }
