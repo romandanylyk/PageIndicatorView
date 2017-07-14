@@ -28,7 +28,6 @@ public class DropDrawer extends BaseDrawer {
         DropAnimationValue v = (DropAnimationValue) value;
         int unselectedColor = indicator.getUnselectedColor();
         int selectedColor = indicator.getSelectedColor();
-        float radius = indicator.getRadius();
 
         paint.setColor(unselectedColor);
         drawIndicator(canvas,paint,coordinateX,coordinateY);
@@ -41,9 +40,11 @@ public class DropDrawer extends BaseDrawer {
             dropY = v.getWidth();
         }
 
+        float scale = Integer.valueOf(v.getRadius()).floatValue()
+                            /Integer.valueOf(indicator.getRadius()).floatValue();
         drawIndicator(canvas,paint,dropX,dropY,
                 v.getRadius(),
-                indicator.getRectWidth(),
-                indicator.getRectHeight());
+                Float.valueOf(scale*indicator.getRectWidth()).intValue(),
+                Float.valueOf(scale*indicator.getRectHeight()).intValue());
     }
 }
