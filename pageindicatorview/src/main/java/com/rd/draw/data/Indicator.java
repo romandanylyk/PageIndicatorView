@@ -3,6 +3,7 @@ package com.rd.draw.data;
 import android.support.annotation.NonNull;
 import android.view.View;
 import com.rd.animation.type.AnimationType;
+import com.rd.draw.IndicatorShape;
 
 public class Indicator {
 
@@ -12,6 +13,10 @@ public class Indicator {
 
     public static final int DEFAULT_RADIUS_DP = 6;
     public static final int DEFAULT_PADDING_DP = 8;
+
+    public static final int DEFAULT_RECT_WIDTH_DP = 20;
+    public static final int DEFAULT_RECT_HEIGHT_DP = 12;
+    public static final int DEFAULT_CORNER_RADIUS_DP = 3;
 
     private int height;
     private int width;
@@ -45,6 +50,10 @@ public class Indicator {
     private Orientation orientation;
     private AnimationType animationType;
     private RtlMode rtlMode;
+    private IndicatorShape shape;
+    private int rectWidth;
+    private int rectHeight;
+    private int cornerRadius;
 
     public int getHeight() {
         return height;
@@ -248,5 +257,37 @@ public class Indicator {
 
     public void setViewPagerId(int viewPagerId) {
         this.viewPagerId = viewPagerId;
+    }
+
+    public void setShape(IndicatorShape shape) {
+        this.shape = shape;
+    }
+
+    public IndicatorShape getShape() {
+        return shape;
+    }
+
+    public void setRectWidth(int rectWidth) {
+        this.rectWidth = rectWidth;
+    }
+
+    public int getRectWidth() {
+        return rectWidth;
+    }
+
+    public void setRectHeight(int rectHeight) {
+        this.rectHeight = rectHeight;
+    }
+
+    public int getRectHeight() {
+        return rectHeight;
+    }
+
+    public void setCornerRadius(int cornerRadius) {
+        this.cornerRadius = cornerRadius;
+    }
+
+    public int getCornerRadius() {
+        return cornerRadius;
     }
 }

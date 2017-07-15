@@ -3,6 +3,7 @@ package com.rd.draw.drawer.type;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.support.annotation.NonNull;
+
 import com.rd.animation.data.Value;
 import com.rd.animation.data.type.ScaleAnimationValue;
 import com.rd.draw.data.Indicator;
@@ -54,6 +55,14 @@ public class ScaleDrawer extends BaseDrawer {
         }
 
         paint.setColor(color);
-        canvas.drawCircle(coordinateX, coordinateY, radius, paint);
+
+        float scale = radius / indicator.getRadius();
+        drawIndicator(canvas,
+                paint,
+                coordinateX,
+                coordinateY,
+                radius,
+                Float.valueOf(scale*indicator.getRectWidth()).intValue(),
+                Float.valueOf(scale*indicator.getRectHeight()).intValue());
     }
 }

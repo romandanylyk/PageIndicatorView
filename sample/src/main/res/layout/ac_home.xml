@@ -31,7 +31,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="48dp"
         android:padding="36dp"
-        attrs:piv_padding="12dp"
-        attrs:piv_radius="8dp" />
+        attrs:piv_padding="18dp"
+        attrs:piv_radius="8dp"/>
 
 </RelativeLayout>

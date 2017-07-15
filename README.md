@@ -1,16 +1,16 @@
 
-###**PageIndicatorView**
+### **PageIndicatorView**
 [ ![Download](https://api.bintray.com/packages/romandanylyk/maven/pageindicatorview/images/download.svg) ](https://bintray.com/romandanylyk/maven/pageindicatorview/_latestVersion)[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-PageIndicatorView-green.svg?style=true)](https://android-arsenal.com/details/1/4555)  
 [![API](https://img.shields.io/badge/API-14%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=14)
 
 
-`PageIndicatorView` will simplify your life while you working with Android `ViewPager` and need to indicate selected page. It's easy to setup and customize as you need with run-time preview rendering.
+`PageIndicatorView` is light library to indicate ViewPager's selected page with different animations and ability to customize it as you need.
 
-![](https://github.com/romandanylyk/PageIndicatorView/blob/master/assets/preview_anim_drop.gif?raw=true)
+![](https://raw.githubusercontent.com/romandanylyk/PageIndicatorView/master/assets/preview_anim_drop.gif)
 
-###**Integration**
+### **Integration**
 To add `pageindicatorview` to your project, first make sure in root `build.gradle` you have specified the following repository:
-```java
+```groovy
     repositories {
         jcenter()
     }
@@ -20,12 +20,24 @@ To add `pageindicatorview` to your project, first make sure in root `build.gradl
 Once you make sure you have `jcenter` repository in your project, all you need to do is to add the following line in `dependencies` section of your project `build.gradle`.
  
 See latest library version [ ![Download](https://api.bintray.com/packages/romandanylyk/maven/pageindicatorview/images/download.svg) ](https://bintray.com/romandanylyk/maven/pageindicatorview/_latestVersion)
-```java
+```groovy
 compile 'com.romandanylyk:pageindicatorview:X.X.X'
 ```
-Keep in mind, that `PageIndicatorView` has min [API level 14](https://developer.android.com/about/dashboards/index.html)
+If your project already use `appcompat-v7` support library, you can omit `PageIndicatorView` dependencies by adding a single .aar file to your project, that will decrease total amount of methods used in your project.
 
-###**Usage Sample**
+```groovy
+compile 'com.romandanylyk:pageindicatorview:X.X.X@aar'
+```
+
+Keep in mind, that `PageIndicatorView` has min [API level 14](https://developer.android.com/about/dashboards/index.html) and these dependencies:
+
+```groovy
+ compile 'com.android.support:support-annotations:25.3.0'
+ compile 'com.android.support:support-compat:25.3.0'
+ compile 'com.android.support:support-core-ui:25.3.0'
+```
+
+### **Usage Sample**
 During implementation of `PageIndicatorView` I tried to make it's setup as easy as possible. 
 After you set adapter to your `ViewPager`, all you need to do is to `setViewPager()` and that's it! `PageIndicatorView` will get count from your adapter and start working with instance of your `ViewPager` automatically.  
 
@@ -48,17 +60,22 @@ Keep in mind that all public methods are also exist as attributes, so you can ev
         attrs:piv_viewPager="@id/viewPager"/>
 ```
 
-###**Customization**
+### **Customization**
 One of the most important feature of every custom view is ability to customize its look as user need. By calling the following methods (or attributes) you will be able to customize `PageIndicatorView` as you need.
 
 ```java
+//set shape
+setShape(IndicatorShape shape)
 //set size
 setCount(int count)
 setDynamicCount(boolean dynamicCount)
-
+setCornerRadius(int cornerRadiusDp)
 setRadius(int radiusDp)
 setPadding(int paddingDp)
 setStrokeWidth(int strokeDp)
+
+setAutoVisibility(boolean autoVisibility)
+setOrientation(Orientation orientation)
 
 //set color
 setUnselectedColor(int color)
@@ -74,33 +91,28 @@ setProgress(int selectingPosition, float progress)
 setSelection(int position)
 ```
 
-```xml
-// set orientation
-app:orientation="{vertical||horizontal}"
-```
-
 ![](https://github.com/romandanylyk/PageIndicatorView/blob/master/assets/attributes.gif?raw=true)
 
 Here you can see all the animations `PageIndicatorView` support.
 
-Name| Support version| Preview
--------- | --- | ---
-`AnimationType.NONE`| 0.0.1 | ![anim_none](https://raw.githubusercontent.com/romandanylyk/PageIndicatorView/master/assets/anim_none.gif)
-`AnimationType.COLOR`| 0.0.1 |![anim_color](https://raw.githubusercontent.com/romandanylyk/PageIndicatorView/master/assets/anim_color.gif)
-`AnimationType.SCALE`| 0.0.1 |![anim_scale](https://raw.githubusercontent.com/romandanylyk/PageIndicatorView/master/assets/anim_scale.gif)
-`AnimationType.SLIDE`| 0.0.1 |![anim_slide](https://raw.githubusercontent.com/romandanylyk/PageIndicatorView/master/assets/anim_slide.gif)
-`AnimationType.WORM`| 0.0.1 |![anim_worm](https://raw.githubusercontent.com/romandanylyk/PageIndicatorView/master/assets/anim_worm.gif)
-`AnimationType.FILL`| 0.0.6 |![anim_worm](https://raw.githubusercontent.com/romandanylyk/PageIndicatorView/master/assets/anim_fill.gif)
-`AnimationType.THIN_WORM`| 0.0.7 |![anim_thin_worm](https://raw.githubusercontent.com/romandanylyk/PageIndicatorView/master/assets/anim_thin_worm.gif)
-`AnimationType.DROP`| 0.1.0 |![anim_drop](https://raw.githubusercontent.com/romandanylyk/PageIndicatorView/master/assets/anim_drop.gif)
-`AnimationType.SWAP`| 0.1.1 |![anim_swap](https://raw.githubusercontent.com/romandanylyk/PageIndicatorView/master/assets/anim_swap.gif)
+Name| Circle Supported| Circle Preview | Rectangle Supported | Rectangle Preview  
+-------- | --- | --- | --- | --| 
+`AnimationType.NONE`| 0.0.1 | ![anim_none](https://raw.githubusercontent.com/romandanylyk/PageIndicatorView/master/assets/anim_none.gif)|TBD|![anim_rect_none](assets/anim_rect_none.gif)
+`AnimationType.COLOR`| 0.0.1 |![anim_color](https://raw.githubusercontent.com/romandanylyk/PageIndicatorView/master/assets/anim_color.gif)|TBD|![anim_rect_color](assets/anim_rect_color.gif)
+`AnimationType.SCALE`| 0.0.1 |![anim_scale](https://raw.githubusercontent.com/romandanylyk/PageIndicatorView/master/assets/anim_scale.gif)|TBD|![anim_rect_scale](assets/anim_rect_scale.gif)
+`AnimationType.SLIDE`| 0.0.1 |![anim_slide](https://raw.githubusercontent.com/romandanylyk/PageIndicatorView/master/assets/anim_slide.gif)|TBD|![anim_rect_slide](assets/anim_rect_slide.gif)
+`AnimationType.WORM`| 0.0.1 |![anim_worm](https://raw.githubusercontent.com/romandanylyk/PageIndicatorView/master/assets/anim_worm.gif)|TODO|
+`AnimationType.FILL`| 0.0.6 |![anim_worm](https://raw.githubusercontent.com/romandanylyk/PageIndicatorView/master/assets/anim_fill.gif)|TBD|![anim_rect_fill](assets/anim_rect_fill.gif)
+`AnimationType.THIN_WORM`| 0.0.7 |![anim_thin_worm](https://raw.githubusercontent.com/romandanylyk/PageIndicatorView/master/assets/anim_thin_worm.gif)|TODO|
+`AnimationType.DROP`| 0.1.0 |![anim_drop](https://raw.githubusercontent.com/romandanylyk/PageIndicatorView/master/assets/anim_drop.gif)|TBD|![anim_rect_drop](assets/anim_rect_drop.gif)
+`AnimationType.SWAP`| 0.1.1 |![anim_swap](https://raw.githubusercontent.com/romandanylyk/PageIndicatorView/master/assets/anim_swap.gif)|TBD|![anim_rect_swap](assets/anim_rect_swap.gif)
 
-###**Release Note**
+### **Release Note**
 See release notes on [github releases](https://github.com/romandanylyk/PageIndicatorView/releases) or [Bintray release notes](https://bintray.com/romandanylyk/maven/pageindicatorview#release).
 
-###**License**
+### **License**
 
-    Copyright 2016 Roman Danylyk
+    Copyright 2017 Roman Danylyk
     
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.

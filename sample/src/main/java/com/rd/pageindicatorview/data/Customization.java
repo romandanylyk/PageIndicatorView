@@ -2,12 +2,15 @@ package com.rd.pageindicatorview.data;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+
 import com.rd.animation.type.AnimationType;
+import com.rd.draw.IndicatorShape;
 import com.rd.draw.data.Orientation;
 import com.rd.draw.data.RtlMode;
 
 public class Customization implements Parcelable {
 
+    private IndicatorShape shape = IndicatorShape.CIRCLE;
     private AnimationType animationType = AnimationType.NONE;
     private Orientation orientation = Orientation.HORIZONTAL;
     private RtlMode rtlMode = RtlMode.Off;
@@ -87,6 +90,7 @@ public class Customization implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.shape == null ? -1 : this.shape.ordinal());
         dest.writeInt(this.animationType == null ? -1 : this.animationType.ordinal());
         dest.writeInt(this.orientation == null ? -1 : this.orientation.ordinal());
         dest.writeInt(this.rtlMode == null ? -1 : this.rtlMode.ordinal());
@@ -98,6 +102,8 @@ public class Customization implements Parcelable {
     }
 
     protected Customization(Parcel in) {
+        int tmpShape = in.readInt();
+        this.shape = tmpShape == -1 ? null : IndicatorShape.values()[tmpShape];
         int tmpAnimationType = in.readInt();
         this.animationType = tmpAnimationType == -1 ? null : AnimationType.values()[tmpAnimationType];
         int tmpOrientation = in.readInt();
@@ -119,4 +125,12 @@ public class Customization implements Parcelable {
             return new Customization[size];
         }
     };
+
+    public IndicatorShape getShape() {
+        return shape;
+    }
+
+    public void setShape(IndicatorShape shape) {
+        this.shape = shape;
+    }
 }
