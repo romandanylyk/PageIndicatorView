@@ -60,6 +60,25 @@ Keep in mind that all public methods are also exist as attributes, so you can ev
         attrs:piv_viewPager="@id/viewPager"/>
 ```
 
+**Id conflicts** can happen in views that have more than one view pager, like a RecyclerView. In this case, don't set the ViewPager id in xml and handle the selected item using the public methods. This is an example.
+
+```java
+viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                pageIndicatorView.setSelection(position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+            }
+        });
+```
+
 ### **Customization**
 One of the most important feature of every custom view is ability to customize its look as user need. By calling the following methods (or attributes) you will be able to customize `PageIndicatorView` as you need.
 
