@@ -143,7 +143,7 @@ public class Indicator {
     }
 
     public boolean isInteractiveAnimation() {
-        return interactiveAnimation && viewPagerId != View.NO_ID;
+        return interactiveAnimation;
     }
 
     public void setInteractiveAnimation(boolean interactiveAnimation) {
