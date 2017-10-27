@@ -18,6 +18,7 @@
         <item>Thin Worm</item>
         <item>Drop</item>
         <item>Swap</item>
+        <item>Scale Down</item>
     </string-array>
 
     <string-array name="orientation">

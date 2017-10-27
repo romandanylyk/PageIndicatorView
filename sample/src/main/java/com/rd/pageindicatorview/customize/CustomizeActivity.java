@@ -90,26 +90,26 @@ public class CustomizeActivity extends BaseActivity implements AdapterView.OnIte
     }
 
     private void initViews() {
-        Spinner spinnerAnimationType = (Spinner) findViewById(R.id.spinnerAnimationType);
+        Spinner spinnerAnimationType = findViewById(R.id.spinnerAnimationType);
         setSpinnerAdapter(spinnerAnimationType, R.array.animation_type);
         spinnerAnimationType.setOnItemSelectedListener(this);
         spinnerAnimationType.setSelection(customization.getAnimationType().ordinal());
 
-        Spinner spinnerOrientation = (Spinner) findViewById(R.id.spinnerOrientation);
+        Spinner spinnerOrientation = findViewById(R.id.spinnerOrientation);
         setSpinnerAdapter(spinnerOrientation, R.array.orientation);
         spinnerOrientation.setOnItemSelectedListener(this);
         spinnerOrientation.setSelection(customization.getOrientation().ordinal());
 
-        Spinner spinnerRtl = (Spinner) findViewById(R.id.spinnerRtl);
+        Spinner spinnerRtl = findViewById(R.id.spinnerRtl);
         setSpinnerAdapter(spinnerRtl, R.array.rtl);
         spinnerRtl.setOnItemSelectedListener(this);
         spinnerRtl.setSelection(customization.getRtlMode().ordinal());
 
-        Switch switchInteractiveAnimation = (Switch) findViewById(R.id.switchInteractiveAnimation);
+        Switch switchInteractiveAnimation = findViewById(R.id.switchInteractiveAnimation);
         switchInteractiveAnimation.setOnCheckedChangeListener(this);
         switchInteractiveAnimation.setChecked(customization.isInteractiveAnimation());
 
-        Switch switchAutoVisibility = (Switch) findViewById(R.id.switchAutoVisibility);
+        Switch switchAutoVisibility = findViewById(R.id.switchAutoVisibility);
         switchAutoVisibility.setOnCheckedChangeListener(this);
         switchAutoVisibility.setChecked(customization.isAutoVisibility());
 

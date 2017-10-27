@@ -150,6 +150,8 @@ public class AttributeController {
                 return AnimationType.DROP;
             case 8:
                 return AnimationType.SWAP;
+            case 9:
+                return AnimationType.SCALE_DOWN;
         }
 
         return AnimationType.NONE;

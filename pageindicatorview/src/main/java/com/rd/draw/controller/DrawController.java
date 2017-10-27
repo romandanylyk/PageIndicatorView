@@ -95,6 +95,10 @@ public class DrawController {
             case SWAP:
                 drawer.drawSwap(canvas, value);
                 break;
+
+            case SCALE_DOWN:
+                drawer.drawScaleDown(canvas, value);
+                break;
         }
     }
 }

@@ -35,6 +35,9 @@ public class CustomizationConverter {
             case 8:
                 return AnimationType.SWAP;
 
+            case 9:
+                return AnimationType.SCALE_DOWN;
+
             default:
                 return AnimationType.NONE;
         }

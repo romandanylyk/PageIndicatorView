@@ -14,11 +14,11 @@ public class ScaleAnimation extends ColorAnimation {
     public static final float MIN_SCALE_FACTOR = 0.3f;
     public static final float MAX_SCALE_FACTOR = 1;
 
-    private static final String ANIMATION_SCALE_REVERSE = "ANIMATION_SCALE_REVERSE";
-    private static final String ANIMATION_SCALE = "ANIMATION_SCALE";
+    static final String ANIMATION_SCALE_REVERSE = "ANIMATION_SCALE_REVERSE";
+    static final String ANIMATION_SCALE = "ANIMATION_SCALE";
 
-    private int radius;
-    private float scaleFactor;
+    int radius;
+    float scaleFactor;
 
     private ScaleAnimationValue value;
 
@@ -84,7 +84,7 @@ public class ScaleAnimation extends ColorAnimation {
     }
 
     @NonNull
-    private PropertyValuesHolder createScalePropertyHolder(boolean isReverse) {
+    protected PropertyValuesHolder createScalePropertyHolder(boolean isReverse) {
         String propertyName;
         int startRadiusValue;
         int endRadiusValue;

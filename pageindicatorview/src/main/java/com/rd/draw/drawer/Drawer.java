@@ -18,6 +18,7 @@ public class Drawer {
     private ThinWormDrawer thinWormDrawer;
     private DropDrawer dropDrawer;
     private SwapDrawer swapDrawer;
+    private ScaleDownDrawer scaleDownDrawer;
 
     private int position;
     private int coordinateX;
@@ -37,6 +38,7 @@ public class Drawer {
         thinWormDrawer = new ThinWormDrawer(paint, indicator);
         dropDrawer = new DropDrawer(paint, indicator);
         swapDrawer = new SwapDrawer(paint, indicator);
+        scaleDownDrawer = new ScaleDownDrawer(paint, indicator);
     }
 
     public void setup(int position, int coordinateX, int coordinateY) {
@@ -96,6 +98,12 @@ public class Drawer {
     public void drawSwap(@NonNull Canvas canvas, @NonNull Value value) {
         if (swapDrawer != null) {
             swapDrawer.draw(canvas, value, position, coordinateX, coordinateY);
+        }
+    }
+
+    public void drawScaleDown(@NonNull Canvas canvas, @NonNull Value value) {
+        if (scaleDownDrawer != null) {
+            scaleDownDrawer.draw(canvas, value, position, coordinateX, coordinateY);
         }
     }
 }

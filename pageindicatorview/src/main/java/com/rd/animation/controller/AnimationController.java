@@ -80,6 +80,10 @@ public class AnimationController {
             case SWAP:
                 swapAnimation();
                 break;
+
+            case SCALE_DOWN:
+                scaleDownAnimation();
+                break;
         }
     }
 
@@ -258,6 +262,27 @@ public class AnimationController {
         BaseAnimation animation = valueController
                 .swap()
                 .with(from, to)
+                .duration(animationDuration);
+
+        if (isInteractive) {
+            animation.progress(progress);
+        } else {
+            animation.start();
+        }
+
+        runningAnimation = animation;
+    }
+
+    private void scaleDownAnimation() {
+        int selectedColor = indicator.getSelectedColor();
+        int unselectedColor = indicator.getUnselectedColor();
+        int radiusPx = indicator.getRadius();
+        float scaleFactor = indicator.getScaleFactor();
+        long animationDuration = indicator.getAnimationDuration();
+
+        BaseAnimation animation = valueController
+                .scaleDown()
+                .with(unselectedColor, selectedColor, radiusPx, scaleFactor)
                 .duration(animationDuration);
 
         if (isInteractive) {

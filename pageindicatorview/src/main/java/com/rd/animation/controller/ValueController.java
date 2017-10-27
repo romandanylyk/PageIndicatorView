@@ -15,6 +15,7 @@ public class ValueController {
     private ThinWormAnimation thinWormAnimation;
     private DropAnimation dropAnimation;
     private SwapAnimation swapAnimation;
+    private ScaleDownAnimation scaleDownAnimation;
 
     private UpdateListener updateListener;
 
@@ -98,4 +99,12 @@ public class ValueController {
         return swapAnimation;
     }
 
+    @NonNull
+    public ScaleDownAnimation scaleDown() {
+        if (scaleDownAnimation == null) {
+            scaleDownAnimation = new ScaleDownAnimation(updateListener);
+        }
+
+        return scaleDownAnimation;
+    }
 }

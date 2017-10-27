@@ -34,6 +34,7 @@
             <enum name="thinWorm" value="6" />
             <enum name="drop" value="7" />
             <enum name="swap" value="8" />
+            <enum name="scale_down" value="9" />
         </attr>
         <attr name="piv_rtl_mode">
             <enum name="on" value="0" />
