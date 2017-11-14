@@ -509,23 +509,29 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
             return;
         }
 
-        int selectedPosition = indicator.getSelectedPosition();
-        int count = indicator.getCount();
-        int lastPosition = count - 1;
-
-        if (position < 0) {
-            position = 0;
-        } else if (position > lastPosition) {
-            position = lastPosition;
-        }
-
-        if (selectedPosition == position) {
+        position = adjustPosition(position);
+        if (position == indicator.getSelectedPosition()) {
             return;
         }
 
         indicator.setLastSelectedPosition(indicator.getSelectedPosition());
         indicator.setSelectedPosition(position);
         manager.animate().basic();
+    }
+
+    /**
+     * Set specific circle indicator position to be selected without any kind of animation. If position < or > total count,
+     * accordingly first or last circle indicator will be selected.
+     *
+     * @param position position of indicator to select.
+     */
+    public void setSelected(int position) {
+        Indicator indicator = manager.indicator();
+        AnimationType animationType = indicator.getAnimationType();
+        indicator.setAnimationType(AnimationType.NONE);
+        setSelection(position);
+
+        indicator.setAnimationType(animationType);
     }
 
     /**
@@ -728,5 +734,20 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
                 setViewPager((ViewPager) view);
             }
         }
+    }
+
+    private int adjustPosition(int position){
+        Indicator indicator = manager.indicator();
+        int count = indicator.getCount();
+        int lastPosition = count - 1;
+
+        if (position < 0) {
+            position = 0;
+
+        } else if (position > lastPosition) {
+            position = lastPosition;
+        }
+
+        return position;
     }
 }
