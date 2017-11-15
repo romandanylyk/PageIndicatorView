@@ -1,10 +1,11 @@
 
+
 ### **PageIndicatorView**
-[ ![Download](https://api.bintray.com/packages/romandanylyk/maven/pageindicatorview/images/download.svg) ](https://bintray.com/romandanylyk/maven/pageindicatorview/_latestVersion)[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-PageIndicatorView-green.svg?style=true)](https://android-arsenal.com/details/1/4555)  
+[ ![Download](https://api.bintray.com/packages/romandanylyk/maven/pageindicatorview/images/download.svg) ](https://bintray.com/romandanylyk/maven/pageindicatorview/_latestVersion)[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-PageIndicatorView-green.svg?style=true)](https://android-arsenal.com/details/1/4555)
 [![API](https://img.shields.io/badge/API-14%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=14)
 
 
-`PageIndicatorView` is light library to indicate ViewPager's selected page with different animations and ability to customize it as you need.
+`PageIndicatorView` is light library to indicate ViewPager's selected page with different animations and ability to customise it as you need.
 
 ![](https://raw.githubusercontent.com/romandanylyk/PageIndicatorView/master/assets/preview_anim_drop.gif)
 
@@ -15,10 +16,10 @@ To add `pageindicatorview` to your project, first make sure in root `build.gradl
         jcenter()
     }
 ```
-*Note: by creating new project in Android Studio it will have `jcenter` repository specified by default, so you will not need to add it manually.* 
+>***Note**: by creating new project in Android Studio it will have `jcenter` repository specified by default, so you will not need to add it manually.*
 
 Once you make sure you have `jcenter` repository in your project, all you need to do is to add the following line in `dependencies` section of your project `build.gradle`.
- 
+
 See latest library version [ ![Download](https://api.bintray.com/packages/romandanylyk/maven/pageindicatorview/images/download.svg) ](https://bintray.com/romandanylyk/maven/pageindicatorview/_latestVersion)
 ```groovy
 compile 'com.romandanylyk:pageindicatorview:X.X.X'
@@ -38,29 +39,79 @@ Keep in mind, that `PageIndicatorView` has min [API level 14](https://developer.
 ```
 
 ### **Usage Sample**
-During implementation of `PageIndicatorView` I tried to make it's setup as easy as possible. 
-After you set adapter to your `ViewPager`, all you need to do is to `setViewPager()` and that's it! `PageIndicatorView` will get count from your adapter and start working with instance of your `ViewPager` automatically.  
+`PageIndicatorView` was developed with focus to make it setup and use as easy as possible.
 
-```java
-ViewPager viewPager = (ViewPager) findViewById(R.id.viewPager);
-viewPager.setAdapter(adapter);
-//instance of android.support.v4.view.PagerAdapter adapter
-
-PageIndicatorView pageIndicatorView = (PageIndicatorView) view.findViewById(R.id.pageIndicatorView);
-pageIndicatorView.setViewPager(viewPager);
-```
-
-Keep in mind that all public methods are also exist as attributes, so you can even setup and customize page indicator without any java code. Keep in mind that using this approach will only work with static layouts. In case you have a recycler, setting properties to `PageIndicatorView` via public methods will benefit more. 
+Most common use of `PageIndicatorView` is an single `ViewPager` on screen and displaying circle indicators. In this case all you need to do is to declare `PageIndicatorView` in your `layout.xml` and specify customisation attributes - that's it, the rest will be handled on the fly!
 
 ```xml
-    <com.rd.PageIndicatorView
+     <com.rd.PageIndicatorView
         android:id="@+id/pageIndicatorView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        attrs:piv_viewPager="@+id/viewPager"/>
+        android:layout_centerInParent="true"
+        app:piv_animationType="scale"
+        app:piv_dynamicCount="true"
+        app:piv_interactiveAnimation="true"
+        app:piv_selectedColor="@color/gray_50"
+        app:piv_unselectedColor="@color/gray_300"
+        app:piv_viewPager="@id/viewPager"
+        attrs:piv_padding="12dp"
+        attrs:piv_radius="8dp" />
+```
+This will automatically select specific indicator to be selected as it is in your `ViewPager` so you don't need to set it manually.
+
+>***Note**: You can also call public method to control `PageIndicatorView` programmatically.*
+
+More complex use case of using `PageIndicatorView` is in any kind of recycle. Say, you have a RecyclerView and each item has it's own `ViewPager` and `PageIndicatorView`.
+
+Because of id conflicts you can't just set a `viewPagerId` to `PageIndicatorView` and you'r done, so you will need to specify selected item manually.
+
+```java
+  pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {/*empty*/}
+
+            @Override
+            public void onPageSelected(int position) {
+                pageIndicatorView.setSelection(position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {/*empty*/}
+        });
 ```
 
-### **Customization**
+### **Documentation**
+
+Methods | Attributes | Description
+------- | ---| -----------
+`setCount(int count)` | `piv_count` | Set static number of circle indicators to be displayed. Param `count` - total count of indicators.
+`getCount()` | - | Return number of circle indicators
+`setDynamicCount(boolean dynamicCount)` | `piv_dynamicCount` | Dynamic count will automatically update number of circle indicators if ViewPager page count updates on run-time. If new count will be bigger than current count, selected circle will stay as it is, otherwise it will be set to last one. Note: works if `ViewPager` set and already have it's adapter. See {@link #setViewPager(ViewPager)}.
+`setRadius(int radiusDp)` | `piv_radius` | Set radius in dp of each circle indicator. Default value is 6 dp. Make sure you set circle Radius, not a Diameter.
+`setRadius(int radiusPx)` | `piv_radius` | Set radius in px of each circle indicator. Default value is 6 dp. Make sure you set circle Radius, not a Diameter.
+`getRadius()` | - | Returns radius of each circle indicators in px.
+`setPadding(int paddingDp)` | `piv_padding` | Set padding in dp between each circle indicator. Default value is 8 dp.
+`setPadding(int paddingPx)` | `piv_padding` | Set padding in px between each circle indicator. Default value is 8 dp.
+`getPadding()` | - | Returns padding in px between each circle indicator.
+`setScaleFactor(float factor)` | `piv_scaleFactor` | Set scale factor used in {@link AnimationType#SCALE} animation. Defines size of unselected indicator circles in comparing to selected one. Minimum and maximum values are {@link ScaleAnimation#MAX_SCALE_FACTOR} and {@link ScaleAnimation#MIN_SCALE_FACTOR}. See also {@link ScaleAnimation#DEFAULT_SCALE_FACTOR}.
+`getScaleFactor()` | - | Returns scale factor values used in {@link AnimationType#SCALE} animation. Defines size of unselected indicator circles in comparing to selected one.Minimum and maximum values are {@link ScaleAnimation#MAX_SCALE_FACTOR} and {@link ScaleAnimation#MIN_SCALE_FACTOR}. See also {@link ScaleAnimation#DEFAULT_SCALE_FACTOR}. float value that indicate scale factor
+`setStrokeWidth(float strokePx)` | `piv_strokeWidth` | Set stroke width in px to set while {@link AnimationType#FILL} is selected.Default value is {@link FillAnimation#DEFAULT_STROKE_DP} strokePx stroke width in px.
+`setStrokeWidth(float strokeDp)` | `piv_strokeWidth` | Set stroke width in dp to set while {@link AnimationType#FILL} is selected. Default value is {@link FillAnimation#DEFAULT_STROKE_DP} strokePx stroke width in px.
+`getStrokeWidth()` | - | Return stroke width in px. If custom stroke width is not set and {@link AnimationType#FILL} is selected.
+`setSelectedColor(int color)` | `piv_selectedColor` | Set color of selected state to circle indicator. Default color is white {@link ColorAnimation#DEFAULT_SELECTED_COLOR}.
+`getSelectedColor()` | - | Return color of selected circle indicator. If custom unselected color. is not set, return default color {@link ColorAnimation#DEFAULT_SELECTED_COLOR}.
+`setUnselectedColor(int color)` | `piv_unselectedColor` | Set color of unselected state to each circle indicator. Default color {@link ColorAnimation#DEFAULT_UNSELECTED_COLOR}.@param color color of each unselected circle.
+`getUnselectedColor()` | - | Return color of unselected state of each circle indicator. If custom unselected color is not set, return default color ColorAnimation#DEFAULT_UNSELECTED_COLOR}.
+`setAutoVisibility(boolean autoVisibility)` | `piv_autoVisibility` |  Automatically hide (View.INVISIBLE) PageIndicatorView while indicator count is <= 1. Default is true.
+`setOrientation(@Nullable Orientation orientation)` | `piv_orientation` | Set orientation for indicator, one of HORIZONTAL or VERTICAL. Default is HORIZONTAL.
+`setAnimationDuration(long duration)` | `piv_animationDuration` | Set animation duration time in millisecond. Default animation duration time is {@link BaseAnimation#DEFAULT_ANIMATION_TIME}. (Won't affect on anything unless {@link #setAnimationType(AnimationType type)} is specified and {@link #setInteractiveAnimation(boolean isInteractive)} is false).
+`getAnimationDuration()`  | - | Return animation duration time in milliseconds. If custom duration is not set, return default duration time {@link BaseAnimation#DEFAULT_ANIMATION_TIME}.
+`setAnimationType(@Nullable AnimationType type)` | `piv_animationType` | Set animation type to perform while selecting new circle indicator. Default animation type is {@link AnimationType#NONE}.
+`setInteractiveAnimation(boolean isInteractive)`  | `piv_interactiveAnimation` | Interactive animation will animate indicator smoothly from position to position based on user's current swipe progress. (Won't affect on anything unless {@link #setViewPager(ViewPager)} is specified). isInteractive value of animation to be interactive or not.
+`setViewPager(@Nullable ViewPager pager)`  | `piv_viewPager` | Set {@link ViewPager} to add {@link ViewPager.OnPageChangeListener} and automatically handle selecting new indicators (and interactive animation effect if it is enabled).
+`releaseViewPager()` | - | Release {@link ViewPager} and stop handling events of {@link ViewPager.OnPageChangeListener}.
+
 One of the most important feature of every custom view is ability to customize its look as user need. By calling the following methods (or attributes) you will be able to customize `PageIndicatorView` as you need.
 
 ```java
