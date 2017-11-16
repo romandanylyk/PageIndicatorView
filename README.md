@@ -47,6 +47,8 @@ PageIndicatorView pageIndicatorView = findViewById(R.id.pageIndicatorView);
         pageIndicatorView.setSelection(2);
 ```
 
+----------
+
 But if you're as lazy as I'm - then there is another option to handle `PageIndicatorView` 
 
 ```xml
@@ -67,7 +69,7 @@ But if you're as lazy as I'm - then there is another option to handle `PageIndic
 All the `piv_` attributes here are specific for `PageIndicatorView` so you can customise it as you want with attributes - pretty handy. 
 
 But what is more important here is  `app:piv_viewPager="@id/viewPager"`.
-What it actually do is catch up your ViewPager and automatically handles all the event's to selected the right page - so you don't need to call `setSelection` method on your own.
+What it actually do is catch up your `ViewPager` and automatically handles all the event's to selected the right page - so you don't need to call `setSelection` method on your own.
 
 Another handy options here that works with your `ViewPager` as a whole is 
 `app:piv_dynamicCount="true"` and ` app:piv_interactiveAnimation="true"` 
@@ -76,7 +78,10 @@ Dynamic count will automatically updates `PageIndicatorView` total count as you 
 
 While interactive animation will progress the animation process within your swipe position, which makes animation more natural and responsive to end user.
 
+----------
+
 > ***Note***:  Because `setViewPagerId` uses an instance of `ViewPager`, using it in recycler could lead to id conflicts, so `PageIndicatorView` will not know properly what is the right `ViewPager` to work with. Instead you should handle selected indicators on your own programatically.
+
 
 ```java
   pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -92,6 +97,8 @@ While interactive animation will progress the animation process within your swip
             public void onPageScrollStateChanged(int state) {/*empty*/}
         });
 ```
+
+----------
 
 Here you can see all the animations `PageIndicatorView` support.
 
