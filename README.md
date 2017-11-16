@@ -39,9 +39,15 @@ Keep in mind, that `PageIndicatorView` has min [API level 14](https://developer.
 ```
 
 ### **Usage Sample**
-`PageIndicatorView` was developed with focus to make it setup and use as easy as possible. 
+Usage of `PageIndicatorView` is quite simple. All you need to do is to declare a view in your `layout.xml`  and call `setSelection` method to select specific indicator - that's it!
 
-Most common use of `PageIndicatorView` is an single `ViewPager` on screen and displaying circle indicators. In this case all you need to do is to declare `PageIndicatorView` in your `layout.xml` and specify customisation attributes - that's it, the rest will be handled on the fly!
+```java
+PageIndicatorView pageIndicatorView = findViewById(R.id.pageIndicatorView);
+        pageIndicatorView.setCount(5); // specify total count of indicators
+        pageIndicatorView.setSelection(2);
+```
+
+But if you're as lazy as I'm - then there is another option to handle `PageIndicatorView` 
 
 ```xml
      <com.rd.PageIndicatorView
@@ -58,13 +64,19 @@ Most common use of `PageIndicatorView` is an single `ViewPager` on screen and di
         attrs:piv_padding="12dp"
         attrs:piv_radius="8dp" />
 ```
-This will automatically select specific indicator to be selected as it is in your `ViewPager` so you don't need to set it manually. 
+All the `piv_` attributes here are specific for `PageIndicatorView` so you can customise it as you want with attributes - pretty handy. 
 
->***Note**: You can also call public method to control `PageIndicatorView` programmatically.*
+But what is more important here is  `app:piv_viewPager="@id/viewPager"`.
+What it actually do is catch up your ViewPager and automatically handles all the event's to selected the right page - so you don't need to call `setSelection` method on your own.
 
-More complex use case of using `PageIndicatorView` is in any kind of recycle. Say, you have a RecyclerView and each item has it's own `ViewPager` and `PageIndicatorView`. 
+Another handy options here that works with your `ViewPager` as a whole is 
+`app:piv_dynamicCount="true"` and ` app:piv_interactiveAnimation="true"` 
 
-Because of id conflicts you can't just set a `viewPagerId` to `PageIndicatorView` and you'r done, so you will need to specify selected item manually.
+Dynamic count will automatically updates `PageIndicatorView` total count as you updates pages count in your `ViewPager` - so that's pretty useful.
+
+While interactive animation will progress the animation process within your swipe position, which makes animation more natural and responsive to end user.
+
+> ***Note***:  Because `setViewPagerId` uses an instance of `ViewPager`, using it in recycler could lead to id conflicts, so `PageIndicatorView` will not know properly what is the right `ViewPager` to work with. Instead you should handle selected indicators on your own programatically.
 
 ```java
   pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -80,6 +92,20 @@ Because of id conflicts you can't just set a `viewPagerId` to `PageIndicatorView
             public void onPageScrollStateChanged(int state) {/*empty*/}
         });
 ```
+
+Here you can see all the animations `PageIndicatorView` support.
+
+Name| Support version| Preview
+-------- | --- | ---
+`AnimationType.NONE`| 0.0.1 | ![anim_none](https://raw.githubusercontent.com/romandanylyk/PageIndicatorView/master/assets/anim_none.gif)
+`AnimationType.COLOR`| 0.0.1 |![anim_color](https://raw.githubusercontent.com/romandanylyk/PageIndicatorView/master/assets/anim_color.gif)
+`AnimationType.SCALE`| 0.0.1 |![anim_scale](https://raw.githubusercontent.com/romandanylyk/PageIndicatorView/master/assets/anim_scale.gif)
+`AnimationType.SLIDE`| 0.0.1 |![anim_slide](https://raw.githubusercontent.com/romandanylyk/PageIndicatorView/master/assets/anim_slide.gif)
+`AnimationType.WORM`| 0.0.1 |![anim_worm](https://raw.githubusercontent.com/romandanylyk/PageIndicatorView/master/assets/anim_worm.gif)
+`AnimationType.FILL`| 0.0.6 |![anim_worm](https://raw.githubusercontent.com/romandanylyk/PageIndicatorView/master/assets/anim_fill.gif)
+`AnimationType.THIN_WORM`| 0.0.7 |![anim_thin_worm](https://raw.githubusercontent.com/romandanylyk/PageIndicatorView/master/assets/anim_thin_worm.gif)
+`AnimationType.DROP`| 0.1.0 |![anim_drop](https://raw.githubusercontent.com/romandanylyk/PageIndicatorView/master/assets/anim_drop.gif)
+`AnimationType.SWAP`| 0.1.1 |![anim_swap](https://raw.githubusercontent.com/romandanylyk/PageIndicatorView/master/assets/anim_swap.gif)
 
 ### **Documentation**
 
@@ -117,49 +143,6 @@ Methods | Description
 `getSelection()` | Return position of currently selected circle indicator.
 `setProgress(int selectingPosition, float progress)` | Set progress value in range [0 - 1] to specify state of animation while selecting new circle indicator. (Won't affect on anything unless {@link #setInteractiveAnimation(boolean isInteractive)} is true).
 
-One of the most important feature of every custom view is ability to customize its look as user need. By calling the following methods (or attributes) you will be able to customize `PageIndicatorView` as you need.
-
-```java
-//set size
-setCount(int count)
-setDynamicCount(boolean dynamicCount)
-
-setRadius(int radiusDp)
-setPadding(int paddingDp)
-setStrokeWidth(int strokeDp)
-
-setAutoVisibility(boolean autoVisibility)
-setOrientation(Orientation orientation)
-
-//set color
-setUnselectedColor(int color)
-setSelectedColor(int color)
-
-//set animation
-setAnimationDuration(long duration)
-setAnimationType(AnimationType type)
-setInteractiveAnimation(boolean isInteractive)
-
-//set selection
-setProgress(int selectingPosition, float progress)
-setSelection(int position)
-```
-
-![](https://github.com/romandanylyk/PageIndicatorView/blob/master/assets/attributes.gif?raw=true)
-
-Here you can see all the animations `PageIndicatorView` support.
-
-Name| Support version| Preview
--------- | --- | ---
-`AnimationType.NONE`| 0.0.1 | ![anim_none](https://raw.githubusercontent.com/romandanylyk/PageIndicatorView/master/assets/anim_none.gif)
-`AnimationType.COLOR`| 0.0.1 |![anim_color](https://raw.githubusercontent.com/romandanylyk/PageIndicatorView/master/assets/anim_color.gif)
-`AnimationType.SCALE`| 0.0.1 |![anim_scale](https://raw.githubusercontent.com/romandanylyk/PageIndicatorView/master/assets/anim_scale.gif)
-`AnimationType.SLIDE`| 0.0.1 |![anim_slide](https://raw.githubusercontent.com/romandanylyk/PageIndicatorView/master/assets/anim_slide.gif)
-`AnimationType.WORM`| 0.0.1 |![anim_worm](https://raw.githubusercontent.com/romandanylyk/PageIndicatorView/master/assets/anim_worm.gif)
-`AnimationType.FILL`| 0.0.6 |![anim_worm](https://raw.githubusercontent.com/romandanylyk/PageIndicatorView/master/assets/anim_fill.gif)
-`AnimationType.THIN_WORM`| 0.0.7 |![anim_thin_worm](https://raw.githubusercontent.com/romandanylyk/PageIndicatorView/master/assets/anim_thin_worm.gif)
-`AnimationType.DROP`| 0.1.0 |![anim_drop](https://raw.githubusercontent.com/romandanylyk/PageIndicatorView/master/assets/anim_drop.gif)
-`AnimationType.SWAP`| 0.1.1 |![anim_swap](https://raw.githubusercontent.com/romandanylyk/PageIndicatorView/master/assets/anim_swap.gif)
 
 ### **Release Note**
 See release notes on [github releases](https://github.com/romandanylyk/PageIndicatorView/releases) or [Bintray release notes](https://bintray.com/romandanylyk/maven/pageindicatorview#release).
