@@ -47,7 +47,6 @@ PageIndicatorView pageIndicatorView = findViewById(R.id.pageIndicatorView);
         pageIndicatorView.setSelection(2);
 ```
 
-----------
 
 But if you're as lazy as I'm - then there is another option to handle `PageIndicatorView` 
 
@@ -78,7 +77,6 @@ Dynamic count will automatically updates `PageIndicatorView` total count as you 
 
 While interactive animation will progress the animation process within your swipe position, which makes animation more natural and responsive to end user.
 
-----------
 
 > ***Note***:  Because `setViewPagerId` uses an instance of `ViewPager`, using it in recycler could lead to id conflicts, so `PageIndicatorView` will not know properly what is the right `ViewPager` to work with. Instead you should handle selected indicators on your own programatically.
 
@@ -98,7 +96,6 @@ While interactive animation will progress the animation process within your swip
         });
 ```
 
-----------
 
 Here you can see all the animations `PageIndicatorView` support.
 
