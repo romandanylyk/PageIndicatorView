@@ -1,7 +1,7 @@
 
 
 ### **PageIndicatorView**
-[ ![Download](https://api.bintray.com/packages/romandanylyk/maven/pageindicatorview/images/download.svg) ](https://bintray.com/romandanylyk/maven/pageindicatorview/_latestVersion)[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-PageIndicatorView-green.svg?style=true)](https://android-arsenal.com/details/1/4555)
+[ ![Download](https://api.bintray.com/packages/romandanylyk/maven/pageindicatorview/images/download.svg) ](https://bintray.com/romandanylyk/maven/pageindicatorview/_latestVersion)[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-PageIndicatorView-green.svg?style=true)](https://android-arsenal.com/details/1/4555)  
 [![API](https://img.shields.io/badge/API-14%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=14)
 
 
@@ -16,10 +16,10 @@ To add `pageindicatorview` to your project, first make sure in root `build.gradl
         jcenter()
     }
 ```
->***Note**: by creating new project in Android Studio it will have `jcenter` repository specified by default, so you will not need to add it manually.*
+>***Note**: by creating new project in Android Studio it will have `jcenter` repository specified by default, so you will not need to add it manually.* 
 
 Once you make sure you have `jcenter` repository in your project, all you need to do is to add the following line in `dependencies` section of your project `build.gradle`.
-
+ 
 See latest library version [ ![Download](https://api.bintray.com/packages/romandanylyk/maven/pageindicatorview/images/download.svg) ](https://bintray.com/romandanylyk/maven/pageindicatorview/_latestVersion)
 ```groovy
 compile 'com.romandanylyk:pageindicatorview:X.X.X'
@@ -39,7 +39,7 @@ Keep in mind, that `PageIndicatorView` has min [API level 14](https://developer.
 ```
 
 ### **Usage Sample**
-`PageIndicatorView` was developed with focus to make it setup and use as easy as possible.
+`PageIndicatorView` was developed with focus to make it setup and use as easy as possible. 
 
 Most common use of `PageIndicatorView` is an single `ViewPager` on screen and displaying circle indicators. In this case all you need to do is to declare `PageIndicatorView` in your `layout.xml` and specify customisation attributes - that's it, the rest will be handled on the fly!
 
@@ -58,11 +58,11 @@ Most common use of `PageIndicatorView` is an single `ViewPager` on screen and di
         attrs:piv_padding="12dp"
         attrs:piv_radius="8dp" />
 ```
-This will automatically select specific indicator to be selected as it is in your `ViewPager` so you don't need to set it manually.
+This will automatically select specific indicator to be selected as it is in your `ViewPager` so you don't need to set it manually. 
 
 >***Note**: You can also call public method to control `PageIndicatorView` programmatically.*
 
-More complex use case of using `PageIndicatorView` is in any kind of recycle. Say, you have a RecyclerView and each item has it's own `ViewPager` and `PageIndicatorView`.
+More complex use case of using `PageIndicatorView` is in any kind of recycle. Say, you have a RecyclerView and each item has it's own `ViewPager` and `PageIndicatorView`. 
 
 Because of id conflicts you can't just set a `viewPagerId` to `PageIndicatorView` and you'r done, so you will need to specify selected item manually.
 
@@ -93,7 +93,7 @@ Methods | Attributes | Description
 `getRadius()` | - | Returns radius of each circle indicators in px.
 `setPadding(int paddingDp)` | `piv_padding` | Set padding in dp between each circle indicator. Default value is 8 dp.
 `setPadding(int paddingPx)` | `piv_padding` | Set padding in px between each circle indicator. Default value is 8 dp.
-`getPadding()` | - | Returns padding in px between each circle indicator.
+`getPadding()` | - | Returns padding in px between each circle indicator. 
 `setScaleFactor(float factor)` | `piv_scaleFactor` | Set scale factor used in {@link AnimationType#SCALE} animation. Defines size of unselected indicator circles in comparing to selected one. Minimum and maximum values are {@link ScaleAnimation#MAX_SCALE_FACTOR} and {@link ScaleAnimation#MIN_SCALE_FACTOR}. See also {@link ScaleAnimation#DEFAULT_SCALE_FACTOR}.
 `getScaleFactor()` | - | Returns scale factor values used in {@link AnimationType#SCALE} animation. Defines size of unselected indicator circles in comparing to selected one.Minimum and maximum values are {@link ScaleAnimation#MAX_SCALE_FACTOR} and {@link ScaleAnimation#MIN_SCALE_FACTOR}. See also {@link ScaleAnimation#DEFAULT_SCALE_FACTOR}. float value that indicate scale factor
 `setStrokeWidth(float strokePx)` | `piv_strokeWidth` | Set stroke width in px to set while {@link AnimationType#FILL} is selected.Default value is {@link FillAnimation#DEFAULT_STROKE_DP} strokePx stroke width in px.
@@ -106,11 +106,16 @@ Methods | Attributes | Description
 `setAutoVisibility(boolean autoVisibility)` | `piv_autoVisibility` |  Automatically hide (View.INVISIBLE) PageIndicatorView while indicator count is <= 1. Default is true.
 `setOrientation(@Nullable Orientation orientation)` | `piv_orientation` | Set orientation for indicator, one of HORIZONTAL or VERTICAL. Default is HORIZONTAL.
 `setAnimationDuration(long duration)` | `piv_animationDuration` | Set animation duration time in millisecond. Default animation duration time is {@link BaseAnimation#DEFAULT_ANIMATION_TIME}. (Won't affect on anything unless {@link #setAnimationType(AnimationType type)} is specified and {@link #setInteractiveAnimation(boolean isInteractive)} is false).
-`getAnimationDuration()`  | - | Return animation duration time in milliseconds. If custom duration is not set, return default duration time {@link BaseAnimation#DEFAULT_ANIMATION_TIME}.
+`getAnimationDuration()`  | - | Return animation duration time in milliseconds. If custom duration is not set, return default duration time {@link BaseAnimation#DEFAULT_ANIMATION_TIME}. 
 `setAnimationType(@Nullable AnimationType type)` | `piv_animationType` | Set animation type to perform while selecting new circle indicator. Default animation type is {@link AnimationType#NONE}.
 `setInteractiveAnimation(boolean isInteractive)`  | `piv_interactiveAnimation` | Interactive animation will animate indicator smoothly from position to position based on user's current swipe progress. (Won't affect on anything unless {@link #setViewPager(ViewPager)} is specified). isInteractive value of animation to be interactive or not.
 `setViewPager(@Nullable ViewPager pager)`  | `piv_viewPager` | Set {@link ViewPager} to add {@link ViewPager.OnPageChangeListener} and automatically handle selecting new indicators (and interactive animation effect if it is enabled).
 `releaseViewPager()` | - | Release {@link ViewPager} and stop handling events of {@link ViewPager.OnPageChangeListener}.
+`setRtlMode(RtlMode mode)`  | `piv_rtl_mode` | Specify to display PageIndicatorView with Right to left layout or not. One of {@link RtlMode}: Off (Left to right), On (Right to left) or Auto (handle this mode automatically based on users language preferences). Default is Off. 
+`setSelection(int position)` | - | Set specific circle indicator position to be selected. If position < or > total count, accordingly first or last circle indicator will be selected.(Won't affect on anything unless {@link #setInteractiveAnimation(boolean isInteractive)} is false).
+`setSelected(int position)` | - | Set specific circle indicator position to be selected without any kind of animation. If position < or > total count, accordingly first or last circle indicator will be selected.
+`getSelection()` | - | Return position of currently selected circle indicator.
+`setProgress(int selectingPosition, float progress)` | - | Set progress value in range [0 - 1] to specify state of animation while selecting new circle indicator. (Won't affect on anything unless {@link #setInteractiveAnimation(boolean isInteractive)} is true).
 
 One of the most important feature of every custom view is ability to customize its look as user need. By calling the following methods (or attributes) you will be able to customize `PageIndicatorView` as you need.
 
