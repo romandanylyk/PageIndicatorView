@@ -16,7 +16,7 @@ To add `pageindicatorview` to your project, first make sure in root `build.gradl
         jcenter()
     }
 ```
->***Note**: by creating new project in Android Studio it will have `jcenter` repository specified by default, so you will not need to add it manually.* 
+>***Note***: by creating new project in Android Studio it will have `jcenter` repository specified by default, so you will not need to add it manually.
 
 Once you make sure you have `jcenter` repository in your project, all you need to do is to add the following line in `dependencies` section of your project `build.gradle`.
  
