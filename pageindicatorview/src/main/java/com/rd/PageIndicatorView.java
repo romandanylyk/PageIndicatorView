@@ -306,14 +306,14 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     }
 
     /**
-     * Return stroke width in px. If custom stroke width is not set and {@link AnimationType#FILL} is selected.
+     * Return stroke width in px if {@link AnimationType#FILL} is selected, 0 otherwise.
      */
     public int getStrokeWidth() {
         return manager.indicator().getStroke();
     }
 
     /**
-     * Set color of selected state to circle indicator. Default color is white {@link ColorAnimation#DEFAULT_SELECTED_COLOR}.
+     * Set color of selected state to circle indicator. Default color is {@link ColorAnimation#DEFAULT_SELECTED_COLOR}.
      *
      * @param color color selected circle.
      */
@@ -323,7 +323,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     }
 
     /**
-     * Return color of selected circle indicator. If custom unselected color.
+     * Return color of selected circle indicator. If custom unselected color
      * is not set, return default color {@link ColorAnimation#DEFAULT_SELECTED_COLOR}.
      */
     public int getSelectedColor() {
