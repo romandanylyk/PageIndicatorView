@@ -111,42 +111,6 @@ Name| Support version| Preview
 `AnimationType.DROP`| 0.1.0 |![anim_drop](https://raw.githubusercontent.com/romandanylyk/PageIndicatorView/master/assets/anim_drop.gif)
 `AnimationType.SWAP`| 0.1.1 |![anim_swap](https://raw.githubusercontent.com/romandanylyk/PageIndicatorView/master/assets/anim_swap.gif)
 
-### **Documentation**
-
-Methods | Description
-------- | -----------
-`setCount(int count)` | Set static number of circle indicators to be displayed. Param `count` - total count of indicators.
-`getCount()` |  Return number of circle indicators
-`setDynamicCount(boolean dynamicCount)` | Dynamic count will automatically update number of circle indicators if ViewPager page count updates on run-time. If new count will be bigger than current count, selected circle will stay as it is, otherwise it will be set to last one. Note: works if `ViewPager` set and already have it's adapter. See {@link #setViewPager(ViewPager)}.
-`setRadius(int radiusDp)` | Set radius in dp of each circle indicator. Default value is 6 dp. Make sure you set circle Radius, not a Diameter.
-`setRadius(int radiusPx)` | Set radius in px of each circle indicator. Default value is 6 dp. Make sure you set circle Radius, not a Diameter.
-`getRadius()` | Returns radius of each circle indicators in px.
-`setPadding(int paddingDp)` | Set padding in dp between each circle indicator. Default value is 8 dp.
-`setPadding(int paddingPx)` | Set padding in px between each circle indicator. Default value is 8 dp.
-`getPadding()` | Returns padding in px between each circle indicator. 
-`setScaleFactor(float factor)` | Set scale factor used in {@link AnimationType#SCALE} animation. Defines size of unselected indicator circles in comparing to selected one. Minimum and maximum values are {@link ScaleAnimation#MAX_SCALE_FACTOR} and {@link ScaleAnimation#MIN_SCALE_FACTOR}. See also {@link ScaleAnimation#DEFAULT_SCALE_FACTOR}.
-`getScaleFactor()` | Returns scale factor values used in {@link AnimationType#SCALE} animation. Defines size of unselected indicator circles in comparing to selected one.Minimum and maximum values are {@link ScaleAnimation#MAX_SCALE_FACTOR} and {@link ScaleAnimation#MIN_SCALE_FACTOR}. See also {@link ScaleAnimation#DEFAULT_SCALE_FACTOR}. float value that indicate scale factor
-`setStrokeWidth(float strokePx)` | Set stroke width in px to set while {@link AnimationType#FILL} is selected.Default value is {@link FillAnimation#DEFAULT_STROKE_DP} strokePx stroke width in px.
-`setStrokeWidth(float strokeDp)` | Set stroke width in dp to set while {@link AnimationType#FILL} is selected. Default value is {@link FillAnimation#DEFAULT_STROKE_DP} strokePx stroke width in px.
-`getStrokeWidth()` | Return stroke width in px. If custom stroke width is not set and {@link AnimationType#FILL} is selected.
-`setSelectedColor(int color)` | Set color of selected state to circle indicator. Default color is white {@link ColorAnimation#DEFAULT_SELECTED_COLOR}.
-`getSelectedColor()` | Return color of selected circle indicator. If custom unselected color. is not set, return default color {@link ColorAnimation#DEFAULT_SELECTED_COLOR}.
-`setUnselectedColor(int color)` | Set color of unselected state to each circle indicator. Default color {@link ColorAnimation#DEFAULT_UNSELECTED_COLOR}.@param color color of each unselected circle.
-`getUnselectedColor()` | Return color of unselected state of each circle indicator. If custom unselected color is not set, return default color ColorAnimation#DEFAULT_UNSELECTED_COLOR}.
-`setAutoVisibility(boolean autoVisibility)` | Automatically hide (View.INVISIBLE) PageIndicatorView while indicator count is <= 1. Default is true.
-`setOrientation(@Nullable Orientation orientation)` | Set orientation for indicator, one of HORIZONTAL or VERTICAL. Default is HORIZONTAL.
-`setAnimationDuration(long duration)` | Set animation duration time in millisecond. Default animation duration time is {@link BaseAnimation#DEFAULT_ANIMATION_TIME}. (Won't affect on anything unless {@link #setAnimationType(AnimationType type)} is specified and {@link #setInteractiveAnimation(boolean isInteractive)} is false).
-`getAnimationDuration()` | Return animation duration time in milliseconds. If custom duration is not set, return default duration time {@link BaseAnimation#DEFAULT_ANIMATION_TIME}. 
-`setAnimationType(@Nullable AnimationType type)` | Set animation type to perform while selecting new circle indicator. Default animation type is {@link AnimationType#NONE}.
-`setInteractiveAnimation(boolean isInteractive)` | Interactive animation will animate indicator smoothly from position to position based on user's current swipe progress. (Won't affect on anything unless {@link #setViewPager(ViewPager)} is specified). isInteractive value of animation to be interactive or not.
-`setViewPager(@Nullable ViewPager pager)`  | Set {@link ViewPager} to add {@link ViewPager.OnPageChangeListener} and automatically handle selecting new indicators (and interactive animation effect if it is enabled).
-`releaseViewPager()` | Release {@link ViewPager} and stop handling events of {@link ViewPager.OnPageChangeListener}.
-`setRtlMode(RtlMode mode)` | Specify to display PageIndicatorView with Right to left layout or not. One of {@link RtlMode}: Off (Left to right), On (Right to left) or Auto (handle this mode automatically based on users language preferences). Default is Off. 
-`setSelection(int position)` | Set specific circle indicator position to be selected. If position < or > total count, accordingly first or last circle indicator will be selected.(Won't affect on anything unless {@link #setInteractiveAnimation(boolean isInteractive)} is false).
-`setSelected(int position)` | Set specific circle indicator position to be selected without any kind of animation. If position < or > total count, accordingly first or last circle indicator will be selected.
-`getSelection()` | Return position of currently selected circle indicator.
-`setProgress(int selectingPosition, float progress)` | Set progress value in range [0 - 1] to specify state of animation while selecting new circle indicator. (Won't affect on anything unless {@link #setInteractiveAnimation(boolean isInteractive)} is true).
-
 
 ### **Release Note**
 See release notes on [github releases](https://github.com/romandanylyk/PageIndicatorView/releases) or [Bintray release notes](https://bintray.com/romandanylyk/maven/pageindicatorview#release).
