@@ -8,7 +8,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import com.rd.PageIndicatorView;
-import com.rd.draw.controller.DrawController;
 import com.rd.pageindicatorview.base.BaseActivity;
 import com.rd.pageindicatorview.customize.CustomizeActivity;
 import com.rd.pageindicatorview.data.Customization;
@@ -70,12 +69,6 @@ public class HomeActivity extends BaseActivity {
 
         pageIndicatorView = findViewById(R.id.pageIndicatorView);
         pageIndicatorView.setViewPager(pager);
-        pageIndicatorView.setClickListener(new DrawController.ClickListener() {
-            @Override
-            public void onIndicatorClicked(int position) {
-                pager.setCurrentItem(position, true);
-            }
-        });
     }
 
     @NonNull
