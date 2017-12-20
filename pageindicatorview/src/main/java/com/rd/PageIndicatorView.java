@@ -1,5 +1,6 @@
 package com.rd;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
@@ -13,8 +14,14 @@ import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.util.Pair;
+import android.view.MotionEvent;
 import android.view.View;
-import com.rd.animation.type.*;
+import com.rd.animation.type.AnimationType;
+import com.rd.animation.type.BaseAnimation;
+import com.rd.animation.type.ColorAnimation;
+import com.rd.animation.type.FillAnimation;
+import com.rd.animation.type.ScaleAnimation;
+import com.rd.draw.controller.DrawController;
 import com.rd.draw.data.Indicator;
 import com.rd.draw.data.Orientation;
 import com.rd.draw.data.PositionSavedState;
@@ -99,6 +106,13 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         manager.drawer().draw(canvas);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        manager.drawer().touch(event);
+        return true;
+    }
+
     @Override
     public void onIndicatorUpdated() {
         invalidate();
@@ -106,12 +120,12 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-        selectInteractiveIndicator(position, positionOffset);
+        onPageScroll(position, positionOffset);
     }
 
     @Override
     public void onPageSelected(int position) {
-        selectIndicator(position);
+        onPageSelect(position);
     }
 
     @Override
@@ -529,8 +543,8 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         Indicator indicator = manager.indicator();
         AnimationType animationType = indicator.getAnimationType();
         indicator.setAnimationType(AnimationType.NONE);
-        setSelection(position);
 
+        setSelection(position);
         indicator.setAnimationType(animationType);
     }
 
@@ -576,6 +590,10 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
         indicator.setSelectingPosition(selectingPosition);
         manager.animate().interactive(progress);
+    }
+
+    public void setClickListener(@Nullable DrawController.ClickListener listener) {
+        manager.drawer().setClickListener(listener);
     }
 
     private void init(@Nullable AttributeSet attrs) {
@@ -672,7 +690,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         }
     }
 
-    private void selectIndicator(int position) {
+    private void onPageSelect(int position) {
         Indicator indicator = manager.indicator();
         int count = indicator.getCount();
 
@@ -689,7 +707,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         }
     }
 
-    private void selectInteractiveIndicator(int position, float positionOffset) {
+	private void onPageScroll(int position, float positionOffset) {
         Indicator indicator = manager.indicator();
         AnimationType animationType = indicator.getAnimationType();
         boolean interactiveAnimation = indicator.isInteractiveAnimation();
