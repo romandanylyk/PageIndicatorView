@@ -55,25 +55,46 @@ public class CoordinatesUtils {
 		return coordinate;
 	}
 
+	@SuppressWarnings("SuspiciousNameCombination")
 	public static int getPosition(@Nullable Indicator indicator, float x, float y) {
 		if (indicator == null) {
 			return -1;
 		}
 
+		float lengthCoordinate;
+		float heightCoordinate;
+
+		if (indicator.getOrientation() == Orientation.HORIZONTAL) {
+			lengthCoordinate = x;
+			heightCoordinate = y;
+		} else {
+			lengthCoordinate = y;
+			heightCoordinate = x;
+		}
+
+		return getFitPosition(indicator, lengthCoordinate, heightCoordinate);
+	}
+
+	private static int getFitPosition(@NonNull Indicator indicator, float lengthCoordinate, float heightCoordinate) {
 		int count = indicator.getCount();
 		int radius = indicator.getRadius();
 		int stroke = indicator.getStroke();
 		int padding = indicator.getPadding();
 
-		int width = 0;
+		int height = indicator.getOrientation() == Orientation.HORIZONTAL ? indicator.getHeight() : indicator.getWidth();
+		int length = 0;
+
 		for (int i = 0; i < count; i++) {
 			int indicatorPadding = i > 0 ? padding : padding / 2;
-			int startValue = width;
+			int startValue = length;
 
-			width += radius * 2 + (stroke / 2) + indicatorPadding;
-			int endValue = width;
+			length += radius * 2 + (stroke / 2) + indicatorPadding;
+			int endValue = length;
 
-			if (x >= startValue && x <= endValue) {
+			boolean fitLength = lengthCoordinate >= startValue && lengthCoordinate <= endValue;
+			boolean fitHeight = heightCoordinate >= 0 && heightCoordinate <= height;
+
+			if (fitLength && fitHeight) {
 				return i;
 			}
 		}
