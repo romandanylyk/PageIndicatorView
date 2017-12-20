@@ -35,6 +35,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     private IndicatorManager manager;
     private DataSetObserver setObserver;
     private ViewPager viewPager;
+    private boolean isInteractionEnabled;
 
     public PageIndicatorView(Context context) {
         super(context);
@@ -129,7 +130,11 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     }
 
     @Override
-    public void onPageScrollStateChanged(int state) {/*empty*/}
+    public void onPageScrollStateChanged(int state) {
+		if (state == ViewPager.SCROLL_STATE_IDLE) {
+			manager.indicator().setInteractiveAnimation(isInteractionEnabled);
+		}
+	}
 
     /**
      * Set static number of circle indicators to be displayed.
@@ -435,6 +440,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
      */
     public void setInteractiveAnimation(boolean isInteractive) {
         manager.indicator().setInteractiveAnimation(isInteractive);
+        this.isInteractionEnabled = isInteractive;
     }
 
     /**
@@ -504,31 +510,29 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
             position = viewPager.getCurrentItem();
         }
 
-        indicator.setSelectedPosition(position);
-        indicator.setSelectingPosition(position);
         indicator.setLastSelectedPosition(position);
+        indicator.setSelectingPosition(position);
+        indicator.setSelectedPosition(position);
         invalidate();
     }
 
     /**
      * Set specific circle indicator position to be selected. If position < or > total count,
      * accordingly first or last circle indicator will be selected.
-     * (Won't affect on anything unless {@link #setInteractiveAnimation(boolean isInteractive)} is false).
      *
      * @param position position of indicator to select.
      */
     public void setSelection(int position) {
         Indicator indicator = manager.indicator();
-        if (indicator.isInteractiveAnimation() && indicator.getAnimationType() != AnimationType.NONE) {
-            return;
-        }
-
         position = adjustPosition(position);
-        if (position == indicator.getSelectedPosition()) {
+
+        if (position == indicator.getSelectedPosition() || position == indicator.getSelectingPosition()) {
             return;
         }
 
+        indicator.setInteractiveAnimation(false);
         indicator.setLastSelectedPosition(indicator.getSelectedPosition());
+        indicator.setSelectingPosition(position);
         indicator.setSelectedPosition(position);
         manager.animate().basic();
     }
@@ -557,7 +561,6 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
     /**
      * Set progress value in range [0 - 1] to specify state of animation while selecting new circle indicator.
-     * (Won't affect on anything unless {@link #setInteractiveAnimation(boolean isInteractive)} is true).
      *
      * @param selectingPosition selecting position with specific progress value.
      * @param progress          float value of progress.
@@ -616,6 +619,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         indicator.setPaddingTop(getPaddingTop());
         indicator.setPaddingRight(getPaddingRight());
         indicator.setPaddingBottom(getPaddingBottom());
+        isInteractionEnabled = indicator.isInteractiveAnimation();
     }
 
     private void registerSetObserver() {
@@ -692,11 +696,8 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
     private void onPageSelect(int position) {
         Indicator indicator = manager.indicator();
+        boolean canSelectIndicator = isViewMeasured();
         int count = indicator.getCount();
-
-        AnimationType animationType = indicator.getAnimationType();
-        boolean interactiveAnimation = indicator.isInteractiveAnimation();
-        boolean canSelectIndicator = isViewMeasured() && (!interactiveAnimation || animationType == AnimationType.NONE);
 
         if (canSelectIndicator) {
             if (isRtl()) {
