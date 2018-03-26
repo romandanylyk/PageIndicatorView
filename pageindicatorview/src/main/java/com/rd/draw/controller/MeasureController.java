@@ -1,6 +1,7 @@
 package com.rd.draw.controller;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import com.rd.animation.type.AnimationType;
@@ -54,9 +55,17 @@ public class MeasureController {
 
         if (indicator.getAnimationType() == AnimationType.DROP) {
             if (orientation == Orientation.HORIZONTAL) {
-                desiredHeight *= 2;
+                if (indicator.centerInView()) {
+                    desiredHeight *= 3;
+                } else {
+                    desiredHeight *= 2;
+                }
             } else {
-                desiredWidth *= 2;
+                if (indicator.centerInView()) {
+                    desiredWidth *= 3;
+                } else {
+                    desiredWidth *= 2;
+                }
             }
         }
 

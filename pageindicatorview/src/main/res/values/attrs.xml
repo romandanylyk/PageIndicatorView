@@ -24,6 +24,8 @@
 
         <attr name="piv_interactiveAnimation" format="boolean" />
         <attr name="piv_animationDuration" format="integer" />
+        <attr name="piv_centerIndicator" format="boolean" />
+        
         <attr name="piv_animationType">
             <enum name="none" value="0" />
             <enum name="color" value="1" />

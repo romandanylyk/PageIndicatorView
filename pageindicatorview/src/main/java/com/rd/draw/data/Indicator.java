@@ -42,6 +42,8 @@ public class Indicator {
 
     private int viewPagerId = View.NO_ID;
 
+    private boolean centerInView;
+
     private Orientation orientation;
     private AnimationType animationType;
     private RtlMode rtlMode;
@@ -204,6 +206,14 @@ public class Indicator {
 
     public void setCount(int count) {
         this.count = count;
+    }
+
+    public void setCenterInView(boolean centerInView) {
+        this.centerInView = centerInView;
+    }
+
+    public boolean centerInView() {
+        return centerInView;
     }
 
     @NonNull

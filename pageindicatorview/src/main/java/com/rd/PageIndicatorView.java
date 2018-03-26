@@ -432,6 +432,17 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     }
 
     /**
+     * Set center indicator to draw the indicators in the center of the view,
+     * it is only relevant for animation type {@link AnimationType#DROP}
+     *
+     * @param centerIndicator center indicator in view or not
+     */
+    public void setCenterIndicator(boolean centerIndicator) {
+        manager.indicator().setCenterInView(centerIndicator);
+        invalidate();
+    }
+
+    /**
      * Interactive animation will animate indicator smoothly
      * from position to position based on user's current swipe progress.
      * (Won't affect on anything unless {@link #setViewPager(ViewPager)} is specified).

@@ -28,6 +28,7 @@ public class AttributeController {
         initColorAttribute(typedArray);
         initAnimationAttribute(typedArray);
         initSizeAttribute(typedArray);
+        initCenterIndicator(typedArray);
         typedArray.recycle();
     }
 
@@ -58,6 +59,10 @@ public class AttributeController {
         indicator.setLastSelectedPosition(position);
     }
 
+    private void initCenterIndicator(@NonNull TypedArray typedArray) {
+        boolean centerIndicator = typedArray.getBoolean(R.styleable.PageIndicatorView_piv_centerIndicator, false);
+        indicator.setCenterInView(centerIndicator);
+    }
 
     private void initColorAttribute(@NonNull TypedArray typedArray) {
         int unselectedColor = typedArray.getColor(R.styleable.PageIndicatorView_piv_unselectedColor, Color.parseColor(ColorAnimation.DEFAULT_UNSELECTED_COLOR));
