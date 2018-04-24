@@ -7,6 +7,8 @@ import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toolbar;
+
 import com.rd.PageIndicatorView;
 import com.rd.pageindicatorview.base.BaseActivity;
 import com.rd.pageindicatorview.customize.CustomizeActivity;
@@ -37,6 +39,7 @@ public class HomeActivity extends BaseActivity {
         boolean customization = requestCode == CustomizeActivity.EXTRAS_CUSTOMIZATION_REQUEST_CODE && resultCode == RESULT_OK;
         if (customization && intent != null) {
             this.customization = intent.getParcelableExtra(CustomizeActivity.EXTRAS_CUSTOMIZATION);
+            ((android.support.v7.widget.Toolbar)findViewById(R.id.toolbar)).setTitle(this.customization.getAnimationType().toString());
             updateIndicator();
         }
     }
@@ -100,5 +103,7 @@ public class HomeActivity extends BaseActivity {
         pageIndicatorView.setRtlMode(customization.getRtlMode());
         pageIndicatorView.setInteractiveAnimation(customization.isInteractiveAnimation());
         pageIndicatorView.setAutoVisibility(customization.isAutoVisibility());
+        pageIndicatorView.setForegroundEnable(customization.isForeground());
+
     }
 }

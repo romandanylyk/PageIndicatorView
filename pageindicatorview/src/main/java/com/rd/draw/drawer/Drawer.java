@@ -67,7 +67,7 @@ public class Drawer {
 
     public void drawWorm(@NonNull Canvas canvas, @NonNull Value value) {
         if (wormDrawer != null) {
-            wormDrawer.draw(canvas, value, coordinateX, coordinateY);
+            wormDrawer.draw(canvas, value, coordinateX, coordinateY, position);
         }
     }
 

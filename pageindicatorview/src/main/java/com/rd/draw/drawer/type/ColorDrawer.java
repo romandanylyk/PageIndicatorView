@@ -26,6 +26,7 @@ public class ColorDrawer extends BaseDrawer {
         ColorAnimationValue v = (ColorAnimationValue) value;
         float radius = indicator.getRadius();
         int color = indicator.getSelectedColor();
+        int foregroundColor = indicator.getSelectedForegroundColor();
 
         int selectedPosition = indicator.getSelectedPosition();
         int selectingPosition = indicator.getSelectingPosition();
@@ -34,21 +35,29 @@ public class ColorDrawer extends BaseDrawer {
         if (indicator.isInteractiveAnimation()) {
             if (position == selectingPosition) {
                 color = v.getColor();
+                foregroundColor = v.getForegroundColor();
 
             } else if (position == selectedPosition) {
                 color = v.getColorReverse();
+                foregroundColor = v.getForegroundColorReverse();
             }
 
         } else {
             if (position == selectedPosition) {
                 color = v.getColor();
+                foregroundColor = v.getForegroundColor();
 
             } else if (position == lastSelectedPosition) {
                 color = v.getColorReverse();
+                foregroundColor = v.getForegroundColorReverse();
             }
         }
 
         paint.setColor(color);
         canvas.drawCircle(coordinateX, coordinateY, radius, paint);
+        if(indicator.isHasForeground()) {
+            paint.setColor(foregroundColor);
+            canvas.drawCircle(coordinateX, coordinateY, radius - indicator.getForegroundPadding(), paint);
+        }
     }
 }

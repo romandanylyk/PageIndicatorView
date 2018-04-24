@@ -383,6 +383,17 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     }
 
     /**
+     * Set customized foreground for items.
+     * Default is false;
+     *
+     * @param isEnabled is foreground mode enabled
+     */
+    public void setForegroundEnable(boolean isEnabled) {
+        manager.indicator().setHasForeground(isEnabled);
+        invalidate();
+    }
+
+    /**
      * Set orientation for indicator, one of HORIZONTAL or VERTICAL.
      * Default is HORIZONTAL.
      *

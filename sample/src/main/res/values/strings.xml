@@ -7,6 +7,7 @@
     <string name="customize">Customize</string>
     <string name="home">Home</string>
     <string name="right_to_left_mode">Right to left mode</string>
+    <string name="foreground">Foreground</string>
 
     <string-array name="animation_type">
         <item>None</item>
