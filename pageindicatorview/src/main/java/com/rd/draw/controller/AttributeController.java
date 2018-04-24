@@ -7,7 +7,12 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
-import com.rd.animation.type.*;
+
+import com.rd.animation.type.AnimationType;
+import com.rd.animation.type.BaseAnimation;
+import com.rd.animation.type.ColorAnimation;
+import com.rd.animation.type.FillAnimation;
+import com.rd.animation.type.ScaleAnimation;
 import com.rd.draw.data.Indicator;
 import com.rd.draw.data.Orientation;
 import com.rd.draw.data.RtlMode;
@@ -63,8 +68,14 @@ public class AttributeController {
         int unselectedColor = typedArray.getColor(R.styleable.PageIndicatorView_piv_unselectedColor, Color.parseColor(ColorAnimation.DEFAULT_UNSELECTED_COLOR));
         int selectedColor = typedArray.getColor(R.styleable.PageIndicatorView_piv_selectedColor, Color.parseColor(ColorAnimation.DEFAULT_SELECTED_COLOR));
 
+        int unselectedForegroundColor = typedArray.getColor(R.styleable.PageIndicatorView_piv_unselectedForegroundColor, Color.parseColor(ColorAnimation.DEFAULT_FOREGROUND_UNSELECTED_COLOR));
+        int selectedForegroundColor = typedArray.getColor(R.styleable.PageIndicatorView_piv_selectedForegroundColor, Color.parseColor(ColorAnimation.DEFAULT_FOREGROUND_SELECTED_COLOR));
+
         indicator.setUnselectedColor(unselectedColor);
         indicator.setSelectedColor(selectedColor);
+
+        indicator.setUnselectedForegroundColor(unselectedForegroundColor);
+        indicator.setSelectedForegroundColor(selectedForegroundColor);
     }
 
     private void initAnimationAttribute(@NonNull TypedArray typedArray) {
@@ -106,6 +117,14 @@ public class AttributeController {
             padding = 0;
         }
 
+        boolean hasForeground = (boolean) typedArray.getBoolean(R.styleable.PageIndicatorView_piv_hasForeground, false);
+
+        int foregroundPadding = (int) typedArray.getDimension(R.styleable.PageIndicatorView_piv_foregroundPadding, DensityUtils.dpToPx(Indicator.DEFAULT_FOREGROUND_PADDING_DP));
+        if (foregroundPadding < 0) {
+            foregroundPadding = 0;
+        }
+
+
         float scaleFactor = typedArray.getFloat(R.styleable.PageIndicatorView_piv_scaleFactor, ScaleAnimation.DEFAULT_SCALE_FACTOR);
         if (scaleFactor < ScaleAnimation.MIN_SCALE_FACTOR) {
             scaleFactor = ScaleAnimation.MIN_SCALE_FACTOR;
@@ -128,6 +147,8 @@ public class AttributeController {
         indicator.setPadding(padding);
         indicator.setScaleFactor(scaleFactor);
         indicator.setStroke(stroke);
+        indicator.setHasForeground(hasForeground);
+        indicator.setForegroundPadding(foregroundPadding);
     }
 
     private AnimationType getAnimationType(int index) {

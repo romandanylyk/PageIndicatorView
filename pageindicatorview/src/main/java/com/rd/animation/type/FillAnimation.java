@@ -53,8 +53,8 @@ public class FillAnimation extends ColorAnimation {
             this.radius = radius;
             this.stroke = stroke;
 
-            PropertyValuesHolder colorHolder = createColorPropertyHolder(false);
-            PropertyValuesHolder reverseColorHolder = createColorPropertyHolder(true);
+            PropertyValuesHolder colorHolder = createColorPropertyHolder(false, false);
+            PropertyValuesHolder reverseColorHolder = createColorPropertyHolder(true, false);
 
             PropertyValuesHolder radiusHolder = createRadiusPropertyHolder(false);
             PropertyValuesHolder radiusReverseHolder = createRadiusPropertyHolder(true);

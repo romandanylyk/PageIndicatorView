@@ -12,6 +12,7 @@ public class Indicator {
 
     public static final int DEFAULT_RADIUS_DP = 6;
     public static final int DEFAULT_PADDING_DP = 8;
+    public static final int DEFAULT_FOREGROUND_PADDING_DP = 0;
 
     private int height;
     private int width;
@@ -23,15 +24,20 @@ public class Indicator {
     private int paddingRight;
     private int paddingBottom;
 
+    private int foregroundPadding;
     private int stroke; //For "Fill" animation only
     private float scaleFactor; //For "Scale" animation only
 
     private int unselectedColor;
     private int selectedColor;
 
+    private int unselectedForegroundColor;
+    private int selectedForegroundColor;
+
     private boolean interactiveAnimation;
     private boolean autoVisibility;
     private boolean dynamicCount;
+    private boolean hasForeground;
 
     private long animationDuration;
     private int count = DEFAULT_COUNT;
@@ -248,5 +254,37 @@ public class Indicator {
 
     public void setViewPagerId(int viewPagerId) {
         this.viewPagerId = viewPagerId;
+    }
+
+    public boolean isHasForeground() {
+        return hasForeground;
+    }
+
+    public void setHasForeground(boolean hasForeground) {
+        this.hasForeground = hasForeground;
+    }
+
+    public int getUnselectedForegroundColor() {
+        return unselectedForegroundColor;
+    }
+
+    public void setUnselectedForegroundColor(int unselectedForegroundColor) {
+        this.unselectedForegroundColor = unselectedForegroundColor;
+    }
+
+    public int getSelectedForegroundColor() {
+        return selectedForegroundColor;
+    }
+
+    public void setSelectedForegroundColor(int selectedForegroundColor) {
+        this.selectedForegroundColor = selectedForegroundColor;
+    }
+
+    public int getForegroundPadding() {
+        return foregroundPadding;
+    }
+
+    public void setForegroundPadding(int foregroundPadding) {
+        this.foregroundPadding = foregroundPadding;
     }
 }

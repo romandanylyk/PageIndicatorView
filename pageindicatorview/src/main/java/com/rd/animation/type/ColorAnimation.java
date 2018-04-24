@@ -13,14 +13,20 @@ public class ColorAnimation extends BaseAnimation<ValueAnimator> {
 
     public static final String DEFAULT_UNSELECTED_COLOR = "#33ffffff";
     public static final String DEFAULT_SELECTED_COLOR = "#ffffff";
+    public static final String DEFAULT_FOREGROUND_UNSELECTED_COLOR = "#33ffffff";
+    public static final String DEFAULT_FOREGROUND_SELECTED_COLOR = "#ffffff";
 
     static final String ANIMATION_COLOR_REVERSE = "ANIMATION_COLOR_REVERSE";
     static final String ANIMATION_COLOR = "ANIMATION_COLOR";
+    static final String ANIMATION_FOREGROUND_COLOR_REVERSE = "ANIMATION_COLOR_FOREGROUND_REVERSE";
+    static final String ANIMATION_FOREGROUND_COLOR = "ANIMATION_FOREGROUND_COLOR";
 
     private ColorAnimationValue value;
 
     int colorStart;
     int colorEnd;
+    int foregroundColorStart;
+    int foregroundColorEnd;
 
     public ColorAnimation(@Nullable ValueController.UpdateListener listener) {
         super(listener);
@@ -57,35 +63,39 @@ public class ColorAnimation extends BaseAnimation<ValueAnimator> {
     }
 
     @NonNull
-    public ColorAnimation with(int colorStart, int colorEnd) {
-        if (animator != null && hasChanges(colorStart, colorEnd)) {
+    public ColorAnimation with(int colorStart, int colorEnd, int foregroundColorStart, int foregroundColorEnd) {
+        if (animator != null && hasChanges(colorStart, colorEnd, foregroundColorStart, foregroundColorEnd)) {
 
             this.colorStart = colorStart;
             this.colorEnd = colorEnd;
+            this.foregroundColorStart = foregroundColorStart;
+            this.foregroundColorEnd = foregroundColorEnd;
 
-            PropertyValuesHolder colorHolder = createColorPropertyHolder(false);
-            PropertyValuesHolder reverseColorHolder = createColorPropertyHolder(true);
+            PropertyValuesHolder colorHolder = createColorPropertyHolder(false, false);
+            PropertyValuesHolder reverseColorHolder = createColorPropertyHolder(true, false);
+            PropertyValuesHolder colorForegroundHolder = createColorPropertyHolder(false, true);
+            PropertyValuesHolder reverseForegroundColorHolder = createColorPropertyHolder(true, true);
 
-            animator.setValues(colorHolder, reverseColorHolder);
+            animator.setValues(colorHolder, reverseColorHolder, colorForegroundHolder, reverseForegroundColorHolder);
         }
 
         return this;
     }
 
-    PropertyValuesHolder createColorPropertyHolder(boolean isReverse) {
+    PropertyValuesHolder createColorPropertyHolder(boolean isReverse, boolean isForeground) {
         String propertyName;
         int colorStart;
         int colorEnd;
 
         if (isReverse) {
-            propertyName = ANIMATION_COLOR_REVERSE;
-            colorStart = this.colorEnd;
-            colorEnd = this.colorStart;
+            propertyName = isForeground ? ANIMATION_FOREGROUND_COLOR_REVERSE : ANIMATION_COLOR_REVERSE;
+            colorStart = isForeground ? this.foregroundColorEnd : this.colorEnd;
+            colorEnd = isForeground ? this.foregroundColorStart : this.colorStart;
 
         } else {
-            propertyName = ANIMATION_COLOR;
-            colorStart = this.colorStart;
-            colorEnd = this.colorEnd;
+            propertyName = isForeground ? ANIMATION_FOREGROUND_COLOR : ANIMATION_COLOR;
+            colorStart = isForeground ? this.foregroundColorStart : this.colorStart;
+            colorEnd = isForeground ? this.foregroundColorEnd : this.colorEnd;
         }
 
         PropertyValuesHolder holder = PropertyValuesHolder.ofInt(propertyName, colorStart, colorEnd);
@@ -95,12 +105,20 @@ public class ColorAnimation extends BaseAnimation<ValueAnimator> {
     }
 
     @SuppressWarnings("RedundantIfStatement")
-    private boolean hasChanges(int colorStart, int colorEnd) {
+    private boolean hasChanges(int colorStart, int colorEnd, int foregroundColorStart, int foregroundColorEnd) {
         if (this.colorStart != colorStart) {
             return true;
         }
 
         if (this.colorEnd != colorEnd) {
+            return true;
+        }
+
+        if (this.foregroundColorStart != foregroundColorStart) {
+            return true;
+        }
+
+        if (this.foregroundColorEnd != foregroundColorEnd) {
             return true;
         }
 
@@ -110,9 +128,13 @@ public class ColorAnimation extends BaseAnimation<ValueAnimator> {
     private void onAnimateUpdated(@NonNull ValueAnimator animation) {
         int color = (int) animation.getAnimatedValue(ANIMATION_COLOR);
         int colorReverse = (int) animation.getAnimatedValue(ANIMATION_COLOR_REVERSE);
+        int foregroundColor = (int) animation.getAnimatedValue(ANIMATION_FOREGROUND_COLOR);
+        int foregroundColorReverse = (int) animation.getAnimatedValue(ANIMATION_FOREGROUND_COLOR_REVERSE);
 
         value.setColor(color);
         value.setColorReverse(colorReverse);
+        value.setForegroundColor(foregroundColor);
+        value.setForegroundColorReverse(foregroundColorReverse);
 
         if (listener != null) {
             listener.onValueUpdated(value);

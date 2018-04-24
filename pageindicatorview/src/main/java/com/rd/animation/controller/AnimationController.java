@@ -90,11 +90,14 @@ public class AnimationController {
     private void colorAnimation() {
         int selectedColor = indicator.getSelectedColor();
         int unselectedColor = indicator.getUnselectedColor();
+        int foregroundSelectedColor = indicator.getSelectedForegroundColor();
+        int foregroundUnselectedColor = indicator.getUnselectedForegroundColor();
+
         long animationDuration = indicator.getAnimationDuration();
 
         BaseAnimation animation = valueController
                 .color()
-                .with(unselectedColor, selectedColor)
+                .with(unselectedColor, selectedColor, foregroundUnselectedColor, foregroundSelectedColor)
                 .duration(animationDuration);
 
         if (isInteractive) {
@@ -109,13 +112,16 @@ public class AnimationController {
     private void scaleAnimation() {
         int selectedColor = indicator.getSelectedColor();
         int unselectedColor = indicator.getUnselectedColor();
+        int foregroundSelectedColor = indicator.getSelectedForegroundColor();
+        int foregroundUnselectedColor = indicator.getUnselectedForegroundColor();
         int radiusPx = indicator.getRadius();
         float scaleFactor = indicator.getScaleFactor();
         long animationDuration = indicator.getAnimationDuration();
 
         BaseAnimation animation = valueController
                 .scale()
-                .with(unselectedColor, selectedColor, radiusPx, scaleFactor)
+                .with(unselectedColor, selectedColor, foregroundUnselectedColor,
+                        foregroundSelectedColor, radiusPx, scaleFactor)
                 .duration(animationDuration);
 
         if (isInteractive) {
@@ -276,13 +282,16 @@ public class AnimationController {
     private void scaleDownAnimation() {
         int selectedColor = indicator.getSelectedColor();
         int unselectedColor = indicator.getUnselectedColor();
+        int foregroundSelectedColor = indicator.getSelectedForegroundColor();
+        int foregroundUnselectedColor = indicator.getUnselectedForegroundColor();
         int radiusPx = indicator.getRadius();
         float scaleFactor = indicator.getScaleFactor();
         long animationDuration = indicator.getAnimationDuration();
 
         BaseAnimation animation = valueController
                 .scaleDown()
-                .with(unselectedColor, selectedColor, radiusPx, scaleFactor)
+                .with(unselectedColor, selectedColor,
+                        foregroundUnselectedColor, foregroundSelectedColor, radiusPx, scaleFactor)
                 .duration(animationDuration);
 
         if (isInteractive) {

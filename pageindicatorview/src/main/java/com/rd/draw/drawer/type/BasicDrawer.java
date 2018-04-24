@@ -32,8 +32,13 @@ public class BasicDrawer extends BaseDrawer {
 
         int selectedColor = indicator.getSelectedColor();
         int unselectedColor = indicator.getUnselectedColor();
+
+        int selectedForegroundColor = indicator.getSelectedForegroundColor();
+        int unselectedForegroundColor = indicator.getUnselectedForegroundColor();
+
         int selectedPosition = indicator.getSelectedPosition();
         AnimationType animationType = indicator.getAnimationType();
+        boolean hasForeground = indicator.isHasForeground();
 
 		if (animationType == AnimationType.SCALE && !isSelectedItem) {
 			radius *= scaleFactor;
@@ -43,8 +48,10 @@ public class BasicDrawer extends BaseDrawer {
 		}
 
         int color = unselectedColor;
+		int foregroundColor = unselectedForegroundColor;
         if (position == selectedPosition) {
             color = selectedColor;
+            foregroundColor = selectedForegroundColor;
         }
 
         Paint paint;
@@ -57,5 +64,10 @@ public class BasicDrawer extends BaseDrawer {
 
         paint.setColor(color);
         canvas.drawCircle(coordinateX, coordinateY, radius, paint);
+
+        if (hasForeground) {
+            paint.setColor(foregroundColor);
+            canvas.drawCircle(coordinateX, coordinateY, radius - indicator.getForegroundPadding(), paint);
+        }
     }
 }
