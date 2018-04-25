@@ -14,7 +14,7 @@ public class Customization implements Parcelable {
 
     private boolean interactiveAnimation = false;
     private boolean autoVisibility = true;
-    private boolean foreground = true;
+    private boolean foreground = false;
 
     public AnimationType getAnimationType() {
         return animationType;

@@ -3,6 +3,7 @@ package com.rd.draw.drawer.type;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.support.annotation.NonNull;
+
 import com.rd.animation.data.Value;
 import com.rd.animation.data.type.ColorAnimationValue;
 import com.rd.draw.data.Indicator;
@@ -14,10 +15,10 @@ public class ColorDrawer extends BaseDrawer {
     }
 
     public void draw(@NonNull Canvas canvas,
-              @NonNull Value value,
-              int position,
-              int coordinateX,
-              int coordinateY) {
+                     @NonNull Value value,
+                     int position,
+                     int coordinateX,
+                     int coordinateY) {
 
         if (!(value instanceof ColorAnimationValue)) {
             return;
@@ -55,7 +56,7 @@ public class ColorDrawer extends BaseDrawer {
 
         paint.setColor(color);
         canvas.drawCircle(coordinateX, coordinateY, radius, paint);
-        if(indicator.isHasForeground()) {
+        if (indicator.isHasForeground()) {
             paint.setColor(foregroundColor);
             canvas.drawCircle(coordinateX, coordinateY, radius - indicator.getForegroundPadding(), paint);
         }

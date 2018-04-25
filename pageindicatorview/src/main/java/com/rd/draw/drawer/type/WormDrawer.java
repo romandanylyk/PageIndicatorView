@@ -34,7 +34,9 @@ public class WormDrawer extends BaseDrawer {
         int rectEnd = v.getRectEnd();
 
         int radius = indicator.getRadius();
-        int color = indicator.getSelectedColor();
+        int unselectedColor = indicator.getUnselectedColor();
+        int selectedColor = indicator.getSelectedColor();
+        int color =  selectedColor;
         int unselectedForegroundColor = indicator.getUnselectedForegroundColor();
         int selectedForegroundColor = indicator.getSelectedForegroundColor();
 
@@ -82,15 +84,23 @@ public class WormDrawer extends BaseDrawer {
             }
         }
 
-        paint.setColor(color);
-        canvas.drawCircle(coordinateX, coordinateY, radius, paint);
+
 
         if (indicator.isHasForeground()) {
+            paint.setColor(color);
+            canvas.drawCircle(coordinateX, coordinateY, radius, paint);
+
             paint.setColor(unselectedForegroundColor);
             canvas.drawCircle(coordinateX, coordinateY, finalRadius, paint);
 
             paint.setColor(selectedForegroundColor);
             canvas.drawRoundRect(rect, finalRadius, finalRadius, paint);
+        } else {
+            paint.setColor(unselectedColor);
+            canvas.drawCircle(coordinateX, coordinateY, radius, paint);
+
+            paint.setColor(selectedColor);
+            canvas.drawRoundRect(rect, radius, radius, paint);
         }
     }
 }

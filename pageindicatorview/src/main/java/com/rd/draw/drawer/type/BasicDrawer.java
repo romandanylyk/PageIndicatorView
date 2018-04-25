@@ -65,11 +65,11 @@ public class BasicDrawer extends BaseDrawer {
         paint.setColor(color);
         canvas.drawCircle(coordinateX, coordinateY, radius, paint);
 
-        if (hasForeground &&
+        if (hasForeground && (
                 animationType == AnimationType.COLOR ||
                 animationType == AnimationType.NONE ||
                 animationType == AnimationType.SCALE ||
-                animationType == AnimationType.WORM) {
+                animationType == AnimationType.WORM)) {
             paint.setColor(foregroundColor);
             canvas.drawCircle(coordinateX, coordinateY, radius - indicator.getForegroundPadding(), paint);
         }
