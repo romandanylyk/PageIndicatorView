@@ -252,6 +252,44 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     }
 
     /**
+     * Set padding in dp for foreground circle in indicator. Default value is {@link Indicator#DEFAULT_FOREGROUND_PADDING_DP}.
+     *
+     * @param paddingDp foreground padding in dp.
+     */
+    public void setForegroundPadding(int paddingDp) {
+        if (paddingDp < 0) {
+            paddingDp = 0;
+        }
+
+        int paddingPx = DensityUtils.dpToPx(paddingDp);
+        manager.indicator().setForegroundPadding(paddingPx);
+        invalidate();
+    }
+
+    /**
+     * Set padding in dp for foreground circle in indicator. Default value is {@link Indicator#DEFAULT_FOREGROUND_PADDING_DP}.
+     *
+     * @param paddingPx foreground padding in px.
+     */
+    public void setForegroundPadding(float paddingPx) {
+        if (paddingPx < 0) {
+            paddingPx = 0;
+        }
+
+        manager.indicator().setForegroundPadding((int) paddingPx);
+        invalidate();
+    }
+
+    /**
+     * Return padding in px for foreground circle in indicator. If custom padding is not set,
+     * return default value {@link Indicator#DEFAULT_FOREGROUND_PADDING_DP}.
+     */
+    public int getForegroundPadding() {
+        return manager.indicator().getForegroundPadding();
+    }
+
+
+    /**
      * Set scale factor used in {@link AnimationType#SCALE} animation.
      * Defines size of unselected indicator circles in comparing to selected one.
      * Minimum and maximum values are {@link ScaleAnimation#MAX_SCALE_FACTOR} and {@link ScaleAnimation#MIN_SCALE_FACTOR}.
@@ -365,6 +403,24 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
      */
     public int getUnselectedColor() {
         return manager.indicator().getUnselectedColor();
+    }
+
+    /**
+     * Set color of unselected state to indicator foreground. Default color {@link ColorAnimation#DEFAULT_FOREGROUND_UNSELECTED_COLOR}.
+     *
+     * @param color color of each unselected circle.
+     */
+    public void setUnselectedForegroundColor(int color) {
+        manager.indicator().setUnselectedForegroundColor(color);
+        invalidate();
+    }
+
+    /**
+     * Return color of unselected state of indicator foreground. If custom unselected foreground color
+     * is not set, return default color {@link ColorAnimation#DEFAULT_FOREGROUND_UNSELECTED_COLOR}.
+     */
+    public int getUnselectedForegroundColor() {
+        return manager.indicator().getUnselectedForegroundColor();
     }
 
     /**
