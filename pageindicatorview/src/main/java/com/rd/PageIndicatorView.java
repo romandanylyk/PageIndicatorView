@@ -538,6 +538,18 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     }
 
     /**
+     * Clears selection of all indicators
+     */
+    public void clearSelections() {
+        Indicator indicator = manager.indicator();
+        indicator.setInteractiveAnimation(false);
+        indicator.setLastSelectedPosition(indicator.getSelectedPosition());
+        indicator.setSelectingPosition(-1);
+        indicator.setSelectedPosition(-1);
+        manager.animate().basic();
+    }
+
+    /**
      * Set specific circle indicator position to be selected without any kind of animation. If position < or > total count,
      * accordingly first or last circle indicator will be selected.
      *
