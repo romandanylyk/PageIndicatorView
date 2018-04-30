@@ -2,7 +2,6 @@ package com.rd;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.Context;
 import android.database.DataSetObserver;
 import android.graphics.Canvas;
@@ -18,6 +17,7 @@ import android.util.AttributeSet;
 import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import com.rd.animation.type.AnimationType;
 import com.rd.animation.type.BaseAnimation;
 import com.rd.animation.type.ColorAnimation;
@@ -751,16 +751,17 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     }
 
     private void findViewPager() {
-        if (getContext() instanceof Activity) {
-            Activity activity = (Activity) getContext();
-            int viewPagerId = manager.indicator().getViewPagerId();
+		if (getParent() instanceof ViewGroup) {
+			int viewPagerId = manager.indicator().getViewPagerId();
 
-            View view = activity.findViewById(viewPagerId);
-            if (view != null && view instanceof ViewPager) {
-                setViewPager((ViewPager) view);
-            }
-        }
-    }
+			ViewGroup viewGroup = (ViewGroup) getParent();
+			View view = viewGroup.findViewById(viewPagerId);
+
+			if (view != null && view instanceof ViewPager) {
+				setViewPager((ViewPager) view);
+			}
+		}
+	}
 
     private int adjustPosition(int position){
         Indicator indicator = manager.indicator();
@@ -776,6 +777,4 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
         return position;
     }
-
-
 }

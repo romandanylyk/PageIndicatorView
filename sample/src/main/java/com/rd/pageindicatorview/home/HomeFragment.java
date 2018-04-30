@@ -30,7 +30,7 @@ public class HomeFragment extends Fragment {
 		HomeAdapter adapter = new HomeAdapter();
 		adapter.setData(createPageList());
 
-		ViewPager pager = view.findViewById(R.id.viewPager2);
+		ViewPager pager = view.findViewById(R.id.viewPager);
 		pager.setAdapter(adapter);
 	}
 
