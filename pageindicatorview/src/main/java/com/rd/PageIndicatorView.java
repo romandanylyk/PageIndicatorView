@@ -8,8 +8,10 @@ import android.database.DataSetObserver;
 import android.graphics.Canvas;
 import android.os.Build;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.text.TextUtilsCompat;
+import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
@@ -30,7 +32,7 @@ import com.rd.utils.CoordinatesUtils;
 import com.rd.utils.DensityUtils;
 import com.rd.utils.IdUtils;
 
-public class PageIndicatorView extends View implements ViewPager.OnPageChangeListener, IndicatorManager.Listener {
+public class PageIndicatorView extends View implements ViewPager.OnPageChangeListener, IndicatorManager.Listener, ViewPager.OnAdapterChangeListener {
 
     private IndicatorManager manager;
     private DataSetObserver setObserver;
@@ -136,6 +138,11 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 		}
 	}
 
+    @Override
+    public void onAdapterChanged(@NonNull ViewPager viewPager, @Nullable PagerAdapter oldAdapter, @Nullable PagerAdapter newAdapter) {
+        updateState();
+    }
+
     /**
      * Set static number of circle indicators to be displayed.
      *
@@ -145,7 +152,6 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         if (count >= 0 && manager.indicator().getCount() != count) {
             manager.indicator().setCount(count);
             updateVisibility();
-
             requestLayout();
         }
     }
@@ -457,17 +463,11 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
         viewPager = pager;
         viewPager.addOnPageChangeListener(this);
+        viewPager.addOnAdapterChangeListener(this);
         manager.indicator().setViewPagerId(viewPager.getId());
 
         setDynamicCount(manager.indicator().isDynamicCount());
-        int count = getViewPagerCount();
-
-        if (isRtl()) {
-            int selectedPosition = (count - 1) - viewPager.getCurrentItem();
-            manager.indicator().setSelectedPosition(selectedPosition);
-        }
-
-        setCount(count);
+        updateState();
     }
 
     /**
@@ -517,6 +517,13 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     }
 
     /**
+     * Return position of currently selected circle indicator.
+     */
+    public int getSelection() {
+        return manager.indicator().getSelectedPosition();
+    }
+
+    /**
      * Set specific circle indicator position to be selected. If position < or > total count,
      * accordingly first or last circle indicator will be selected.
      *
@@ -538,18 +545,6 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     }
 
     /**
-     * Clears selection of all indicators
-     */
-    public void clearSelections() {
-        Indicator indicator = manager.indicator();
-        indicator.setInteractiveAnimation(false);
-        indicator.setLastSelectedPosition(indicator.getSelectedPosition());
-        indicator.setSelectingPosition(-1);
-        indicator.setSelectedPosition(-1);
-        manager.animate().basic();
-    }
-
-    /**
      * Set specific circle indicator position to be selected without any kind of animation. If position < or > total count,
      * accordingly first or last circle indicator will be selected.
      *
@@ -565,10 +560,16 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     }
 
     /**
-     * Return position of currently selected circle indicator.
+     * Clears selection of all indicators
      */
-    public int getSelection() {
-        return manager.indicator().getSelectedPosition();
+    public void clearSelection() {
+        //TODO check
+        Indicator indicator = manager.indicator();
+        indicator.setInteractiveAnimation(false);
+        indicator.setLastSelectedPosition(Indicator.COUNT_NONE);
+        indicator.setSelectingPosition(Indicator.COUNT_NONE);
+        indicator.setSelectedPosition(Indicator.COUNT_NONE);
+        manager.animate().basic();
     }
 
     /**
@@ -642,7 +643,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         setObserver = new DataSetObserver() {
             @Override
             public void onChanged() {
-                updateCount();
+                updateState();
             }
         };
 
@@ -666,20 +667,22 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         }
     }
 
-    private void updateCount() {
+    private void updateState() {
         if (viewPager == null || viewPager.getAdapter() == null) {
             return;
         }
 
-        int newCount = viewPager.getAdapter().getCount();
-        int currItem = viewPager.getCurrentItem();
+        int count = viewPager.getAdapter().getCount();
+        int selectedPos = isRtl() ? (count - 1) - viewPager.getCurrentItem() : viewPager.getCurrentItem();
 
-        manager.indicator().setSelectedPosition(currItem);
-        manager.indicator().setSelectingPosition(currItem);
-        manager.indicator().setLastSelectedPosition(currItem);
+        manager.indicator().setSelectedPosition(selectedPos);
+        manager.indicator().setSelectingPosition(selectedPos);
+        manager.indicator().setLastSelectedPosition(selectedPos);
+        manager.indicator().setCount(count);
         manager.animate().end();
 
-        setCount(newCount);
+        updateVisibility();
+        requestLayout();
     }
 
     private void updateVisibility() {
@@ -695,14 +698,6 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
         } else if (visibility != INVISIBLE && count <= Indicator.MIN_COUNT) {
             setVisibility(View.INVISIBLE);
-        }
-    }
-
-    private int getViewPagerCount() {
-        if (viewPager != null && viewPager.getAdapter() != null) {
-            return viewPager.getAdapter().getCount();
-        } else {
-            return manager.indicator().getCount();
         }
     }
 
@@ -781,4 +776,6 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
         return position;
     }
+
+
 }
