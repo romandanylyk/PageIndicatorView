@@ -1,7 +1,5 @@
 package com.rd.pageindicatorview.home;
 
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -70,12 +68,6 @@ public class HomeActivity extends BaseActivity {
         pager.setAdapter(adapter);
 
         pageIndicatorView = findViewById(R.id.pageIndicatorView);
-        findViewById(R.id.btnOpenFragment).setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				openFragment();
-			}
-		});
     }
 
     @NonNull
@@ -107,13 +99,5 @@ public class HomeActivity extends BaseActivity {
         pageIndicatorView.setRtlMode(customization.getRtlMode());
         pageIndicatorView.setInteractiveAnimation(customization.isInteractiveAnimation());
         pageIndicatorView.setAutoVisibility(customization.isAutoVisibility());
-    }
-
-    private void openFragment() {
-		FragmentManager manager = getFragmentManager();
-		FragmentTransaction transaction = manager.beginTransaction();
-		transaction.add(R.id.fragmentHolder, HomeFragment.getInstance(), "TAG");
-		transaction.addToBackStack(null);
-		transaction.commit();
     }
 }
