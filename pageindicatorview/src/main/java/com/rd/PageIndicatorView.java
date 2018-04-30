@@ -18,6 +18,7 @@ import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import com.rd.animation.type.AnimationType;
 import com.rd.animation.type.BaseAnimation;
 import com.rd.animation.type.ColorAnimation;
@@ -63,7 +64,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        findViewPager();
+        findViewPager(getParent());
     }
 
     @Override
@@ -750,18 +751,38 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         return getMeasuredHeight() != 0 || getMeasuredWidth() != 0;
     }
 
-    private void findViewPager() {
-		if (getParent() instanceof ViewGroup) {
-			int viewPagerId = manager.indicator().getViewPagerId();
+    private void findViewPager(@Nullable ViewParent viewParent) {
+        boolean isValidParent = viewParent != null &&
+                viewParent instanceof ViewGroup &&
+                ((ViewGroup) viewParent).getChildCount() > 0;
 
-			ViewGroup viewGroup = (ViewGroup) getParent();
-			View view = viewGroup.findViewById(viewPagerId);
+        if (!isValidParent) {
+            return;
+        }
 
-			if (view != null && view instanceof ViewPager) {
-				setViewPager((ViewPager) view);
-			}
-		}
-	}
+        int viewPagerId = manager.indicator().getViewPagerId();
+        ViewPager viewPager = findViewPager((ViewGroup) viewParent, viewPagerId);
+
+        if (viewPager != null) {
+            setViewPager(viewPager);
+        } else {
+            findViewPager(viewParent.getParent());
+        }
+    }
+
+    @Nullable
+    private ViewPager findViewPager(@NonNull ViewGroup viewGroup, int id) {
+        if (viewGroup.getChildCount() <= 0) {
+            return null;
+        }
+
+        View view = viewGroup.findViewById(id);
+        if (view != null && view instanceof ViewPager) {
+            return (ViewPager) view;
+        } else {
+            return null;
+        }
+    }
 
     private int adjustPosition(int position){
         Indicator indicator = manager.indicator();
