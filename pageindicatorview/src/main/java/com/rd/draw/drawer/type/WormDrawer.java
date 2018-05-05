@@ -22,7 +22,8 @@ public class WormDrawer extends BaseDrawer {
             @NonNull Canvas canvas,
             @NonNull Value value,
             int coordinateX,
-            int coordinateY) {
+            int coordinateY,
+            int position) {
 
         if (!(value instanceof WormAnimationValue)) {
             return;
@@ -35,24 +36,71 @@ public class WormDrawer extends BaseDrawer {
         int radius = indicator.getRadius();
         int unselectedColor = indicator.getUnselectedColor();
         int selectedColor = indicator.getSelectedColor();
+        int color =  selectedColor;
+        int unselectedForegroundColor = indicator.getUnselectedForegroundColor();
+        int selectedForegroundColor = indicator.getSelectedForegroundColor();
+
+        int selectedPosition = indicator.getSelectedPosition();
+        int selectingPosition = indicator.getSelectingPosition();
+        int lastSelectedPosition = indicator.getLastSelectedPosition();
+
+        int finalRadius;
+
+        if (indicator.isHasForeground()) {
+             finalRadius = radius - indicator.getForegroundPadding();
+             rectStart += indicator.getForegroundPadding();
+             rectEnd -= indicator.getForegroundPadding();
+        } else {
+            finalRadius = radius;
+        }
 
         if (indicator.getOrientation() == Orientation.HORIZONTAL) {
             rect.left = rectStart;
             rect.right = rectEnd;
-            rect.top = coordinateY - radius;
-            rect.bottom = coordinateY + radius;
+            rect.top = coordinateY - finalRadius;
+            rect.bottom = coordinateY + finalRadius;
 
         } else {
-            rect.left = coordinateX - radius;
-            rect.right = coordinateX + radius;
+            rect.left = coordinateX - finalRadius;
+            rect.right = coordinateX + finalRadius;
             rect.top = rectStart;
             rect.bottom = rectEnd;
         }
 
-        paint.setColor(unselectedColor);
-        canvas.drawCircle(coordinateX, coordinateY, radius, paint);
+        if (indicator.isInteractiveAnimation()) {
+            if (position == selectingPosition) {
+                color = indicator.getSelectedColor();
 
-        paint.setColor(selectedColor);
-        canvas.drawRoundRect(rect, radius, radius, paint);
+            } else if (position == selectedPosition) {
+                color = indicator.getUnselectedColor();
+            }
+
+        } else {
+            if (position == selectedPosition) {
+                color = indicator.getSelectedColor();
+
+            } else if (position == lastSelectedPosition) {
+                color = indicator.getUnselectedColor();
+            }
+        }
+
+
+
+        if (indicator.isHasForeground()) {
+            paint.setColor(color);
+            canvas.drawCircle(coordinateX, coordinateY, radius, paint);
+
+            paint.setColor(unselectedForegroundColor);
+            canvas.drawCircle(coordinateX, coordinateY, finalRadius, paint);
+
+            paint.setColor(selectedForegroundColor);
+            canvas.drawRoundRect(rect, finalRadius, finalRadius, paint);
+        } else {
+            paint.setColor(unselectedColor);
+            canvas.drawCircle(coordinateX, coordinateY, radius, paint);
+
+            paint.setColor(selectedColor);
+            canvas.drawRoundRect(rect, radius, radius, paint);
+        }
     }
 }

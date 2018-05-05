@@ -6,6 +6,8 @@ public class ColorAnimationValue implements Value {
 
     private int color;
     private int colorReverse;
+    private int foregroundColor;
+    private int foregroundColorReverse;
 
     public int getColor() {
         return color;
@@ -21,5 +23,21 @@ public class ColorAnimationValue implements Value {
 
     public void setColorReverse(int colorReverse) {
         this.colorReverse = colorReverse;
+    }
+
+    public int getForegroundColor() {
+        return foregroundColor;
+    }
+
+    public void setForegroundColor(int foregroundColor) {
+        this.foregroundColor = foregroundColor;
+    }
+
+    public int getForegroundColorReverse() {
+        return foregroundColorReverse;
+    }
+
+    public void setForegroundColorReverse(int foregroundColorReverse) {
+        this.foregroundColorReverse = foregroundColorReverse;
     }
 }

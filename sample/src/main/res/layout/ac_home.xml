@@ -31,6 +31,10 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="48dp"
+        attrs:piv_hasForeground="false"
+        attrs:piv_foregroundPadding="2dp"
+        attrs:piv_selectedForegroundColor="#a92216"
+        attrs:piv_unselectedForegroundColor="#14d48d"
         attrs:piv_padding="12dp"
         attrs:piv_radius="8dp" />
 

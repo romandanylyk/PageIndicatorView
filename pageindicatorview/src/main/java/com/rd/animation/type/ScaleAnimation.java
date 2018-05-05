@@ -44,22 +44,28 @@ public class ScaleAnimation extends ColorAnimation {
     }
 
     @NonNull
-    public ScaleAnimation with(int colorStart, int colorEnd, int radius, float scaleFactor) {
-        if (animator != null && hasChanges(colorStart, colorEnd, radius, scaleFactor)) {
+    public ScaleAnimation with(int colorStart, int colorEnd,
+                               int foregroundColorStart, int foregroundColorEnd, int radius, float scaleFactor) {
+        if (animator != null && hasChanges(colorStart, colorEnd, foregroundColorStart, foregroundColorEnd, radius, scaleFactor)) {
 
             this.colorStart = colorStart;
             this.colorEnd = colorEnd;
+            this.foregroundColorStart = foregroundColorStart;
+            this.foregroundColorEnd = foregroundColorEnd;
 
             this.radius = radius;
             this.scaleFactor = scaleFactor;
 
-            PropertyValuesHolder colorHolder = createColorPropertyHolder(false);
-            PropertyValuesHolder reverseColorHolder = createColorPropertyHolder(true);
+            PropertyValuesHolder colorHolder = createColorPropertyHolder(false, false);
+            PropertyValuesHolder reverseColorHolder = createColorPropertyHolder(true, false);
+            PropertyValuesHolder foregroundColorHolder = createColorPropertyHolder(false, true);
+            PropertyValuesHolder foregroundReverseColorHolder = createColorPropertyHolder(true, true);
+
 
             PropertyValuesHolder scaleHolder = createScalePropertyHolder(false);
             PropertyValuesHolder scaleReverseHolder = createScalePropertyHolder(true);
 
-            animator.setValues(colorHolder, reverseColorHolder, scaleHolder, scaleReverseHolder);
+            animator.setValues(colorHolder, reverseColorHolder, foregroundColorHolder, foregroundReverseColorHolder, scaleHolder, scaleReverseHolder);
         }
 
         return this;
@@ -69,11 +75,17 @@ public class ScaleAnimation extends ColorAnimation {
         int color = (int) animation.getAnimatedValue(ANIMATION_COLOR);
         int colorReverse = (int) animation.getAnimatedValue(ANIMATION_COLOR_REVERSE);
 
+        int foregroundColor = (int) animation.getAnimatedValue(ANIMATION_FOREGROUND_COLOR);
+        int foregroundColorReverse = (int) animation.getAnimatedValue(ANIMATION_FOREGROUND_COLOR_REVERSE);
+
         int radius = (int) animation.getAnimatedValue(ANIMATION_SCALE);
         int radiusReverse = (int) animation.getAnimatedValue(ANIMATION_SCALE_REVERSE);
 
         value.setColor(color);
         value.setColorReverse(colorReverse);
+
+        value.setForegroundColor(foregroundColor);
+        value.setForegroundColorReverse(foregroundColorReverse);
 
         value.setRadius(radius);
         value.setRadiusReverse(radiusReverse);
@@ -106,12 +118,20 @@ public class ScaleAnimation extends ColorAnimation {
     }
 
     @SuppressWarnings("RedundantIfStatement")
-    private boolean hasChanges(int colorStart, int colorEnd, int radiusValue, float scaleFactorValue) {
+    private boolean hasChanges(int colorStart, int colorEnd, int foregroundColorStart, int foregroundColorEnd, int radiusValue, float scaleFactorValue) {
         if (this.colorStart != colorStart) {
             return true;
         }
 
         if (this.colorEnd != colorEnd) {
+            return true;
+        }
+
+        if (this.foregroundColorStart != foregroundColorStart) {
+            return true;
+        }
+
+        if (this.foregroundColorEnd != foregroundColorEnd) {
             return true;
         }
 

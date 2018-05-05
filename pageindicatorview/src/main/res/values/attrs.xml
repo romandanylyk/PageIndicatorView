@@ -22,6 +22,12 @@
         <attr name="piv_unselectedColor" format="color" />
         <attr name="piv_selectedColor" format="color" />
 
+        <attr name="piv_unselectedForegroundColor" format="color" />
+        <attr name="piv_selectedForegroundColor" format="color" />
+
+        <attr name="piv_foregroundPadding" format="dimension" />
+        <attr name="piv_hasForeground" format="boolean" />
+
         <attr name="piv_interactiveAnimation" format="boolean" />
         <attr name="piv_animationDuration" format="integer" />
         <attr name="piv_animationType">

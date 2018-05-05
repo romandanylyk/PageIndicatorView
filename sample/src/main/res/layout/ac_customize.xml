@@ -133,6 +133,21 @@
                 android:text="@string/auto_visibility"
                 android:textColor="@color/gray_700"
                 android:textSize="16sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/gray_200" />
+
+            <Switch
+                android:id="@+id/switchForeground"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/selector_black_10_transparent"
+                android:padding="16dp"
+                android:text="@string/foreground"
+                android:textColor="@color/gray_700"
+                android:textSize="16sp" />
         </LinearLayout>
     </ScrollView>
 </LinearLayout>
