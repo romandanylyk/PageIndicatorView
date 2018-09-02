@@ -99,5 +99,6 @@ public class HomeActivity extends BaseActivity {
         pageIndicatorView.setRtlMode(customization.getRtlMode());
         pageIndicatorView.setInteractiveAnimation(customization.isInteractiveAnimation());
         pageIndicatorView.setAutoVisibility(customization.isAutoVisibility());
+        pageIndicatorView.setFadeOnIdle(customization.isFadeOnIdle());
     }
 }

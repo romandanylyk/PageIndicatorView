@@ -7,7 +7,12 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
-import com.rd.animation.type.*;
+
+import com.rd.animation.type.AnimationType;
+import com.rd.animation.type.BaseAnimation;
+import com.rd.animation.type.ColorAnimation;
+import com.rd.animation.type.FillAnimation;
+import com.rd.animation.type.ScaleAnimation;
 import com.rd.draw.data.Indicator;
 import com.rd.draw.data.Orientation;
 import com.rd.draw.data.RtlMode;
@@ -17,6 +22,8 @@ import com.rd.utils.DensityUtils;
 public class AttributeController {
 
     private Indicator indicator;
+
+    private static final int DEFAULT_MILLIS_TO_BECOME_IDLE = 1500;
 
     public AttributeController(@NonNull Indicator indicator) {
         this.indicator = indicator;
@@ -80,10 +87,15 @@ public class AttributeController {
         int rtlIndex = typedArray.getInt(R.styleable.PageIndicatorView_piv_rtl_mode, RtlMode.Off.ordinal());
         RtlMode rtlMode = getRtlMode(rtlIndex);
 
+        boolean fadeOnIdle = typedArray.getBoolean(R.styleable.PageIndicatorView_piv_fadeOnIdle, false);
+        long millisToBecomeIdle = (long) typedArray.getInt(R.styleable.PageIndicatorView_piv_millisToBecomeIdle, DEFAULT_MILLIS_TO_BECOME_IDLE);
+
         indicator.setAnimationDuration(animationDuration);
         indicator.setInteractiveAnimation(interactiveAnimation);
         indicator.setAnimationType(animationType);
         indicator.setRtlMode(rtlMode);
+        indicator.setFadeOnIdle(fadeOnIdle);
+        indicator.setMillisToBecomeIdle(millisToBecomeIdle);
     }
 
     private void initSizeAttribute(@NonNull TypedArray typedArray) {
