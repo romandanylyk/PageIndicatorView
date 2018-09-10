@@ -32,8 +32,11 @@ public class Indicator {
     private boolean interactiveAnimation;
     private boolean autoVisibility;
     private boolean dynamicCount;
+    private boolean fadeOnIdle;
+    private boolean idle;
 
     private long animationDuration;
+    private long millisToBecomeIdle;
     private int count = DEFAULT_COUNT;
 
     private int selectedPosition;
@@ -166,6 +169,22 @@ public class Indicator {
         this.dynamicCount = dynamicCount;
     }
 
+    public boolean isFadeOnIdle() {
+        return fadeOnIdle;
+    }
+
+    public void setFadeOnIdle(boolean fadeOnIdle) {
+        this.fadeOnIdle = fadeOnIdle;
+    }
+
+    public boolean isIdle() {
+        return idle;
+    }
+
+    public void setIdle(boolean idle) {
+        this.idle = idle;
+    }
+
     public long getAnimationDuration() {
         return animationDuration;
     }
@@ -228,6 +247,14 @@ public class Indicator {
 
     public void setAnimationType(AnimationType animationType) {
         this.animationType = animationType;
+    }
+
+    public long getMillisToBecomeIdle() {
+        return millisToBecomeIdle;
+    }
+
+    public void setMillisToBecomeIdle(long millisToBecomeIdle) {
+        this.millisToBecomeIdle = millisToBecomeIdle;
     }
 
     @NonNull

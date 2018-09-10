@@ -2,6 +2,7 @@ package com.rd.pageindicatorview.data;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+
 import com.rd.animation.type.AnimationType;
 import com.rd.draw.data.Orientation;
 import com.rd.draw.data.RtlMode;
@@ -14,6 +15,7 @@ public class Customization implements Parcelable {
 
     private boolean interactiveAnimation = false;
     private boolean autoVisibility = true;
+    private boolean fadeOnIdle = false;
 
     public AnimationType getAnimationType() {
         return animationType;
@@ -55,6 +57,14 @@ public class Customization implements Parcelable {
         this.autoVisibility = autoVisibility;
     }
 
+    public boolean isFadeOnIdle() {
+        return fadeOnIdle;
+    }
+
+    public void setFadeOnIdle(boolean fadeOnIdle) {
+        this.fadeOnIdle = fadeOnIdle;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -66,6 +76,7 @@ public class Customization implements Parcelable {
         if (autoVisibility != that.autoVisibility) return false;
         if (animationType != that.animationType) return false;
         if (orientation != that.orientation) return false;
+        if (fadeOnIdle != that.fadeOnIdle) return false;
         return rtlMode == that.rtlMode;
 
     }
@@ -77,6 +88,7 @@ public class Customization implements Parcelable {
         result = 31 * result + (rtlMode != null ? rtlMode.hashCode() : 0);
         result = 31 * result + (interactiveAnimation ? 1 : 0);
         result = 31 * result + (autoVisibility ? 1 : 0);
+        result = 31 * result + (fadeOnIdle ? 1 : 0);
         return result;
     }
 
@@ -92,6 +104,7 @@ public class Customization implements Parcelable {
         dest.writeInt(this.rtlMode == null ? -1 : this.rtlMode.ordinal());
         dest.writeByte(this.interactiveAnimation ? (byte) 1 : (byte) 0);
         dest.writeByte(this.autoVisibility ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.fadeOnIdle ? (byte) 1 : (byte) 0);
     }
 
     public Customization() {
@@ -106,6 +119,7 @@ public class Customization implements Parcelable {
         this.rtlMode = tmpRtlMode == -1 ? null : RtlMode.values()[tmpRtlMode];
         this.interactiveAnimation = in.readByte() != 0;
         this.autoVisibility = in.readByte() != 0;
+        this.fadeOnIdle = in.readByte() != 0;
     }
 
     public static final Parcelable.Creator<Customization> CREATOR = new Parcelable.Creator<Customization>() {

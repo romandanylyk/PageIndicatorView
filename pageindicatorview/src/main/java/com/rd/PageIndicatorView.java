@@ -19,6 +19,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+
 import com.rd.animation.type.AnimationType;
 import com.rd.animation.type.BaseAnimation;
 import com.rd.animation.type.ColorAnimation;
@@ -33,11 +34,16 @@ import com.rd.utils.CoordinatesUtils;
 import com.rd.utils.DensityUtils;
 import com.rd.utils.IdUtils;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 public class PageIndicatorView extends View implements ViewPager.OnPageChangeListener, IndicatorManager.Listener, ViewPager.OnAdapterChangeListener {
 
     private IndicatorManager manager;
     private DataSetObserver setObserver;
     private ViewPager viewPager;
+    private Timer idleTimer = new Timer();
+    private TimerTask idleTimerTask;
     private boolean isInteractionEnabled;
 
     public PageIndicatorView(Context context) {
@@ -134,10 +140,14 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
     @Override
     public void onPageScrollStateChanged(int state) {
-		if (state == ViewPager.SCROLL_STATE_IDLE) {
-			manager.indicator().setInteractiveAnimation(isInteractionEnabled);
-		}
-	}
+        if (state == ViewPager.SCROLL_STATE_IDLE) {
+            manager.indicator().setInteractiveAnimation(isInteractionEnabled);
+        } else {
+            manager.indicator().setIdle(false);
+            startIdleTimerTask();
+        }
+        updateAlpha();
+    }
 
     @Override
     public void onAdapterChanged(@NonNull ViewPager viewPager, @Nullable PagerAdapter oldAdapter, @Nullable PagerAdapter newAdapter) {
@@ -180,6 +190,19 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         } else {
             unRegisterSetObserver();
         }
+    }
+
+    /**
+     * Fade on idle will make {@link PageIndicatorView} {@link View#INVISIBLE} if {@link ViewPager} is not interacted
+     * in time equal to {@link Indicator#millisToBecomeIdle}. Take care when setting {@link PageIndicatorView} alpha
+     * manually if this is true. Alpha is used to manage fading and appearance of {@link PageIndicatorView} and value you provide
+     * will be overridden when {@link PageIndicatorView} enters or leaves idle state.
+     *
+     * @param fadeOnIdle boolean value to hide {@link PageIndicatorView} when {@link ViewPager} is idle
+     */
+    public void setFadeOnIdle(boolean fadeOnIdle) {
+        manager.indicator().setFadeOnIdle(fadeOnIdle);
+        updateAlpha();
     }
 
     /**
@@ -411,6 +434,18 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
      */
     public void setAnimationDuration(long duration) {
         manager.indicator().setAnimationDuration(duration);
+    }
+
+    /**
+     * Sets time in millis after which {@link ViewPager} is considered idle.
+     * If {@link Indicator#fadeOnIdle} is true, {@link PageIndicatorView} will
+     * fade away after entering idle state and appear when it is left.
+     *
+     * @param millis time in millis after which {@link ViewPager} is considered idle
+     */
+    public void setMillisToBecomeIdle(long millis) {
+        manager.indicator().setMillisToBecomeIdle(millis);
+        updateAlpha();
     }
 
     /**
@@ -702,6 +737,19 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         }
     }
 
+    private void updateAlpha() {
+        if (manager.indicator().isFadeOnIdle()) {
+            if (manager.indicator().isIdle()) {
+                animate().cancel();
+                animate().alpha(0F).setDuration(100L);
+
+            } else {
+                animate().cancel();
+                setAlpha(1F);
+            }
+        }
+    }
+
     private void onPageSelect(int position) {
         Indicator indicator = manager.indicator();
         boolean canSelectIndicator = isViewMeasured();
@@ -716,7 +764,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         }
     }
 
-	private void onPageScroll(int position, float positionOffset) {
+    private void onPageScroll(int position, float positionOffset) {
         Indicator indicator = manager.indicator();
         AnimationType animationType = indicator.getAnimationType();
         boolean interactiveAnimation = indicator.isInteractiveAnimation();
@@ -784,7 +832,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         }
     }
 
-    private int adjustPosition(int position){
+    private int adjustPosition(int position) {
         Indicator indicator = manager.indicator();
         int count = indicator.getCount();
         int lastPosition = count - 1;
@@ -798,4 +846,19 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
         return position;
     }
+
+    private void startIdleTimerTask() {
+        if (idleTimerTask != null) {
+            idleTimerTask.cancel();
+        }
+        idleTimerTask = new TimerTask() {
+            @Override
+            public void run() {
+                manager.indicator().setIdle(true);
+                updateAlpha();
+            }
+        };
+        idleTimer.schedule(idleTimerTask, manager.indicator().getMillisToBecomeIdle());
+    }
+
 }

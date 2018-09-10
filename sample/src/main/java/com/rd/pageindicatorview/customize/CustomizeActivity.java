@@ -77,6 +77,10 @@ public class CustomizeActivity extends BaseActivity implements AdapterView.OnIte
             case R.id.switchAutoVisibility:
                 customization.setAutoVisibility(isChecked);
                 break;
+
+            case R.id.switchFadeOnIdle:
+                customization.setFadeOnIdle(isChecked);
+                break;
         }
     }
 
@@ -112,6 +116,10 @@ public class CustomizeActivity extends BaseActivity implements AdapterView.OnIte
         Switch switchAutoVisibility = findViewById(R.id.switchAutoVisibility);
         switchAutoVisibility.setOnCheckedChangeListener(this);
         switchAutoVisibility.setChecked(customization.isAutoVisibility());
+
+        Switch switchFadeOnIdle = findViewById(R.id.switchFadeOnIdle);
+        switchFadeOnIdle.setOnCheckedChangeListener(this);
+        switchFadeOnIdle.setChecked(customization.isFadeOnIdle());
 
     }
 
