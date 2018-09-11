@@ -13,7 +13,7 @@ ext {
     siteUrl = 'https://github.com/romandanylyk/PageIndicatorView'
     gitUrl = 'https://github.com/romandanylyk/PageIndicatorView.git'
 
-    libraryVersion = '1.0.1'
+    libraryVersion = '1.0.2'
 
     developerId = 'romandanylyk'
     developerName = 'Roman Danylyk'
@@ -49,9 +49,9 @@ dependencies {
     repositories {
         maven { url "https://maven.google.com" }
     }
-    compile 'com.android.support:support-annotations:27.1.1'
-    compile 'com.android.support:support-compat:27.1.1'
-    compile 'com.android.support:support-core-ui:27.1.1'
+    implementation 'com.android.support:support-annotations:27.1.1'
+    implementation 'com.android.support:support-compat:27.1.1'
+    implementation 'com.android.support:support-core-ui:27.1.1'
 }
 
 allprojects {
