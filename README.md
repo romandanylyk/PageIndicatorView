@@ -33,9 +33,9 @@ implementation 'com.romandanylyk:pageindicatorview:X.X.X@aar'
 Keep in mind, that `PageIndicatorView` has min [API level 14](https://developer.android.com/about/dashboards/index.html) and these dependencies:
 
 ```groovy
-    implementation 'com.android.support:appcompat-v7:27.1.1'
-    implementation 'com.android.support:recyclerview-v7:27.1.1'
-    implementation 'com.android.support:support-core-ui:27.1.1'
+implementation 'com.android.support:appcompat-v7:27.1.1'
+implementation 'com.android.support:recyclerview-v7:27.1.1'
+implementation 'com.android.support:support-core-ui:27.1.1'
 ```
 
 ### **Usage Sample**
