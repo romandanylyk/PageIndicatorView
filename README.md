@@ -22,7 +22,7 @@ Once you make sure you have `jcenter` repository in your project, all you need t
  
 See latest library version [ ![Download](https://api.bintray.com/packages/romandanylyk/maven/pageindicatorview/images/download.svg) ](https://bintray.com/romandanylyk/maven/pageindicatorview/_latestVersion)
 ```groovy
-compile 'com.romandanylyk:pageindicatorview:X.X.X'
+implementation 'com.romandanylyk:pageindicatorview:X.X.X'
 ```
 If your project already use `appcompat-v7` support library, you can omit `PageIndicatorView` dependencies by adding a single .aar file to your project, that will decrease total amount of methods used in your project.
 
