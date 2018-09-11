@@ -12,6 +12,7 @@ public class Indicator {
 
     public static final int DEFAULT_RADIUS_DP = 6;
     public static final int DEFAULT_PADDING_DP = 8;
+    public static final int IDLE_ANIMATION_DURATION = 250;
 
     private int height;
     private int width;
@@ -32,11 +33,12 @@ public class Indicator {
     private boolean interactiveAnimation;
     private boolean autoVisibility;
     private boolean dynamicCount;
+
     private boolean fadeOnIdle;
-    private boolean idle;
+    private boolean isIdle;
+    private long idleDuration;
 
     private long animationDuration;
-    private long millisToBecomeIdle;
     private int count = DEFAULT_COUNT;
 
     private int selectedPosition;
@@ -178,11 +180,19 @@ public class Indicator {
     }
 
     public boolean isIdle() {
-        return idle;
+        return isIdle;
     }
 
     public void setIdle(boolean idle) {
-        this.idle = idle;
+        isIdle = idle;
+    }
+
+    public long getIdleDuration() {
+        return idleDuration;
+    }
+
+    public void setIdleDuration(long idleDuration) {
+        this.idleDuration = idleDuration;
     }
 
     public long getAnimationDuration() {
@@ -191,6 +201,14 @@ public class Indicator {
 
     public void setAnimationDuration(long animationDuration) {
         this.animationDuration = animationDuration;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
     }
 
     public int getSelectedPosition() {
@@ -217,12 +235,12 @@ public class Indicator {
         this.lastSelectedPosition = lastSelectedPosition;
     }
 
-    public int getCount() {
-        return count;
+    public int getViewPagerId() {
+        return viewPagerId;
     }
 
-    public void setCount(int count) {
-        this.count = count;
+    public void setViewPagerId(int viewPagerId) {
+        this.viewPagerId = viewPagerId;
     }
 
     @NonNull
@@ -249,14 +267,6 @@ public class Indicator {
         this.animationType = animationType;
     }
 
-    public long getMillisToBecomeIdle() {
-        return millisToBecomeIdle;
-    }
-
-    public void setMillisToBecomeIdle(long millisToBecomeIdle) {
-        this.millisToBecomeIdle = millisToBecomeIdle;
-    }
-
     @NonNull
     public RtlMode getRtlMode() {
         if (rtlMode == null) {
@@ -267,13 +277,5 @@ public class Indicator {
 
     public void setRtlMode(RtlMode rtlMode) {
         this.rtlMode = rtlMode;
-    }
-
-    public int getViewPagerId() {
-        return viewPagerId;
-    }
-
-    public void setViewPagerId(int viewPagerId) {
-        this.viewPagerId = viewPagerId;
     }
 }

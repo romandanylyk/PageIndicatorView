@@ -23,7 +23,7 @@ public class AttributeController {
 
     private Indicator indicator;
 
-    private static final int DEFAULT_MILLIS_TO_BECOME_IDLE = 1500;
+    private static final int DEFAULT_IDLE_DURATION = 3000;
 
     public AttributeController(@NonNull Indicator indicator) {
         this.indicator = indicator;
@@ -65,7 +65,6 @@ public class AttributeController {
         indicator.setLastSelectedPosition(position);
     }
 
-
     private void initColorAttribute(@NonNull TypedArray typedArray) {
         int unselectedColor = typedArray.getColor(R.styleable.PageIndicatorView_piv_unselectedColor, Color.parseColor(ColorAnimation.DEFAULT_UNSELECTED_COLOR));
         int selectedColor = typedArray.getColor(R.styleable.PageIndicatorView_piv_selectedColor, Color.parseColor(ColorAnimation.DEFAULT_SELECTED_COLOR));
@@ -76,7 +75,7 @@ public class AttributeController {
 
     private void initAnimationAttribute(@NonNull TypedArray typedArray) {
         boolean interactiveAnimation = typedArray.getBoolean(R.styleable.PageIndicatorView_piv_interactiveAnimation, false);
-        int animationDuration = typedArray.getInt(R.styleable.PageIndicatorView_piv_animationDuration, BaseAnimation.DEFAULT_ANIMATION_TIME);
+        long animationDuration = (long) typedArray.getInt(R.styleable.PageIndicatorView_piv_animationDuration, BaseAnimation.DEFAULT_ANIMATION_TIME);
         if (animationDuration < 0) {
             animationDuration = 0;
         }
@@ -88,14 +87,14 @@ public class AttributeController {
         RtlMode rtlMode = getRtlMode(rtlIndex);
 
         boolean fadeOnIdle = typedArray.getBoolean(R.styleable.PageIndicatorView_piv_fadeOnIdle, false);
-        long millisToBecomeIdle = (long) typedArray.getInt(R.styleable.PageIndicatorView_piv_millisToBecomeIdle, DEFAULT_MILLIS_TO_BECOME_IDLE);
+        long idleDuration = (long) typedArray.getInt(R.styleable.PageIndicatorView_piv_idleDuration, DEFAULT_IDLE_DURATION);
 
         indicator.setAnimationDuration(animationDuration);
         indicator.setInteractiveAnimation(interactiveAnimation);
         indicator.setAnimationType(animationType);
         indicator.setRtlMode(rtlMode);
         indicator.setFadeOnIdle(fadeOnIdle);
-        indicator.setMillisToBecomeIdle(millisToBecomeIdle);
+        indicator.setIdleDuration(idleDuration);
     }
 
     private void initSizeAttribute(@NonNull TypedArray typedArray) {

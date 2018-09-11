@@ -23,7 +23,7 @@
         <attr name="piv_selectedColor" format="color" />
 
         <attr name="piv_fadeOnIdle" format="boolean" />
-        <attr name="piv_millisToBecomeIdle" format="integer" />
+        <attr name="piv_idleDuration" format="integer" />
 
         <attr name="piv_interactiveAnimation" format="boolean" />
         <attr name="piv_animationDuration" format="integer" />
