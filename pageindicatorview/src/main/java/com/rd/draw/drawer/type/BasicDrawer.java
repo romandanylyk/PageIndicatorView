@@ -26,14 +26,14 @@ public class BasicDrawer extends BaseDrawer {
             int coordinateX,
             int coordinateY) {
 
-        float radius = indicator.getRadius();
-        int strokePx = indicator.getStroke();
-        float scaleFactor = indicator.getScaleFactor();
+        float radius = getIndicator().getRadius();
+        int strokePx = getIndicator().getStroke();
+        float scaleFactor = getIndicator().getScaleFactor();
 
-        int selectedColor = indicator.getSelectedColor();
-        int unselectedColor = indicator.getUnselectedColor();
-        int selectedPosition = indicator.getSelectedPosition();
-        AnimationType animationType = indicator.getAnimationType();
+        int selectedColor = getIndicator().getSelectedColor();
+        int unselectedColor = getIndicator().getUnselectedColor();
+        int selectedPosition = getIndicator().getSelectedPosition();
+        AnimationType animationType = getIndicator().getAnimationType();
 
 		if (animationType == AnimationType.SCALE && !isSelectedItem) {
 			radius *= scaleFactor;
@@ -52,7 +52,7 @@ public class BasicDrawer extends BaseDrawer {
             paint = strokePaint;
             paint.setStrokeWidth(strokePx);
         } else {
-            paint = this.paint;
+            paint = this.getPaint();
         }
 
         paint.setColor(color);
