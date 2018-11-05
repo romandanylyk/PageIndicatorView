@@ -2,7 +2,7 @@ package com.rd.animation.type;
 
 import android.animation.IntEvaluator;
 import android.animation.PropertyValuesHolder;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import com.rd.animation.controller.ValueController;
 
 public class ScaleDownAnimation extends ScaleAnimation {

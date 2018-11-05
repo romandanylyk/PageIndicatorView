@@ -1,6 +1,6 @@
 package com.rd;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import com.rd.animation.AnimationManager;
 import com.rd.animation.controller.ValueController;
 import com.rd.animation.data.Value;

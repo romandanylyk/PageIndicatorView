@@ -1,6 +1,6 @@
 package com.rd.animation.data;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import com.rd.animation.data.type.*;
 
 public class AnimationValue {

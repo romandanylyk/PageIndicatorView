@@ -1,6 +1,6 @@
 package com.rd.animation;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import com.rd.animation.controller.AnimationController;
 import com.rd.animation.controller.ValueController;
 import com.rd.draw.data.Indicator;

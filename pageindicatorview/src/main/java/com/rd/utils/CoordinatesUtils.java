@@ -1,7 +1,7 @@
 package com.rd.utils;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import android.util.Pair;
 import com.rd.animation.type.AnimationType;
 import com.rd.draw.data.Indicator;

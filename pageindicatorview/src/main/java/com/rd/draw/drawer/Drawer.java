@@ -2,7 +2,7 @@ package com.rd.draw.drawer;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import com.rd.animation.data.Value;
 import com.rd.draw.data.Indicator;
 import com.rd.draw.drawer.type.*;
