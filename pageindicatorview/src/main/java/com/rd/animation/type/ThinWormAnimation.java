@@ -1,7 +1,7 @@
 package com.rd.animation.type;
 
 import android.animation.ValueAnimator;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import com.rd.animation.controller.ValueController;
 import com.rd.animation.data.type.ThinWormAnimationValue;

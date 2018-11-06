@@ -1,6 +1,6 @@
 package com.rd.draw.controller;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.util.Pair;
 import android.view.View;
 import com.rd.animation.type.AnimationType;
