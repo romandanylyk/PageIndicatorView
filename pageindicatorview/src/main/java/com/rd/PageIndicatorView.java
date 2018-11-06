@@ -157,6 +157,13 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
     @Override
     public void onAdapterChanged(@NonNull ViewPager viewPager, @Nullable PagerAdapter oldAdapter, @Nullable PagerAdapter newAdapter) {
+        if (manager.indicator().isDynamicCount()) {
+            if (oldAdapter != null && setObserver != null) {
+                oldAdapter.unregisterDataSetObserver(setObserver);
+                setObserver = null;
+            }
+            registerSetObserver();
+        }
         updateState();
     }
 
