@@ -13,7 +13,7 @@ ext {
     siteUrl = 'https://github.com/romandanylyk/PageIndicatorView'
     gitUrl = 'https://github.com/romandanylyk/PageIndicatorView.git'
 
-    libraryVersion = '1.0.2'
+    libraryVersion = '1.0.3'
 
     developerId = 'romandanylyk'
     developerName = 'Roman Danylyk'
