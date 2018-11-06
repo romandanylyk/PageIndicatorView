@@ -80,27 +80,29 @@ class DrawController(private val indicator: Indicator) {
 	}
 
 	private fun drawWithAnimation(canvas: Canvas) {
-		val animationType = indicator.animationType
-		when (animationType) {
+		if (value == null || value !is Value) return
+		val animationValue = value as Value
+
+		when (indicator.animationType) {
 			AnimationType.NONE -> drawer.drawBasic(canvas, true)
 
-			AnimationType.COLOR -> drawer.drawColor(canvas, value!!)
+			AnimationType.COLOR -> drawer.drawColor(canvas, animationValue)
 
-			AnimationType.SCALE -> drawer.drawScale(canvas, value!!)
+			AnimationType.SCALE -> drawer.drawScale(canvas, animationValue)
 
-			AnimationType.WORM -> drawer.drawWorm(canvas, value!!)
+			AnimationType.WORM -> drawer.drawWorm(canvas, animationValue)
 
-			AnimationType.SLIDE -> drawer.drawSlide(canvas, value!!)
+			AnimationType.SLIDE -> drawer.drawSlide(canvas, animationValue)
 
-			AnimationType.FILL -> drawer.drawFill(canvas, value!!)
+			AnimationType.FILL -> drawer.drawFill(canvas, animationValue)
 
-			AnimationType.THIN_WORM -> drawer.drawThinWorm(canvas, value!!)
+			AnimationType.THIN_WORM -> drawer.drawThinWorm(canvas, animationValue)
 
-			AnimationType.DROP -> drawer.drawDrop(canvas, value!!)
+			AnimationType.DROP -> drawer.drawDrop(canvas, animationValue)
 
-			AnimationType.SWAP -> drawer.drawSwap(canvas, value!!)
+			AnimationType.SWAP -> drawer.drawSwap(canvas, animationValue)
 
-			AnimationType.SCALE_DOWN -> drawer.drawScaleDown(canvas, value!!)
+			AnimationType.SCALE_DOWN -> drawer.drawScaleDown(canvas, animationValue)
 		}
 	}
 }

@@ -226,7 +226,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
             radiusDp = 0;
         }
 
-        int radiusPx = DensityUtils.dpToPx(radiusDp);
+        int radiusPx = DensityUtils.INSTANCE.dpToPx(radiusDp);
         manager.indicator().setRadius(radiusPx);
         invalidate();
     }
@@ -264,7 +264,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
             paddingDp = 0;
         }
 
-        int paddingPx = DensityUtils.dpToPx(paddingDp);
+        int paddingPx = DensityUtils.INSTANCE.dpToPx(paddingDp);
         manager.indicator().setPadding(paddingPx);
         invalidate();
     }
@@ -350,7 +350,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
      */
 
     public void setStrokeWidth(int strokeDp) {
-        int strokePx = DensityUtils.dpToPx(strokeDp);
+        int strokePx = DensityUtils.INSTANCE.dpToPx(strokeDp);
         int radiusPx = manager.indicator().getRadius();
 
         if (strokePx < 0) {
@@ -676,7 +676,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
     private void setupId() {
         if (getId() == NO_ID) {
-            setId(IdUtils.generateViewId());
+            setId(IdUtils.INSTANCE.generateViewId());
         }
     }
 
@@ -782,7 +782,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
             return;
         }
 
-        Pair<Integer, Float> progressPair = CoordinatesUtils.getProgress(indicator, position, positionOffset, isRtl());
+        Pair<Integer, Float> progressPair = CoordinatesUtils.INSTANCE.getProgress(indicator, position, positionOffset, isRtl());
         int selectingPosition = progressPair.first;
         float selectingProgress = progressPair.second;
         setProgress(selectingPosition, selectingProgress);

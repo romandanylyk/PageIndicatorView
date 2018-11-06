@@ -131,8 +131,8 @@ public class AnimationController {
 		int fromPosition = indicator.isInteractiveAnimation() ? indicator.getSelectedPosition() : indicator.getLastSelectedPosition();
 		int toPosition = indicator.isInteractiveAnimation() ? indicator.getSelectingPosition() : indicator.getSelectedPosition();
 
-		int from = CoordinatesUtils.getCoordinate(indicator, fromPosition);
-		int to = CoordinatesUtils.getCoordinate(indicator, toPosition);
+		int from = CoordinatesUtils.INSTANCE.getCoordinate(indicator, fromPosition);
+		int to = CoordinatesUtils.INSTANCE.getCoordinate(indicator, toPosition);
 		boolean isRightSide = toPosition > fromPosition;
 
 		int radiusPx = indicator.getRadius();
@@ -156,8 +156,8 @@ public class AnimationController {
 		int fromPosition = indicator.isInteractiveAnimation() ? indicator.getSelectedPosition() : indicator.getLastSelectedPosition();
 		int toPosition = indicator.isInteractiveAnimation() ? indicator.getSelectingPosition() : indicator.getSelectedPosition();
 
-		int from = CoordinatesUtils.getCoordinate(indicator, fromPosition);
-		int to = CoordinatesUtils.getCoordinate(indicator, toPosition);
+		int from = CoordinatesUtils.INSTANCE.getCoordinate(indicator, fromPosition);
+		int to = CoordinatesUtils.INSTANCE.getCoordinate(indicator, toPosition);
 		long animationDuration = indicator.getAnimationDuration();
 
 		BaseAnimation animation = valueController
@@ -199,8 +199,8 @@ public class AnimationController {
 		int fromPosition = indicator.isInteractiveAnimation() ? indicator.getSelectedPosition() : indicator.getLastSelectedPosition();
 		int toPosition = indicator.isInteractiveAnimation() ? indicator.getSelectingPosition() : indicator.getSelectedPosition();
 
-		int from = CoordinatesUtils.getCoordinate(indicator, fromPosition);
-		int to = CoordinatesUtils.getCoordinate(indicator, toPosition);
+		int from = CoordinatesUtils.INSTANCE.getCoordinate(indicator, fromPosition);
+		int to = CoordinatesUtils.INSTANCE.getCoordinate(indicator, toPosition);
 		boolean isRightSide = toPosition > fromPosition;
 
 		int radiusPx = indicator.getRadius();
@@ -224,8 +224,8 @@ public class AnimationController {
 		int fromPosition = indicator.isInteractiveAnimation() ? indicator.getSelectedPosition() : indicator.getLastSelectedPosition();
 		int toPosition = indicator.isInteractiveAnimation() ? indicator.getSelectingPosition() : indicator.getSelectedPosition();
 
-		int widthFrom = CoordinatesUtils.getCoordinate(indicator, fromPosition);
-		int widthTo = CoordinatesUtils.getCoordinate(indicator, toPosition);
+		int widthFrom = CoordinatesUtils.INSTANCE.getCoordinate(indicator, fromPosition);
+		int widthTo = CoordinatesUtils.INSTANCE.getCoordinate(indicator, toPosition);
 
 		int paddingTop = indicator.getPaddingTop();
 		int paddingLeft = indicator.getPaddingLeft();
@@ -255,8 +255,8 @@ public class AnimationController {
 		int fromPosition = indicator.isInteractiveAnimation() ? indicator.getSelectedPosition() : indicator.getLastSelectedPosition();
 		int toPosition = indicator.isInteractiveAnimation() ? indicator.getSelectingPosition() : indicator.getSelectedPosition();
 
-		int from = CoordinatesUtils.getCoordinate(indicator, fromPosition);
-		int to = CoordinatesUtils.getCoordinate(indicator, toPosition);
+		int from = CoordinatesUtils.INSTANCE.getCoordinate(indicator, fromPosition);
+		int to = CoordinatesUtils.INSTANCE.getCoordinate(indicator, toPosition);
 		long animationDuration = indicator.getAnimationDuration();
 
 		BaseAnimation animation = valueController
