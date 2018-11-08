@@ -522,7 +522,6 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         viewPager = pager;
         viewPager.addOnPageChangeListener(this);
         viewPager.addOnAdapterChangeListener(this);
-        viewPager.setOnTouchListener(this);
         manager.indicator().setViewPagerId(viewPager.getId());
 
         setDynamicCount(manager.indicator().isDynamicCount());
