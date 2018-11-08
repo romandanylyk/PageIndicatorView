@@ -184,7 +184,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
      * Return number of circle indicators
      */
     public int getCount() {
-        return manager.indicator().getCount();
+        return viewPager.getAdapter().getCount();
     }
 
     /**
@@ -522,7 +522,6 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         viewPager = pager;
         viewPager.addOnPageChangeListener(this);
         viewPager.addOnAdapterChangeListener(this);
-        viewPager.setOnTouchListener(this);
         manager.indicator().setViewPagerId(viewPager.getId());
 
         setDynamicCount(manager.indicator().isDynamicCount());
@@ -736,8 +735,10 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
             return;
         }
 
-        int count = viewPager.getAdapter().getCount();
-        int selectedPos = isRtl() ? (count - 1) - viewPager.getCurrentItem() : viewPager.getCurrentItem();
+        int count = this.getCount();
+        int pos = isRtl() ? (count - 1) - viewPager.getCurrentItem() : viewPager.getCurrentItem();
+
+        int selectedPos = pos % count;
 
         manager.indicator().setSelectedPosition(selectedPos);
         manager.indicator().setSelectingPosition(selectedPos);
@@ -766,20 +767,23 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     }
 
     private void onPageSelect(int position) {
+
+        int pos = position % getCount();
         Indicator indicator = manager.indicator();
         boolean canSelectIndicator = isViewMeasured();
         int count = indicator.getCount();
 
         if (canSelectIndicator) {
             if (isRtl()) {
-                position = (count - 1) - position;
+                pos = (count - 1) - pos;
             }
 
-            setSelection(position);
+            setSelection(pos);
         }
     }
 
-    private void onPageScroll(int position, float positionOffset) {
+    private void onPageScroll(int _position, float positionOffset) {
+        int position = _position % getCount();
         Indicator indicator = manager.indicator();
         AnimationType animationType = indicator.getAnimationType();
         boolean interactiveAnimation = indicator.isInteractiveAnimation();
@@ -890,3 +894,5 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         }
     };
 }
+
+
