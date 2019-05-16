@@ -52,6 +52,7 @@ dependencies {
     implementation 'androidx.annotation:annotation:1.0.0'
     implementation 'androidx.core:core:1.0.0'
     implementation 'androidx.viewpager:viewpager:1.0.0'
+    implementation 'androidx.viewpager2:viewpager2:1.0.0-alpha01'
 }
 
 allprojects {
