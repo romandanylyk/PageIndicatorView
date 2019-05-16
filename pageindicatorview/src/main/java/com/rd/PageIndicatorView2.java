@@ -63,7 +63,7 @@ public class PageIndicatorView2 extends View implements IndicatorManager.Listene
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public PageIndicatorView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public PageIndicatorView2(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         init(attrs);
     }
