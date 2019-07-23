@@ -26,7 +26,6 @@ ext {
 
 android {
     compileSdkVersion 28
-    buildToolsVersion '28.0.3'
 
     defaultConfig {
         minSdkVersion 14
@@ -46,11 +45,8 @@ android {
 }
 
 dependencies {
-    repositories {
-        maven { url "https://maven.google.com" }
-    }
-    implementation 'androidx.annotation:annotation:1.0.0'
-    implementation 'androidx.core:core:1.0.0'
+    implementation 'androidx.annotation:annotation:1.1.0'
+    implementation 'androidx.core:core:1.0.2'
     implementation 'androidx.viewpager:viewpager:1.0.0'
 }
 
