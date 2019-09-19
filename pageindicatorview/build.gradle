@@ -1,5 +1,4 @@
 apply plugin: 'com.android.library'
-
 ext {
     bintrayRepo = 'maven'
     bintrayName = 'pageindicatorview'
@@ -49,8 +48,8 @@ dependencies {
     repositories {
         maven { url "https://maven.google.com" }
     }
-    implementation 'androidx.annotation:annotation:1.0.0'
-    implementation 'androidx.core:core:1.0.0'
+    implementation 'androidx.annotation:annotation:1.1.0'
+    implementation 'androidx.core:core:1.1.0'
     implementation 'androidx.viewpager:viewpager:1.0.0'
 }
 

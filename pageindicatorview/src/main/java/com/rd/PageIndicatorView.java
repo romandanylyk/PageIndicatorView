@@ -9,19 +9,25 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Parcelable;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.text.TextUtilsCompat;
-import androidx.viewpager.widget.PagerAdapter;
-import androidx.core.view.ViewCompat;
-import androidx.viewpager.widget.ViewPager;
 import android.util.AttributeSet;
 import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
-import com.rd.animation.type.*;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.text.TextUtilsCompat;
+import androidx.core.view.ViewCompat;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+
+import com.rd.animation.type.AnimationType;
+import com.rd.animation.type.BaseAnimation;
+import com.rd.animation.type.ColorAnimation;
+import com.rd.animation.type.FillAnimation;
+import com.rd.animation.type.ScaleAnimation;
 import com.rd.draw.controller.DrawController;
 import com.rd.draw.data.Indicator;
 import com.rd.draw.data.Orientation;
@@ -207,7 +213,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
     /**
      * Fade on idle will make {@link PageIndicatorView} {@link View#INVISIBLE} if {@link ViewPager} is not interacted
-     * in time equal to {@link Indicator#idleDuration}. Take care when setting {@link PageIndicatorView} alpha
+     * in time equal to {@link Indicator#getIdleDuration()}. Take care when setting {@link PageIndicatorView} alpha
      * manually if this is true. Alpha is used to manage fading and appearance of {@link PageIndicatorView} and value you provide
      * will be overridden when {@link PageIndicatorView} enters or leaves idle state.
      *
@@ -455,7 +461,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
     /**
      * Sets time in millis after which {@link ViewPager} is considered idle.
-     * If {@link Indicator#fadeOnIdle} is true, {@link PageIndicatorView} will
+     * If {@link Indicator#isFadeOnIdle()} is true, {@link PageIndicatorView} will
      * fade away after entering idle state and appear when it is left.
      *
      * @param duration time in millis after which {@link ViewPager} is considered idle
