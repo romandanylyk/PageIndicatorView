@@ -25,12 +25,11 @@ ext {
 }
 
 android {
-    compileSdkVersion 28
-    buildToolsVersion '28.0.3'
+    compileSdkVersion 29
 
     defaultConfig {
         minSdkVersion 14
-        targetSdkVersion 28
+        targetSdkVersion 29
         versionCode 1
         versionName "1.0"
 
@@ -49,9 +48,10 @@ dependencies {
     repositories {
         maven { url "https://maven.google.com" }
     }
-    implementation 'androidx.annotation:annotation:1.0.0'
-    implementation 'androidx.core:core:1.0.0'
+    implementation 'androidx.annotation:annotation:1.1.0'
+    implementation 'androidx.core:core:1.2.0'
     implementation 'androidx.viewpager:viewpager:1.0.0'
+    implementation "androidx.viewpager2:viewpager2:1.0.0"
 }
 
 allprojects {

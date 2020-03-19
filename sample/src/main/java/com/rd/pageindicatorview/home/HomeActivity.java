@@ -2,16 +2,20 @@ package com.rd.pageindicatorview.home;
 
 import android.content.Intent;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.viewpager.widget.ViewPager;
+
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+
 import com.rd.PageIndicatorView;
 import com.rd.pageindicatorview.base.BaseActivity;
 import com.rd.pageindicatorview.customize.CustomizeActivity;
 import com.rd.pageindicatorview.data.Customization;
 import com.rd.pageindicatorview.sample.R;
+import com.rd.pageindicatorview.viewpager2.ViewPagerActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +38,7 @@ public class HomeActivity extends BaseActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
         boolean customization = requestCode == CustomizeActivity.EXTRAS_CUSTOMIZATION_REQUEST_CODE && resultCode == RESULT_OK;
         if (customization && intent != null) {
             this.customization = intent.getParcelableExtra(CustomizeActivity.EXTRAS_CUSTOMIZATION);
@@ -53,13 +58,14 @@ public class HomeActivity extends BaseActivity {
             case R.id.actionCustomize:
                 CustomizeActivity.start(this, customization);
                 return true;
-
+            case R.id.actionViewPager2:
+                ViewPagerActivity.start(this, customization);
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
-    @SuppressWarnings("ConstantConditions")
     private void initViews() {
         HomeAdapter adapter = new HomeAdapter();
         adapter.setData(createPageList());

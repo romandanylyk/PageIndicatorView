@@ -3,10 +3,12 @@ package com.rd.pageindicatorview.base;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+
 import android.view.MenuItem;
+
 import com.rd.pageindicatorview.sample.R;
 
-public class BaseActivity extends AppCompatActivity {
+public abstract class BaseActivity extends AppCompatActivity {
 
     private ActionBar toolbar;
 

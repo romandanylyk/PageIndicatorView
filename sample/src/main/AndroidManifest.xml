@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.rd.pageindicatorview.sample">
 
     <application
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/Base">
+        android:theme="@style/Base"
+        tools:ignore="LockedOrientationActivity">
         <activity
             android:name="com.rd.pageindicatorview.home.HomeActivity"
             android:screenOrientation="sensorPortrait">
@@ -20,6 +22,7 @@
         </activity>
 
         <activity android:name="com.rd.pageindicatorview.customize.CustomizeActivity" />
+        <activity android:name="com.rd.pageindicatorview.viewpager2.ViewPagerActivity" />
     </application>
 
 </manifest>
