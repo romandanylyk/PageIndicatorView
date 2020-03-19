@@ -5,9 +5,11 @@
     <string name="animation_type">Animation type</string>
     <string name="orientation">Orientation</string>
     <string name="customize">Customize</string>
+    <string name="viewpager2">ViewPager2</string>
     <string name="home">Home</string>
     <string name="right_to_left_mode">Right to left mode</string>
     <string name="fade_on_idle">Fade on idle</string>
+    <string name="sample">Sample Fragment</string>
 
     <string-array name="animation_type">
         <item>None</item>

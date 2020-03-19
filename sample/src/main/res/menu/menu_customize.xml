@@ -7,4 +7,9 @@
         android:title="@string/customize"
         app:showAsAction="never" />
 
+    <item
+        android:id="@+id/actionViewPager2"
+        android:title="@string/viewpager2"
+        app:showAsAction="never" />
+
 </menu>
