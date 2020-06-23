@@ -62,8 +62,8 @@ But if you're as lazy as I'm - then there is another option to handle `PageIndic
         app:piv_selectedColor="@color/gray_50"
         app:piv_unselectedColor="@color/gray_300"
         app:piv_viewPager="@id/viewPager"
-        attrs:piv_padding="12dp"
-        attrs:piv_radius="8dp" />
+        android:piv_padding="12dp"
+        android:piv_radius="8dp" />
 ```
 All the `piv_` attributes here are specific for `PageIndicatorView` so you can customise it as you want with attributes - pretty handy. 
 
