@@ -1,11 +1,11 @@
 
 
-### **PageIndicatorView**
+### **Page Indicator View**
 [ ![Download](https://api.bintray.com/packages/romandanylyk/maven/pageindicatorview/images/download.svg) ](https://bintray.com/romandanylyk/maven/pageindicatorview/_latestVersion)[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-PageIndicatorView-green.svg?style=true)](https://android-arsenal.com/details/1/4555)  
 [![API](https://img.shields.io/badge/API-14%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=14)
 
 
-`PageIndicatorView` is light library to indicate ViewPager's selected page with different animations and ability to customise it as you need.
+`PageIndicatorView` is light library to indicate ViewPager's selected page with different animations and ability to customise it as you need. Indicators are really simple looking yet so stylish.
 
 ![](https://raw.githubusercontent.com/romandanylyk/PageIndicatorView/master/assets/preview_anim_drop.gif)
 
