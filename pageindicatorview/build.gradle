@@ -1,3 +1,6 @@
+plugins {
+    id 'net.researchgate.release' version '2.8.1'
+}
 apply plugin: 'com.android.library'
 
 ext {
@@ -22,6 +25,8 @@ ext {
     licenseName = 'The Apache Software License, Version 2.0'
     licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
     allLicenses = ["Apache-2.0"]
+    VERSION_NAME = project.version
+    GROUP = project.group
 }
 
 android {
@@ -64,3 +69,5 @@ allprojects {
     apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'
     apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/bintrayv1.gradle'
 }
+
+apply from: '../gradle/gradle-third-party-mvn-push.gradle'
