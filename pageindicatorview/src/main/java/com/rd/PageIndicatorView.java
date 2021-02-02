@@ -3,25 +3,30 @@ package com.rd;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.database.DataSetObserver;
 import android.graphics.Canvas;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Parcelable;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.text.TextUtilsCompat;
-import androidx.viewpager.widget.PagerAdapter;
-import androidx.core.view.ViewCompat;
-import androidx.viewpager.widget.ViewPager;
 import android.util.AttributeSet;
 import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
-import com.rd.animation.type.*;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.text.TextUtilsCompat;
+import androidx.core.view.ViewCompat;
+import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager2.widget.ViewPager2;
+
+import com.rd.animation.type.AnimationType;
+import com.rd.animation.type.BaseAnimation;
+import com.rd.animation.type.ColorAnimation;
+import com.rd.animation.type.FillAnimation;
+import com.rd.animation.type.ScaleAnimation;
 import com.rd.draw.controller.DrawController;
 import com.rd.draw.data.Indicator;
 import com.rd.draw.data.Orientation;
@@ -31,13 +36,11 @@ import com.rd.utils.CoordinatesUtils;
 import com.rd.utils.DensityUtils;
 import com.rd.utils.IdUtils;
 
-public class PageIndicatorView extends View implements ViewPager.OnPageChangeListener, IndicatorManager.Listener, ViewPager.OnAdapterChangeListener, View.OnTouchListener {
+public class PageIndicatorView extends View implements IndicatorManager.Listener, View.OnTouchListener, PageIndicatorViewAdapterListener {
 
     private static final Handler HANDLER = new Handler(Looper.getMainLooper());
-
+    private PageIndicatorViewAdapter adapter;
     private IndicatorManager manager;
-    private DataSetObserver setObserver;
-    private ViewPager viewPager;
     private boolean isInteractionEnabled;
 
     public PageIndicatorView(Context context) {
@@ -69,7 +72,9 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
 
     @Override
     protected void onDetachedFromWindow() {
-        unRegisterSetObserver();
+        if (adapter != null) {
+            adapter.setMonitorDataSetChanges(false);
+        }
         super.onDetachedFromWindow();
     }
 
@@ -138,34 +143,8 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         invalidate();
     }
 
-    @Override
-    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-        onPageScroll(position, positionOffset);
-    }
 
-    @Override
-    public void onPageSelected(int position) {
-        onPageSelect(position);
-    }
 
-    @Override
-    public void onPageScrollStateChanged(int state) {
-        if (state == ViewPager.SCROLL_STATE_IDLE) {
-            manager.indicator().setInteractiveAnimation(isInteractionEnabled);
-        }
-    }
-
-    @Override
-    public void onAdapterChanged(@NonNull ViewPager viewPager, @Nullable PagerAdapter oldAdapter, @Nullable PagerAdapter newAdapter) {
-        if (manager.indicator().isDynamicCount()) {
-            if (oldAdapter != null && setObserver != null) {
-                oldAdapter.unregisterDataSetObserver(setObserver);
-                setObserver = null;
-            }
-            registerSetObserver();
-        }
-        updateState();
-    }
 
     /**
      * Set static number of circle indicators to be displayed.
@@ -198,11 +177,17 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     public void setDynamicCount(boolean dynamicCount) {
         manager.indicator().setDynamicCount(dynamicCount);
 
-        if (dynamicCount) {
-            registerSetObserver();
-        } else {
-            unRegisterSetObserver();
+        if (adapter != null) {
+            if (dynamicCount) {
+                adapter.setMonitorDataSetChanges(true);
+            } else {
+                adapter.setMonitorDataSetChanges(false);
+            }
         }
+    }
+
+    public boolean isDynamicCount() {
+        return manager.indicator().isDynamicCount();
     }
 
     /**
@@ -506,6 +491,22 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         this.isInteractionEnabled = isInteractive;
     }
 
+    public boolean isInteractionEnabled() {
+        return isInteractionEnabled;
+    }
+
+    public void setViewPager(ViewPager2 pager) {
+        releaseDelegate();
+        if (pager == null) {
+            return;
+        }
+        adapter = new ViewPager2Adapter(pager, this);
+        pager.setOnTouchListener(this);
+        manager.indicator().setViewPagerId(pager.getId());
+        setDynamicCount(manager.indicator().isDynamicCount());
+        updateState();
+    }
+
     /**
      * Set {@link ViewPager} to add {@link ViewPager.OnPageChangeListener} and automatically
      * handle selecting new indicators (and interactive animation effect if it is enabled).
@@ -514,17 +515,13 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
      */
     @SuppressLint("ClickableViewAccessibility")
     public void setViewPager(@Nullable ViewPager pager) {
-        releaseViewPager();
+        releaseDelegate();
         if (pager == null) {
             return;
         }
-
-        viewPager = pager;
-        viewPager.addOnPageChangeListener(this);
-        viewPager.addOnAdapterChangeListener(this);
-        viewPager.setOnTouchListener(this);
-        manager.indicator().setViewPagerId(viewPager.getId());
-
+        adapter = new ViewPagerAdapter(pager, this);
+        pager.setOnTouchListener(this);
+        manager.indicator().setViewPagerId(pager.getId());
         setDynamicCount(manager.indicator().isDynamicCount());
         updateState();
     }
@@ -532,11 +529,10 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
     /**
      * Release {@link ViewPager} and stop handling events of {@link ViewPager.OnPageChangeListener}.
      */
-    public void releaseViewPager() {
-        if (viewPager != null) {
-            viewPager.removeOnPageChangeListener(this);
-            viewPager.removeOnAdapterChangeListener(this);
-            viewPager = null;
+    public void releaseDelegate() {
+        if (adapter != null) {
+            adapter.release();
+            adapter = null;
         }
     }
 
@@ -556,7 +552,7 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
             indicator.setRtlMode(mode);
         }
 
-        if (viewPager == null) {
+        if (adapter == null) {
             return;
         }
 
@@ -566,8 +562,8 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         if (isRtl()) {
             position = (indicator.getCount() - 1) - selectedPosition;
 
-        } else if (viewPager != null) {
-            position = viewPager.getCurrentItem();
+        } else if (adapter != null) {
+            position = adapter.getCurrentItem();
         }
 
         indicator.setLastSelectedPosition(position);
@@ -699,45 +695,13 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         isInteractionEnabled = indicator.isInteractiveAnimation();
     }
 
-    private void registerSetObserver() {
-        if (setObserver != null || viewPager == null || viewPager.getAdapter() == null) {
+    void updateState() {
+        if (adapter == null || !adapter.isReady()) {
             return;
         }
 
-        setObserver = new DataSetObserver() {
-            @Override
-            public void onChanged() {
-                updateState();
-            }
-        };
-
-        try {
-            viewPager.getAdapter().registerDataSetObserver(setObserver);
-        } catch (IllegalStateException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void unRegisterSetObserver() {
-        if (setObserver == null || viewPager == null || viewPager.getAdapter() == null) {
-            return;
-        }
-
-        try {
-            viewPager.getAdapter().unregisterDataSetObserver(setObserver);
-            setObserver = null;
-        } catch (IllegalStateException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void updateState() {
-        if (viewPager == null || viewPager.getAdapter() == null) {
-            return;
-        }
-
-        int count = viewPager.getAdapter().getCount();
-        int selectedPos = isRtl() ? (count - 1) - viewPager.getCurrentItem() : viewPager.getCurrentItem();
+        int count = adapter.getItemCount();
+        int selectedPos = isRtl() ? (count - 1) - adapter.getCurrentItem() : adapter.getCurrentItem();
 
         manager.indicator().setSelectedPosition(selectedPos);
         manager.indicator().setSelectingPosition(selectedPos);
@@ -765,7 +729,8 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         }
     }
 
-    private void onPageSelect(int position) {
+    @Override
+    public void onPageSelected(int position) {
         Indicator indicator = manager.indicator();
         boolean canSelectIndicator = isViewMeasured();
         int count = indicator.getCount();
@@ -779,7 +744,8 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         }
     }
 
-    private void onPageScroll(int position, float positionOffset) {
+    @Override
+    public void onPageScroll(int position, float positionOffset) {
         Indicator indicator = manager.indicator();
         AnimationType animationType = indicator.getAnimationType();
         boolean interactiveAnimation = indicator.isInteractiveAnimation();
@@ -793,6 +759,16 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         int selectingPosition = progressPair.first;
         float selectingProgress = progressPair.second;
         setProgress(selectingPosition, selectingProgress);
+    }
+
+    @Override
+    public void onPageScrollIdle() {
+        manager.indicator().setInteractiveAnimation(isInteractionEnabled);
+    }
+
+    @Override
+    public void onDataSetChange() {
+        updateState();
     }
 
     private boolean isRtl() {
@@ -824,24 +800,30 @@ public class PageIndicatorView extends View implements ViewPager.OnPageChangeLis
         }
 
         int viewPagerId = manager.indicator().getViewPagerId();
-        ViewPager viewPager = findViewPager((ViewGroup) viewParent, viewPagerId);
+        View viewPager = findViewPager((ViewGroup) viewParent, viewPagerId);
 
-        if (viewPager != null) {
-            setViewPager(viewPager);
-        } else {
+        if (viewPager instanceof ViewPager) {
+            setViewPager((ViewPager)viewPager);
+        }
+        else if (viewPager instanceof  ViewPager2) {
+            setViewPager((ViewPager2)viewPager);
+        }
+        else{
             findViewPager(viewParent.getParent());
         }
     }
 
+
+
     @Nullable
-    private ViewPager findViewPager(@NonNull ViewGroup viewGroup, int id) {
+    private View findViewPager(@NonNull ViewGroup viewGroup, int id) {
         if (viewGroup.getChildCount() <= 0) {
             return null;
         }
 
         View view = viewGroup.findViewById(id);
-        if (view != null && view instanceof ViewPager) {
-            return (ViewPager) view;
+        if (view != null && (view instanceof ViewPager || view instanceof ViewPager2)) {
+            return view;
         } else {
             return null;
         }
