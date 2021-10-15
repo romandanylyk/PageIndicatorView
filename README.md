@@ -13,7 +13,7 @@
 To add `pageindicatorview` to your project, first make sure in root `build.gradle` you have specified the following repository:
 ```groovy
     repositories {
-        jcenter()
+        mavenCentral()
     }
 ```
 >***Note***: by creating new project in Android Studio it will have `jcenter` repository specified by default, so you will not need to add it manually.
