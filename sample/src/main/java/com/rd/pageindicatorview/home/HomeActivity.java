@@ -49,14 +49,11 @@ public class HomeActivity extends BaseActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.actionCustomize:
-                CustomizeActivity.start(this, customization);
-                return true;
-
-            default:
-                return super.onOptionsItemSelected(item);
+        if (item.getItemId() == R.id.actionCustomize) {
+            CustomizeActivity.start(this, customization);
+            return true;
         }
+        return super.onOptionsItemSelected(item);
     }
 
     @SuppressWarnings("ConstantConditions")

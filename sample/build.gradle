@@ -1,12 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 28
-    buildToolsVersion '28.0.3'
+    namespace 'com.rd.pageindicatorview.sample'
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.rd.pageindicatorview"
-        minSdkVersion 14
+        minSdkVersion 21
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
