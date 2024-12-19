@@ -1,35 +1,11 @@
 apply plugin: 'com.android.library'
-
-ext {
-    bintrayRepo = 'maven'
-    bintrayName = 'pageindicatorview'
-
-    publishedGroupId = 'com.romandanylyk'
-    libraryName = 'PageIndicatorView'
-    artifact = 'pageindicatorview'
-
-    libraryDescription = 'Page indicator for android ViewPager'
-
-    siteUrl = 'https://github.com/romandanylyk/PageIndicatorView'
-    gitUrl = 'https://github.com/romandanylyk/PageIndicatorView.git'
-
-    libraryVersion = '1.0.3'
-
-    developerId = 'romandanylyk'
-    developerName = 'Roman Danylyk'
-    developerEmail = 'romandanylyk96@gmail.com'
-
-    licenseName = 'The Apache Software License, Version 2.0'
-    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-    allLicenses = ["Apache-2.0"]
-}
+apply plugin: 'maven-publish'
 
 android {
-    compileSdkVersion 28
-    buildToolsVersion '28.0.3'
-
+    namespace 'com.rd.pageindicatorview'
+    compileSdk 34
     defaultConfig {
-        minSdkVersion 14
+        minSdkVersion 21
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -43,23 +19,66 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    publishing {
+        singleVariant('release') {
+            withSourcesJar()
+        }
+    }
 }
 
 dependencies {
-    repositories {
-        maven { url "https://maven.google.com" }
-    }
     implementation 'androidx.annotation:annotation:1.0.0'
     implementation 'androidx.core:core:1.0.0'
     implementation 'androidx.viewpager:viewpager:1.0.0'
 }
 
 allprojects {
-    tasks.withType(Javadoc) {
-        options.addStringOption('Xdoclint:none', '-quiet')
-        options.addStringOption('encoding', 'UTF-8')
+    tasks.withType(Javadoc).tap {
+        configureEach {
+            options.addStringOption('Xdoclint:none', '-quiet')
+            options.addStringOption('encoding', 'UTF-8')
+        }
     }
+}
 
-    apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'
-    apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/bintrayv1.gradle'
+publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/baseinc/android-PageIndicatorView")
+            credentials {
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
+    publications {
+        release(MavenPublication) {
+            group = 'in.thebase'
+            artifactId = 'android-pageindicatorview'
+            version = '1.0.3'
+
+            pom {
+                name = 'android-pageindicatorview'
+                description = 'Page indicator for android ViewPager'
+                url = 'https://github.com/baseinc/android-PageIndicatorView'
+                licenses {
+                    license {
+                        name = 'The Apache Software License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                scm {
+                    connection = 'scm:git@github.com/baseinc/android-PageIndicatorView.git'
+                    developerConnection = 'scm:git@github.com/baseinc/android-PageIndicatorView.git'
+                    url = 'https://github.com/baseinc/android-PageIndicatorView'
+                }
+            }
+
+            afterEvaluate {
+                from components.release
+            }
+        }
+    }
 }
